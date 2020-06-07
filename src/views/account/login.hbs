@@ -1,0 +1,40 @@
+<form style="max-width: 300px;margin: auto;" method="POST" action="/account/login">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3>Login</h3>
+            <a href="/account/register" class="btn btn-default" style="float: right;">Register</a>
+            <button type="button" class="btn btn-primary btn-block">Facebook</button>
+            <button type="button" class="btn btn-danger btn-block">Google</button>
+            <hr>
+            <div class="input-group">
+                <span class="input-group-addon" id="email">
+                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                </span>
+                <input type="email" class="form-control" placeholder="Email" aria-describedby="email" name="email">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="password">
+                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                </span>
+                <input type="password" class="form-control" placeholder="Password" aria-describedby="password"
+                    name="password">
+            </div>
+            <button type="button" class="btn btn-info">Login</button>
+            <a href="/account/forgot-password" style="float: right;margin-top: 5px;">
+                Forgot password?
+            </a>
+        </div>
+    </div>
+</form>
+
+<style>
+    h3 {
+        margin-top: 4px;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .input-group {
+        margin-bottom: 10px;
+    }
+</style>

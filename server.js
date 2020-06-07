@@ -42,7 +42,7 @@ app = require('./app')(app);
 
 app.use(function (err, req, res, next) {
   console.error(err.stack);
-  res.status(500).render('500', { layout: false });
+  res.status(500).render('statics/500', { layout: false });
 });
 
 const PORT = process.env.PORT || 3000;

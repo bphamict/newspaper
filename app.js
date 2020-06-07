@@ -12,11 +12,13 @@ module.exports = (app) => {
   });
 
   app.get('/about', (req, res) => {
-    res.render('about');
+    res.render('statics/about');
   });
 
+  app.use('/account', require('./src/routes/account.route'));
+
   app.use((req, res) => {
-    res.render('404', { layout: false });
+    res.render('statics/404', { layout: false });
   });
 
   return app;
