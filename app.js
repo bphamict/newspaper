@@ -15,6 +15,10 @@ module.exports = (app) => {
     res.render('statics/about');
   });
 
+  app.get('/detail', (req, res) => {
+    res.render('post/detail');
+  });
+
   app.use('/account', require('./src/routes/account.route'));
 
   app.use((req, res) => {
