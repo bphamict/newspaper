@@ -144,13 +144,6 @@ router.post(
     });
     sendEmail({
       to: req.body.email,
-      subject: 'Account confirmation',
-      templateData: {
-        code: code,
-      },
-    });
-    sendEmail({
-      to: req.body.email,
       subject: 'Reset password',
       templateData: {},
     });
