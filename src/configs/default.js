@@ -1,4 +1,8 @@
 module.exports = {
+  app: {
+    name: 'Newspaper',
+    domain: 'newspaper-hcmus.herokuapp.com',
+  },
   mysql: {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
@@ -12,5 +16,10 @@ module.exports = {
   },
   authentication: {
     saltRounds: 10,
+    randomString: {
+      length: 64,
+      characters:
+        '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    },
   },
 };

@@ -11,7 +11,6 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
-        console.log(profile);
         const user = await User.findOrCreate(profile);
         cb(null, user);
       } catch (err) {

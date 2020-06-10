@@ -3,17 +3,18 @@
  */
 
 const debug = require('debug')('app:send-email');
+const { app } = require('../configs/default');
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
 });
 
-module.exports = ({ to, subject, templateData }) => {
+const sendEmail = ({ to, subject, templateData }) => {
   const data = {
-    from: `${process.env.APP_NAME} <noreply@${process.env.APP_DOMAIN}>`,
+    from: `${app.name} <noreply@${app.domain}>`,
     to: to,
     subject: subject,
-    text: 'Testing some Mailgun awesomeness!',
+    // text: 'Testing some Mailgun awesomeness!',
     html: '<b> Test email text </b>',
   };
 
@@ -21,3 +22,5 @@ module.exports = ({ to, subject, templateData }) => {
     debug(body);
   });
 };
+
+module.exports = { sendEmail };

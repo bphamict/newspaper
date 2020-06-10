@@ -4,10 +4,13 @@ const { v4 } = require('uuid');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const debug = require('debug')('app:account');
-const { check, validationResult, body } = require('express-validator');
+const { check, validationResult } = require('express-validator');
+const cryptoRandomString = require('crypto-random-string');
 const User = require('../models/user.model');
+const UserVerify = require('../models/user-verify.model');
 const { authentication } = require('../configs/default');
 const { MESSAGES } = require('../configs/messages');
+const { sendEmail } = require('../utils/send-email');
 
 router.get('/login', (req, res) => {
   res.render('account/login');
@@ -75,7 +78,20 @@ router.post(
       });
       await User.create(req.body);
 
-      // send email
+      user = await User.findByEmail(req.body.email);
+      const code = cryptoRandomString(authentication.randomString);
+      await UserVerify.create({
+        user_id: user.id,
+        code: code,
+        type: 'CONFIRM_ACCOUNT',
+      });
+      sendEmail({
+        to: req.body.email,
+        subject: 'Account confirmation',
+        templateData: {
+          code: code,
+        },
+      });
 
       res.render('account/login', {
         message: MESSAGES.CHECK_EMAIL_TO_CONFIRM_ACCOUNT,
@@ -120,7 +136,24 @@ router.post(
       });
     }
 
-    // send email
+    const code = cryptoRandomString(authentication.randomString);
+    await UserVerify.create({
+      user_id: user.id,
+      code: code,
+      type: 'RESET_PASSWORD',
+    });
+    sendEmail({
+      to: req.body.email,
+      subject: 'Account confirmation',
+      templateData: {
+        code: code,
+      },
+    });
+    sendEmail({
+      to: req.body.email,
+      subject: 'Reset password',
+      templateData: {},
+    });
 
     res.render('account/forgot-password', {
       message: MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD,
@@ -128,13 +161,57 @@ router.post(
   },
 );
 
-router.get('/reset-password', async (req, res) => {
-  // compare code
-
-  res.render('account/login', {
-    message: MESSAGES.PASSWORD_HAS_BEEN_RESET,
-  });
+router.get('/reset-password', (req, res) => {
+  res.render('account/reset-password');
 });
+
+router.post(
+  '/reset-password',
+  [
+    check('code').notEmpty().withMessage('Code must not be empty.').trim(),
+    check('password')
+      .notEmpty()
+      .withMessage('Password must not be empty.')
+      .trim()
+      .isLength({ min: 8 })
+      .withMessage('Password must be at least 8 chars long.')
+      .matches(/\d/)
+      .withMessage('Password must contain at least a number.'),
+  ],
+  async (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render('account/reset-password', {
+        code: req.body.code,
+        error: errors.array()[0].msg,
+      });
+    }
+    try {
+      const data = await UserVerify.findByCode(req.body.code);
+      if (!data) {
+        return res.render('account/reset-password', {
+          code: req.body.code,
+          error: MESSAGES.CODE_IS_INVALID,
+        });
+      }
+      await User.update({
+        id: data.user_id,
+        password: bcrypt.hashSync(req.body.password, authentication.saltRounds),
+        confirmed: true,
+      });
+      await UserVerify.deleteByCode(req.body.code);
+      res.render('account/login', {
+        message: MESSAGES.PASSWORD_HAS_BEEN_RESET,
+      });
+    } catch (err) {
+      res.render('account/reset-password', {
+        code: req.body.code,
+        error: err,
+      });
+    }
+  },
+);
 
 router.get('/facebook', passport.authenticate('facebook'));
 
