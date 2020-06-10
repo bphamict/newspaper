@@ -8,7 +8,7 @@ const debug = require('debug')('app:middlewares');
 module.exports = function (req, res, next) {
   debug('execute isAuthenticated');
 
-  if (!req.session.isAuthenticated) {
+  if (!req.isAuthenticated()) {
     return res.redirect(`/account/login?retUrl=${req.originalUrl}`);
   }
 
