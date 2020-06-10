@@ -9,6 +9,7 @@ const MESSAGES = {
     'Email has been sent, check your email to reset password.',
   PASSWORD_HAS_BEEN_RESET:
     'Password has been reset. You can try to login again.',
+  CODE_IS_INVALID: 'Code is invalid.',
 };
 
 module.exports = { MESSAGES };
