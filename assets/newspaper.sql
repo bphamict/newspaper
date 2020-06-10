@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 07, 2020 at 12:40 PM
+-- Generation Time: Jun 10, 2020 at 09:56 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.6
 
@@ -140,11 +140,11 @@ CREATE TABLE `USER` (
   `full_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dob` date NOT NULL,
   `provider` enum('facebook','google','github','local') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'local',
-  `social_id` int(11) DEFAULT NULL,
-  `role` int(11) NOT NULL,
+  `social_id` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `role` int(11) NOT NULL DEFAULT 4,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
