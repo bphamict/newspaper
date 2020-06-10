@@ -18,7 +18,11 @@ module.exports = (app) => {
     res.render('statics/about');
   });
 
-  app.use('/auth', require('./src/routes/account.route'));
+  app.get('/detail', (req, res) => {
+    res.render('post/detail');
+  });
+
+  app.use('/account', require('./src/routes/account.route'));
 
   app.use((req, res) => {
     res.render('statics/404', { layout: false });
