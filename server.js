@@ -4,7 +4,9 @@
 
 require('dotenv').config();
 require('express-async-errors');
+const hbs_sections = require('express-handlebars-sections');
 const express = require('express');
+const path = require('path');
 let app = express();
 
 const cors = require('cors');
@@ -22,6 +24,8 @@ app.use(
   }),
 );
 
+app.use('/public', express.static(path.join(__dirname, '/public')));
+
 app.disable('x-powered-by');
 
 const exphbs = require('express-handlebars');
@@ -34,6 +38,9 @@ app.engine(
     defaultLayout: 'main',
     partialsDir: 'src/views/_partials',
     extname: '.hbs',
+    helpers: {
+      section: hbs_sections()
+    }
   }),
 );
 

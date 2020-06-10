@@ -17,6 +17,8 @@ module.exports = (app) => {
 
   app.use('/account', require('./src/routes/account.route'));
 
+  app.use('/writer', require('./src/routes/writer.route'));
+
   app.use((req, res) => {
     res.render('statics/404', { layout: false });
   });

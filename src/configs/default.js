@@ -13,4 +13,13 @@ module.exports = {
   authentication: {
     saltRounds: 10,
   },
+  multerImagePost: {
+    destination: function (req, file, cb) {
+      cb(null, 'public/images/post')
+    },
+    filename: function (req, file, cb) {
+      const extension = file.mimetype.split('/')[1];
+      cb(null, file.fieldname + '-' + Date.now() + '.' + extension)
+    }
+  }
 };
