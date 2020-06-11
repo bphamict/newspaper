@@ -4,6 +4,7 @@ const USER_TABLE_NAME = 'USER_VERIFY';
 
 module.exports = {
   findOne: async function ({ code, type }) {
+    console.log(code, type);
     const rows = await db.load(
       `select * from ${USER_TABLE_NAME} where code = '${code}' and type = '${type}'`,
     );

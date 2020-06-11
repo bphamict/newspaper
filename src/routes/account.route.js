@@ -121,12 +121,12 @@ router.get(
     }
     try {
       const data = await UserVerify.findOne({
-        code: req.body.code,
+        code: req.query.code,
         type: authentication.typeOfCode.CONFIRM_ACCOUNT,
       });
       if (!data) {
         return res.render('account/login', {
-          code: req.body.code,
+          code: req.query.code,
           error: MESSAGES.CODE_IS_INVALID,
         });
       }
