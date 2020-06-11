@@ -24,11 +24,11 @@ module.exports = {
   },
   multerImagePost: {
     destination: function (req, file, cb) {
-      cb(null, 'public/images/post')
+      cb(null, 'public/images/post/content');
     },
     filename: function (req, file, cb) {
       const extension = file.mimetype.split('/')[1];
-      cb(null, file.fieldname + '-' + Date.now() + '.' + extension)
+      cb(null, file.fieldname + '-' + Date.now() + '.' + extension);
     }
   }
 };

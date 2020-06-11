@@ -31,16 +31,16 @@
     </div>
     <div class="form-group">
         <label for="input-category">Chuyên mục</label>
-        <select class="form-control" name="category">
-            <option>Category 1</option>
-            <option selected>Category 2</option>
-            <option>Category 3</option>
+        <select class="form-control" name="sub_category_id">
+            {{#each this.subCategories}}
+            <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
         </select>
     </div>
     <div class="form-group">
         <label for="input-tag">Nhãn</label>
         <div class="input-group">
-            <input type="text" class="form-control" id="input-tag" name="tag" disabled>
+            <input type="text" class="form-control" id="input-tag" name="tag" readonly>
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button" id="modal-button">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -59,42 +59,12 @@
         <span class="close">&times;</span>
         <p>Danh sách nhãn</p>
         <div class="list-container">
+            {{#each this.tags}}
             <div>
-                <input class="radio-check" type="radio" value="tag a">
-                <label>Tag A</label>
+                <input class="radio-check" type="radio" value="{{this.name}}">
+                <label>{{this.name}}</label>
             </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag b">
-                <label>Tag B</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag c">
-                <label>Tag C</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag d">
-                <label>Tag D</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag a">
-                <label>Tag A</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag b">
-                <label>Tag B</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag c">
-                <label>Tag C</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag d">
-                <label>Tag D</label>
-            </div>
-            <div>
-                <input class="radio-check" type="radio" value="tag d">
-                <label>Tag D</label>
-            </div>
+            {{/each}}
         </div>
         <button id="save-tag-btn" class="btn btn-primary" style="margin-top: 1rem;">Lưu</button>
     </div>
@@ -201,8 +171,8 @@
             }
         });
 
-        $('#form-add-post').on('submit', function(e) {
-            if(!$('#input-image').val() || !$('#input-title').val() || !$('#input-summary').val() || !$('#input-tag').val() || !$('#input-content').val()) {
+        $('#form-add-post').on('submit', function (e) {
+            if (!$('#input-image').val() || !$('#input-title').val() || !$('#input-summary').val() || !$('#input-tag').val() || !$('#input-content').val()) {
                 alert('Phải điền vào mọi trường')
                 return false;
             }

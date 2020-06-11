@@ -1,7 +1,6 @@
 const db = require('../utils/db');
 
-const TBL = 'SUB_CATEGORY';
-const CAT_TBL = 'CATEGORY';
+const TBL = 'CATEGORY';
 
 module.exports = {
     loadAll: async () => {
@@ -31,16 +30,7 @@ module.exports = {
 
         return rows[0];
     },
-    loadByParentCategory: async (parentName) => {
-        const rows = await db.load(`SELECT SUB_CAT.* FROM ${TBL} SUB_CAT JOIN ${CAT_TBL} CAT ON SUB_CAT.category_id = CAT.id WHERE CAT.name = '${parentName}' AND SUB_CAT.isDeleted = 0`);
-
-        if(rows.length === 0) {
-            return null;
-        }
-
-        return rows;
-    },
-    add: (subCatObj) => {
-        return db.create(TBL, subCatObj);
+    add: (categoryObj) => {
+        return db.create(TBL, categoryObj);
     }
 }
