@@ -21,6 +21,10 @@ module.exports = {
       characters:
         '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     },
+    typeOfCode: {
+      CONFIRM_ACCOUNT: 'CONFIRM_ACCOUNT',
+      RESET_PASSWORD: 'RESET_PASSWORD',
+    },
   },
   multerImagePost: {
     destination: function (req, file, cb) {

@@ -3,9 +3,10 @@ const db = require('../utils/db');
 const USER_TABLE_NAME = 'USER_VERIFY';
 
 module.exports = {
-  findByCode: async function (code) {
+  findOne: async function ({ code, type }) {
+    console.log(code, type);
     const rows = await db.load(
-      `select * from ${USER_TABLE_NAME} where code = '${code}'`,
+      `select * from ${USER_TABLE_NAME} where code = '${code}' and type = '${type}'`,
     );
 
     if (rows.length === 0) {

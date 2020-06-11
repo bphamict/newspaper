@@ -4,7 +4,7 @@ const { v4 } = require('uuid');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const debug = require('debug')('app:account');
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, query } = require('express-validator');
 const cryptoRandomString = require('crypto-random-string');
 const User = require('../models/user.model');
 const UserVerify = require('../models/user-verify.model');
@@ -83,12 +83,14 @@ router.post(
       await UserVerify.create({
         user_id: user.id,
         code: code,
-        type: 'CONFIRM_ACCOUNT',
+        type: authentication.typeOfCode.CONFIRM_ACCOUNT,
       });
       sendEmail({
         to: req.body.email,
         subject: 'Account confirmation',
+        type: authentication.typeOfCode.CONFIRM_ACCOUNT,
         templateData: {
+          user_id: user.id,
           code: code,
         },
       });
@@ -101,6 +103,45 @@ router.post(
       debug(error);
       res.render('account/register', {
         error: error,
+      });
+    }
+  },
+);
+
+router.get(
+  '/confirm-account',
+  [query('code').notEmpty().withMessage('Code must not be empty.').trim()],
+  async (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render('account/login', {
+        error: errors.array()[0].msg,
+      });
+    }
+    try {
+      const data = await UserVerify.findOne({
+        code: req.query.code,
+        type: authentication.typeOfCode.CONFIRM_ACCOUNT,
+      });
+      if (!data) {
+        return res.render('account/login', {
+          code: req.query.code,
+          error: MESSAGES.CODE_IS_INVALID,
+        });
+      }
+      await User.update({
+        id: data.user_id,
+        confirmed: true,
+      });
+      await UserVerify.deleteByCode(req.body.code);
+      res.render('account/login', {
+        message: MESSAGES.ACCOUNT_HAS_BEEN_CONFIRMED,
+      });
+    } catch (err) {
+      res.render('account/reset-password', {
+        code: req.body.code,
+        error: err,
       });
     }
   },
@@ -140,12 +181,16 @@ router.post(
     await UserVerify.create({
       user_id: user.id,
       code: code,
-      type: 'RESET_PASSWORD',
+      type: authentication.typeOfCode.RESET_PASSWORD,
     });
     sendEmail({
       to: req.body.email,
       subject: 'Reset password',
-      templateData: {},
+      type: authentication.typeOfCode.RESET_PASSWORD,
+      templateData: {
+        user_id: user.id,
+        code: code,
+      },
     });
 
     res.render('account/forgot-password', {
@@ -181,7 +226,10 @@ router.post(
       });
     }
     try {
-      const data = await UserVerify.findByCode(req.body.code);
+      const data = await UserVerify.findOne({
+        code: req.body.code,
+        type: authentication.typeOfCode.RESET_PASSWORD,
+      });
       if (!data) {
         return res.render('account/reset-password', {
           code: req.body.code,
