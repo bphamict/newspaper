@@ -13,6 +13,7 @@ module.exports = {
       exec_mode: 'cluster', // to load balance
       autorestart: true,
       watch: true,
+      ignore_watch: ['sessions', 'public'],
     },
   ],
 };
