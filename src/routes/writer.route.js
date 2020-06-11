@@ -72,4 +72,8 @@ router.post('/image', upload.single('file'), (req, res) => {
     res.json({ location: `/public/images/post/content/${req.file.filename}` });
 })
 
+router.get('/list-post', (req, res) => {
+    res.render('writer/list-post')
+})
+
 module.exports = router;
