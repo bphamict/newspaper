@@ -8,7 +8,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: `https://${app.domain}/auth/facebook/callback`,
+      callbackURL: `http://${app.domain}/auth/facebook/callback`,
       enableProof: true,
       profileFields: ['id', 'displayName', 'photos', 'email'],
     },
