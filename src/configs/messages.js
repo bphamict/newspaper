@@ -2,6 +2,7 @@ const MESSAGES = {
   ACCOUNT_IS_NOT_FOUND: 'Account is not found.',
   ACCOUNT_HAS_BEEN_BLOCKED: 'Account has been blocked.',
   ACCOUNT_WAS_NOT_CONFIRMED: 'Account was not confirmed.',
+  ACCOUNT_HAS_BEEN_CONFIRMED: 'Account has been confirmed. You can login now.',
   INCORRECT_PASSWORD: 'Incorrect password.',
   EMAIL_ALREADY_TAKEN: 'That email is already taken.',
   CHECK_EMAIL_TO_CONFIRM_ACCOUNT: 'Check your email to confirm account.',

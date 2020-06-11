@@ -3,19 +3,25 @@
  */
 
 const debug = require('debug')('app:send-email');
-const { app } = require('../configs/default');
+const { app, authentication } = require('../configs/default');
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
 });
 
-const sendEmail = ({ to, subject, templateData }) => {
+const sendEmail = ({ to, subject, type, templateData }) => {
+  let url = '';
+  if (type === authentication.typeOfCode.CONFIRM_ACCOUNT) {
+    url = `https://${app.domain}/auth/confirm-account?code=${code}`;
+  } else if (type === authentication.typeOfCode.RESET_PASSWORD) {
+    url = `https://${app.domain}/auth/reset-password?code=${code}`;
+  }
   const data = {
     from: `${app.name} <noreply@${app.domain}>`,
     to: to,
     subject: subject,
     // text: 'Testing some Mailgun awesomeness!',
-    html: '<b> Test email text </b>',
+    html: `<a href='${url}'>${url}</a>`,
   };
 
   mailgun.messages().send(data, function (error, body) {
