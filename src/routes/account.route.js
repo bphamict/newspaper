@@ -13,7 +13,16 @@ const { MESSAGES } = require('../configs/messages');
 const { sendEmail } = require('../utils/send-email');
 
 router.get('/login', (req, res) => {
-  res.render('account/login');
+  if (req.query.origin) {
+    req.session.redirectUrl = req.query.origin;
+  } else {
+    req.session.redirectUrl = req.header('Referer');
+  }
+  res.render('account/login', {
+    message: req.query.origin
+      ? MESSAGES.YOU_MUST_LOGIN_TO_READ_THIS_PAGE
+      : null,
+  });
 });
 
 router.post('/local', (req, res, next) => {
@@ -25,7 +34,17 @@ router.post('/local', (req, res, next) => {
       debug(info);
       return res.render('account/login', { error: info.message });
     }
-    return res.redirect('/');
+    let redirectUrl = '/';
+    if (req.session.redirectUrl) {
+      redirectUrl = req.session.redirectUrl;
+      delete req.session.redirectUrl;
+    }
+    req.login(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect(redirectUrl);
+    });
   })(req, res, next);
 });
 
@@ -254,14 +273,26 @@ router.post(
   },
 );
 
+router.get('/logout', (req, res) => {
+  req.logout();
+  if (req.session.redirectUrl) {
+    delete req.session.redirectUrl;
+  }
+  res.redirect(req.header('Referer') || '/');
+});
+
 router.get('/facebook', passport.authenticate('facebook'));
 
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  passport.authenticate('facebook', { failureRedirect: '/auth/login' }),
   (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/');
+    let redirectUrl = '/';
+    if (req.session.redirectUrl) {
+      redirectUrl = req.session.redirectUrl;
+      delete req.session.redirectUrl;
+    }
+    res.redirect(redirectUrl);
   },
 );
 
@@ -272,10 +303,14 @@ router.get(
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+  passport.authenticate('google', { failureRedirect: '/auth/login' }),
   (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/');
+    let redirectUrl = '/';
+    if (req.session.redirectUrl) {
+      redirectUrl = req.session.redirectUrl;
+      delete req.session.redirectUrl;
+    }
+    res.redirect(redirectUrl);
   },
 );
 

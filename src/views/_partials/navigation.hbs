@@ -15,11 +15,16 @@
                 <li><a href="/about">About</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {{#if isAuthenticated}}
+                <li><a style="padding-right: 0;">{{user.full_name}}</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+                {{else}}
                 <li><a href="/auth/login">Login</a></li>
                 <li><a href="/auth/register">Register</a></li>
+                {{/if}}
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="Search...">
+            <form class="navbar-form navbar-right" method="GET" action="/search">
+                <input type="text" class="form-control" placeholder="Search..." name="q">
             </form>
         </div>
     </div>

@@ -5,12 +5,33 @@
 
 const debug = require('debug')('app:middlewares');
 
-module.exports = function (req, res, next) {
-  debug('execute isAuthenticated');
+module.exports = function (req, res, next, role) {
+  // debug('execute isAuthenticated');
 
   if (!req.isAuthenticated()) {
-    return res.redirect(`/account/login?retUrl=${req.originalUrl}`);
+    return res.redirect(`/auth/login?origin=${req.originalUrl}`);
   }
 
-  next();
+  if (req.user.role <= role) {
+    return next();
+  }
+
+  let error = '';
+  switch (role) {
+    case 1:
+      error = 'Access denied. You are not Administrator.';
+      break;
+    case 2:
+      error = 'Access denied. You are not Editor.';
+      break;
+    case 3:
+      error = 'Access denied. You are not Writer.';
+      break;
+    case 4:
+      error = 'Access denied. You are not Subcriber.';
+      break;
+  }
+  return res.render('static/400', {
+    error: error,
+  });
 };

@@ -16,13 +16,28 @@ const helmet = require('helmet');
 app.use(helmet());
 
 const morgan = require('morgan');
-app.use(morgan('dev'));
+app.use(
+  morgan(
+    '[:date[iso]] :method :url :status :response-time ms - :res[content-length]',
+  ),
+);
+
+if (process.env.NODE_ENV === 'production') {
+  const rateLimit = require('express-rate-limit');
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: 'Too many request from this IP, please try again after 15 minutes',
+  });
+  app.use(apiLimiter);
+}
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const exphbs = require('express-handlebars');
+const express_handlebars_sections = require('express-handlebars-sections');
 app.set('views', 'src/views');
 app.set('view engine', 'hbs');
 app.engine(
@@ -32,6 +47,9 @@ app.engine(
     defaultLayout: 'main',
     partialsDir: 'src/views/_partials',
     extname: '.hbs',
+    helpers: {
+      section: express_handlebars_sections(),
+    },
   }),
 );
 

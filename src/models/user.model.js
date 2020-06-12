@@ -4,9 +4,20 @@ const db = require('../utils/db');
 
 const USER_TABLE_NAME = 'USER';
 
+function sanitizeEntity(rows) {
+  const omitAttrs = ['password'];
+  if (_.isArray(rows)) {
+    return _.map(rows, (e) => _.omit(e, omitAttrs));
+  } else if (_.isObject(rows)) {
+    return _.omit(rows, omitAttrs);
+  }
+  return rows;
+}
+
 module.exports = {
-  find: function () {
-    return db.load(`select * from ${USER_TABLE_NAME}`);
+  find: async function () {
+    const rows = await db.load(`select * from ${USER_TABLE_NAME}`);
+    return sanitizeEntity(rows);
   },
   findById: async function (id) {
     const rows = await db.load(
@@ -17,7 +28,7 @@ module.exports = {
       return null;
     }
 
-    return rows[0];
+    return sanitizeEntity(rows[0]);
   },
   findByEmail: async function (email) {
     const rows = await db.load(
@@ -52,7 +63,7 @@ module.exports = {
       );
     }
 
-    return rows[0];
+    return sanitizeEntity(rows[0]);
   },
   create: function (entity) {
     return db.create(USER_TABLE_NAME, entity);
