@@ -4,10 +4,10 @@
 
 const express = require('express');
 
-//Configure isProduction variable
-const isProduction = process.env.NODE_ENV === 'production';
-
 module.exports = (app) => {
+  // must be preloaded before all requests
+  app.use(require('./src/middlewares/preloader.middleware'));
+
   app.use('/public', express.static('public'));
 
   app.get('/', (req, res) => {
@@ -15,7 +15,7 @@ module.exports = (app) => {
   });
 
   app.get('/about', (req, res) => {
-    res.render('statics/about');
+    res.render('static/about');
   });
 
   app.get('/detail', (req, res) => {
@@ -24,36 +24,17 @@ module.exports = (app) => {
 
   app.use('/auth', require('./src/routes/account.route'));
 
+  app.use('/search', require('./src/routes/search.route'));
+
   app.use((req, res) => {
-    res.render('statics/404', { layout: false });
+    res.render('static/404', { layout: false });
   });
-
-  app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).render('statics/500', { layout: false });
-  });
-
-  if (!isProduction) {
-    app.use((err, req, res) => {
-      res.status(err.status || 500);
-
-      res.json({
-        errors: {
-          message: err.message,
-          error: err,
-        },
-      });
-    });
-  }
 
   app.use((err, req, res) => {
-    res.status(err.status || 500);
-
-    res.json({
-      errors: {
-        message: err.message,
-        error: {},
-      },
+    console.error(err.stack);
+    res.status(err.status || 500).render('static/500', {
+      layout: false,
+      error: process.env.NODE_ENV === 'production' ? null : err,
     });
   });
 
