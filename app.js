@@ -19,6 +19,14 @@ module.exports = (app) => {
     res.render('post/detail');
   });
 
+  app.get('/byCat', (req, res) => {
+    res.render('post/byCat');
+  });
+
+  app.get('/byTag', (req, res) => {
+    res.render('post/byTag');
+  });
+
   app.use('/account', require('./src/routes/account.route'));
 
   app.use((req, res) => {
