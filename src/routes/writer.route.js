@@ -9,8 +9,9 @@ const postModel = require('../models/post.model');
 const tagModel = require('../models/tag.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
+const { isWriter } = require('../middlewares/isWriter.middleware');
 
-router.get('/post/add', async (req, res) => {
+router.get('/post/add', isWriter, async (req, res) => {
     try {
         const [subCategories, tags] = await Promise.all([subCategoryModel.loadAll(), tagsModel.loadAll()]);
         res.render('writer/add-post', { subCategories, tags });
@@ -19,7 +20,7 @@ router.get('/post/add', async (req, res) => {
     }
 })
 
-router.post('/post/add', upload.single('featured_image'), async (req, res) => {
+router.post('/post/add', isWriter, upload.single('featured_image'), async (req, res) => {
     try {
         let tags = req.body.tag;
         delete req.body.tag;
@@ -49,7 +50,7 @@ router.post('/post/add', upload.single('featured_image'), async (req, res) => {
     }
 })
 
-router.post('/image', upload.single('file'), (req, res) => {
+router.post('/image', isWriter, upload.single('file'), (req, res) => {
     res.json({ location: `/public/images/post/${req.file.filename}` });
 })
 
@@ -58,14 +59,14 @@ router.get('/post/list', async (req, res) => {
     res.render('writer/list-post', { posts });
 })
 
-router.get('/post/edit', async (req, res) => {
+router.get('/post/edit', isWriter, async (req, res) => {
     let postID = +req.query.id || 1;
     postID = parseInt(postID);
     const [post, subCategories, tags, post_tags] = await Promise.all([postModel.loadByPostID(postID), subCategoryModel.loadAll(), tagsModel.loadAll(), postTagModel.loadByPostID(postID)]);
     res.render('writer/edit-post', { post, subCategories, tags, post_tags })
 })
 
-router.post('/post/edit', upload.single('featured_image'), async (req, res) => {
+router.post('/post/edit', isWriter, upload.single('featured_image'), async (req, res) => {
     let postID = +req.query.id || 1;
     postID = parseInt(postID);
     req.body.postID = postID;
