@@ -9,11 +9,8 @@ const postModel = require('../models/post.model');
 const tagModel = require('../models/tag.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
-const path = require('path');
-const appRoot = require('app-root-path');
-const rootPath = require('app-root-path');
 
-router.get('/add/post', async (req, res) => {
+router.get('/post/add', async (req, res) => {
     try {
         const [subCategories, tags] = await Promise.all([subCategoryModel.loadAll(), tagsModel.loadAll()]);
         res.render('writer/add-post', { subCategories, tags });
@@ -22,7 +19,7 @@ router.get('/add/post', async (req, res) => {
     }
 })
 
-router.post('/add/post', upload.single('featured_image'), async (req, res) => {
+router.post('/post/add', upload.single('featured_image'), async (req, res) => {
     try {
         let tags = req.body.tag;
         delete req.body.tag;
@@ -45,23 +42,7 @@ router.post('/add/post', upload.single('featured_image'), async (req, res) => {
                 });
             }
         });
-
-        fs.mkdir(path.join(rootPath.path, `/public/images/post/${postID}`), { recursive: true }, (err) => {
-            if(err) {
-                throw err;
-            }
-        });
-
-        const currentPath = path.join(rootPath.path, `/public/images/post/content/${req.body.featured_image}`);
-        const newPath = path.join(rootPath.path, `/public/images/post/${postID}/${req.body.featured_image}`);
-
-        fs.rename(currentPath, newPath, function(err) {
-            if (err) {
-              throw err
-            }
-        })
-
-        res.redirect('/writer/add/post');
+        res.redirect('/writer/post/add');
     } catch(e) {
         console.log(e);
         res.redirect('/');
@@ -69,11 +50,56 @@ router.post('/add/post', upload.single('featured_image'), async (req, res) => {
 })
 
 router.post('/image', upload.single('file'), (req, res) => {
-    res.json({ location: `/public/images/post/content/${req.file.filename}` });
+    res.json({ location: `/public/images/post/${req.file.filename}` });
 })
 
-router.get('/list-post', (req, res) => {
-    res.render('writer/list-post')
+router.get('/post/list', async (req, res) => {
+    const posts = await postModel.loadByUserID(req.user.id);
+    res.render('writer/list-post', { posts });
+})
+
+router.get('/post/edit', async (req, res) => {
+    let postID = +req.query.id || 1;
+    postID = parseInt(postID);
+    const [post, subCategories, tags, post_tags] = await Promise.all([postModel.loadByPostID(postID), subCategoryModel.loadAll(), tagsModel.loadAll(), postTagModel.loadByPostID(postID)]);
+    res.render('writer/edit-post', { post, subCategories, tags, post_tags })
+})
+
+router.post('/post/edit', upload.single('featured_image'), async (req, res) => {
+    let postID = +req.query.id || 1;
+    postID = parseInt(postID);
+    req.body.postID = postID;
+
+    if(req.file) {
+        req.body.featured_image = req.file.filename;
+
+        const post = await postModel.loadByPostID(postID);
+        fs.unlink(`public/images/post/${post.featured_image}`, err => {
+            if(err) {
+                throw err;
+            }
+        });
+    }
+
+    req.body.sub_category_id = parseInt(req.body.sub_category_id);
+    const sub_category = await subCategoryModel.findByID(req.body.sub_category_id);
+    req.body.category_id = sub_category.category_id;
+    let tags = req.body.tag;
+    delete req.body.tag;
+
+    await Promise.all([postModel.update(req.body), postTagModel.deleteByPostID(postID)])
+    tags = tags.split(' | ');
+    tags.forEach(async tagName => {
+        let tag = await tagModel.findByName(tagName);
+        if(tag) {
+            await postTagModel.add({
+                post_id: parseInt(postID),
+                tag_id: parseInt(tag.id)
+            });
+        }
+    });
+
+    res.redirect('/writer/post/list');
 })
 
 module.exports = router;

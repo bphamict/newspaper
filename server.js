@@ -37,8 +37,20 @@ app.engine(
     partialsDir: 'src/views/_partials',
     extname: '.hbs',
     helpers: {
-      section: hbs_sections()
-    }
+      section: hbs_sections(),
+      ifEqual: function(v1, v2, options) {
+        if(v1 === v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      ifInListObject: function(item, list, options) {
+        if(list.find(element => element.tag_id === item)) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      }
+    },
   }),
 );
 
