@@ -30,6 +30,9 @@
                 {{#ifEqual this.status 'DENIED'}}
                 <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
                 {{/ifEqual}}
+                {{#ifEqual this.status 'PENDING'}}
+                <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
+                {{/ifEqual}}
             </div>
         </div>
     </div>
