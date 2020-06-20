@@ -45,6 +45,9 @@
     </div>
 </form>
 
+{{#section 'title'}}Register{{/section}}
+
+{{#section 'css'}}
 <style>
     h3 {
         margin-top: 4px;
@@ -54,7 +57,9 @@
         margin-bottom: 10px;
     }
 </style>
+{{/section}}
 
+{{#section 'js'}}
 <script>
     $('#submit').click(function (e) {
         const password = $("[name='password']").val();
@@ -68,3 +73,4 @@
         }
     });
 </script>
+{{/section}}
