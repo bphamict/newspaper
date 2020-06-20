@@ -4,7 +4,9 @@
 
 require('dotenv').config();
 require('express-async-errors');
+const hbs_sections = require('express-handlebars-sections');
 const express = require('express');
+const path = require('path');
 let app = express();
 
 app.disable('x-powered-by');
@@ -32,6 +34,8 @@ if (process.env.NODE_ENV === 'production') {
   app.use(apiLimiter);
 }
 
+app.use('/public', express.static(path.join(__dirname, '/public')));
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,7 +52,19 @@ app.engine(
     partialsDir: 'src/views/_partials',
     extname: '.hbs',
     helpers: {
-      section: express_handlebars_sections(),
+      section: hbs_sections(),
+      ifEqual: function(v1, v2, options) {
+        if(v1 === v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      ifInListObject: function(item, list, options) {
+        if(list.find(element => element.tag_id === item)) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      }
     },
   }),
 );

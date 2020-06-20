@@ -24,6 +24,8 @@ module.exports = (app) => {
 
   app.use('/auth', require('./src/routes/account.route'));
 
+  app.use('/writer', require('./src/routes/writer.route'));
+
   app.use('/search', require('./src/routes/search.route'));
 
   app.use((req, res) => {

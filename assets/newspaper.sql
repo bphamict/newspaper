@@ -60,7 +60,7 @@ CREATE TABLE `POST` (
   `type` enum('FREE','PREMIUM') COLLATE utf8_unicode_ci NOT NULL,
   `status` enum('PENDING','APPROVED','PUBLISHED','DENIED') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PENDING',
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `sumary` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `summary` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `content` text COLLATE utf8_unicode_ci NOT NULL,
   `view_count` int(11) NOT NULL DEFAULT 0,
   `author` int(11) NOT NULL,
