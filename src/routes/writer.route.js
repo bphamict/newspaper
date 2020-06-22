@@ -9,7 +9,7 @@ const postModel = require('../models/post.model');
 const tagModel = require('../models/tag.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
-const { isWriter } = require('../middlewares/isWriter.middleware');
+const isWriter = require('../middlewares/isWriter.middleware');
 
 router.get('/post/add', isWriter, async (req, res) => {
     try {
