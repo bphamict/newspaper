@@ -28,7 +28,7 @@ module.exports = {
   },
   multerImagePost: {
     destination: function (req, file, cb) {
-      cb(null, 'public/images/post/content');
+      cb(null, 'public/images/post');
     },
     filename: function (req, file, cb) {
       const extension = file.mimetype.split('/')[1];
