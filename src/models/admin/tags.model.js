@@ -1,4 +1,4 @@
-const db = require('../utils/db');
+const db = require('../../utils/db');
 
 const TABLE_NAME = 'tag';
 

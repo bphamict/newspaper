@@ -1,8 +1,8 @@
 const express = require('express');
-const db = require('../utils/db');
-const tagsModel = require('../models/tags.model');
+const db = require('../../utils/db');
+const tagsModel = require('../../models/admin/tags.model');
 const router = express.Router();
-const isAdmin = require('../middlewares/isAdmin.middleware');
+const isAdmin = require('../../middlewares/isAdmin.middleware');
 
 router.get('/', isAdmin, async function (req, res) {
     const list = await tagsModel.all();
