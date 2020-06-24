@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 10, 2020 at 09:56 AM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.6
+-- Generation Time: Jun 22, 2020 at 09:07 AM
+-- Server version: 8.0.13-4
+-- PHP Version: 7.2.24-0ubuntu0.18.04.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -29,8 +30,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `CATEGORY` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT 0
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -43,9 +44,9 @@ CREATE TABLE `COMMENT` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `content` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -56,18 +57,18 @@ CREATE TABLE `COMMENT` (
 
 CREATE TABLE `POST` (
   `id` int(11) NOT NULL,
-  `featured_image` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `type` enum('FREE','PREMIUM') COLLATE utf8_unicode_ci NOT NULL,
-  `status` enum('PENDING','APPROVED','PUBLISHED','DENIED') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PENDING',
-  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `sumary` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `content` text COLLATE utf8_unicode_ci NOT NULL,
-  `view_count` int(11) NOT NULL DEFAULT 0,
+  `featured_image` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('FREE','PREMIUM') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('PENDING','APPROVED','PUBLISHED','DENIED') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PENDING',
+  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `summary` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `view_count` int(11) NOT NULL DEFAULT '0',
   `author` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
   `sub_category_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -89,7 +90,7 @@ CREATE TABLE `POST_TAG` (
 
 CREATE TABLE `ROLE` (
   `id` int(11) NOT NULL,
-  `name` varchar(20) COLLATE utf8_unicode_ci NOT NULL
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -111,8 +112,8 @@ INSERT INTO `ROLE` (`id`, `name`) VALUES
 CREATE TABLE `SUB_CATEGORY` (
   `id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT 0
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -123,8 +124,8 @@ CREATE TABLE `SUB_CATEGORY` (
 
 CREATE TABLE `TAG` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT 0
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -135,19 +136,19 @@ CREATE TABLE `TAG` (
 
 CREATE TABLE `USER` (
   `id` int(11) NOT NULL,
-  `blocked` tinyint(1) NOT NULL DEFAULT 0,
-  `confirmed` tinyint(1) NOT NULL DEFAULT 0,
-  `full_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `blocked` tinyint(1) NOT NULL DEFAULT '0',
+  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `full_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `dob` date NOT NULL,
-  `provider` enum('facebook','google','github','local') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'local',
-  `social_id` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `role` int(11) NOT NULL DEFAULT 4,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `provider` enum('facebook','google','github','local') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'local',
+  `social_id` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `role` int(11) NOT NULL DEFAULT '4',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -158,6 +159,18 @@ CREATE TABLE `USER` (
 CREATE TABLE `USER_SUBCRIBE` (
   `user_id` int(11) NOT NULL,
   `expiry_time` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `USER_VERIFY`
+--
+
+CREATE TABLE `USER_VERIFY` (
+  `user_id` int(11) NOT NULL,
+  `code` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('RESET_PASSWORD','CONFIRM_ACCOUNT') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -224,6 +237,12 @@ ALTER TABLE `USER`
 --
 ALTER TABLE `USER_SUBCRIBE`
   ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `USER_VERIFY`
+--
+ALTER TABLE `USER_VERIFY`
+  ADD KEY `FK_USER_VERIFY_USER` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -313,6 +332,12 @@ ALTER TABLE `USER`
 --
 ALTER TABLE `USER_SUBCRIBE`
   ADD CONSTRAINT `FK_SUBCRIBE_USER` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+
+--
+-- Constraints for table `USER_VERIFY`
+--
+ALTER TABLE `USER_VERIFY`
+  ADD CONSTRAINT `FK_USER_VERIFY_USER` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
