@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../../utils/db');
 const categoriesModel = require('../../models/admin/categories.model');
-const subcategoriesModel = require('../../models/admin/subcategory.model');
+const subcategoriesModel = require('../../models/admin/subcategories.model');
 const router = express.Router();
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 
@@ -31,33 +31,38 @@ router.post('/add', async function (req, res) {
 
 router.get('/edit', isAdmin, async function (req, res) {
     const id = +req.query.id || -1;
+    //const category_id = +req.query.category_id || -1;
     const row = await subcategoriesModel.single(id);
     if(row.length === 0){
         res.send('Invalid parameter.');
     }
-    const subcategory = row[0];
+    const obj = row[0];
+
+    console.log(obj);
     const list = await categoriesModel.all();
-    console.log(category);
-    res.render('Admin/Subcategories/edit', {subcategory, categories: list});
+    res.render('Admin/Subcategories/edit', {subcategory: obj, categories: list});
 });
 
 router.post('/update', async function (req, res) {
-    const entity = {
-        id: req.body.id,
-        category_id: req.body.category_id,
-        name: req.body.name,
-        isDeleted: req.body.isDeleted,
+    const row = await categoriesModel.singleByName(req.body.nameCtg);
+    const list = row[0];
+    if(row.length !== 0){
+        const entity = {
+            id: req.body.id,
+            category_id: list.id,
+            name: req.body.name,
+            isDeleted: req.body.isDeleted,
+        }
+        console.log(entity);
+        await subcategoriesModel.update(entity);
+        res.redirect('/Admin/subcategories');
     }
     
-    await subcategoriesModel.update(entity);
-    res.redirect('/Admin/subcategories');
 });
 
 router.post('/delete', async function (req, res) {
     const entity = {
         id: req.body.id,
-        category_id: req.body.category_id,
-        name: req.body.name,
         isDeleted: 1,
     }
     console.log(entity);

@@ -1,3 +1,4 @@
+ {{#section 'title'}}Add - Subcategories - Admin page{{/section}}
 <ol class="breadcrumb">
     <li><a href="/admin">Home</a></li>
     <li><a href="/admin/subcategories">Subcategory</a></li>
@@ -20,7 +21,7 @@
                 <label for="txtCategoryName">Choose main category</label>
                 <div class="row">
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="txtNameCtg" name="nameCtg">
+                        <input type="text" class="form-control" id="txtNameCtg" name="nameCtg" readonly>
                     </div>
                     <div class="col-sm-2">
                         <div class="dropdown">
@@ -67,6 +68,7 @@
         </form>
     </div>
 </div>
+
 {{#section 'js'}}
 <script>
     var elements = document.getElementsByClassName('dropdown-item');

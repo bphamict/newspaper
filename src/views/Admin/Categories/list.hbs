@@ -1,6 +1,7 @@
+ {{#section 'title'}}Main categories - Admin page{{/section}}
 <ol class="breadcrumb">
         <li><a href="/admin">Home</a></li>
-        <li class="active">Categories</li>
+        <li class="active">Main Categories</li>
 </ol>
 
 <div class="panel panel-default">
@@ -28,7 +29,7 @@
                 <tr>
                 <th scope="col" class="text-center">ID</th>
                 <th scope="col">Name of category</th>
-                <th scope="col">Deleted</th>
+                <th scope="col" class="text-center">Deleted</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +37,7 @@
                 <tr>
                     <td class="text-center">{{id}}</td>
                     <td>{{name}}</td>
-                    <td>{{isDeleted}}</td>
+                    <td class="text-center">{{isDeleted}}</td>
                     <td class="text-right">
                         <a class="btn btn-primary btn-sm" href="/admin/categories/edit?id={{id}}" role="button" title="Edit">
                             <span class="glyphicon glyphicon-pencil"></span> Edit 

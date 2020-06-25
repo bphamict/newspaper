@@ -1,3 +1,4 @@
+ {{#section 'title'}}Subcategories - Admin page{{/section}}
 <ol class="breadcrumb">
         <li><a href="/admin">Home</a></li>
         <li class="active">Subcategories</li>
@@ -27,9 +28,10 @@
            <thead>
                 <tr>
                 <th scope="col" class="text-center">ID</th>
-                <th scope="col" class="text-center">ID category</th>
+                <th scope="col" class="text-center">ID of main category</th>
                 <th scope="col">Name of subcategory</th>
-                <th scope="col">Deleted</th>
+                <th scope="col">Name of Main category</th>
+                <th scope="col" class="text-center">Deleted</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,7 +40,8 @@
                     <td class="text-center">{{id}}</td>
                     <td class="text-center">{{category_id}}</td>
                     <td>{{name}}</td>
-                    <td>{{isDeleted}}</td>
+                    <td>{{category_name}}</td>
+                    <td class="text-center">{{isDeleted}}</td>
                     <td class="text-right">
                         <a class="btn btn-primary btn-sm" href="/admin/subcategories/edit?id={{id}}&category_id={{category_id}}" role="button" title="Edit">
                             <span class="glyphicon glyphicon-pencil"></span> Edit 

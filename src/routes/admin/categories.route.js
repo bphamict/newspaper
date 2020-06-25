@@ -26,7 +26,7 @@ router.get('/edit', isAdmin, async function (req, res) {
         res.send('Invalid parameter.');
     }
     const category = row[0];
-    console.log(category);
+    //console.log(category);
     res.render('Admin/Categories/edit', {category});
 });
 
