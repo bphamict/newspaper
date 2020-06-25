@@ -4,9 +4,8 @@ const config = require('../configs/default');
 const storage = multer.diskStorage(config.multerImagePost);
 const upload = multer({storage:storage});
 const subCategoryModel = require('../models/sub-category.model');
-const tagsModel = require('../models/tag.model');
+const tagsModel = require('../models/tags.model');
 const postModel = require('../models/post.model');
-const tagModel = require('../models/tag.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
 const isWriter = require('../middlewares/isWriter.middleware');
@@ -35,7 +34,7 @@ router.post('/post/add', isWriter, upload.single('featured_image'), async (req, 
 
         tags = tags.split(' | ');
         tags.forEach(async tagName => {
-            let tag = await tagModel.findByName(tagName);
+            let tag = await tagsModel.findByName(tagName);
             if(tag) {
                 await postTagModel.add({
                     post_id: parseInt(postID),
@@ -91,7 +90,7 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
     await Promise.all([postModel.update(req.body), postTagModel.deleteByPostID(postID)])
     tags = tags.split(' | ');
     tags.forEach(async tagName => {
-        let tag = await tagModel.findByName(tagName);
+        let tag = await tagsModel.findByName(tagName);
         if(tag) {
             await postTagModel.add({
                 post_id: parseInt(postID),
