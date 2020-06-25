@@ -5,6 +5,9 @@
 const express = require('express');
 
 module.exports = (app) => {
+  // must be preloaded before all requests
+  app.use(require('./src/middlewares/preloader.middleware'));
+
   app.use('/public', express.static('public'));
 
   app.get('/', (req, res) => {
@@ -12,25 +15,33 @@ module.exports = (app) => {
   });
 
   app.get('/about', (req, res) => {
-    res.render('statics/about');
+    res.render('static/about');
   });
 
   app.get('/detail', (req, res) => {
     res.render('post/detail');
   });
 
-  app.get('/byCat', (req, res) => {
-    res.render('post/byCat');
-  });
+  app.use('/byCat', require('./src/routes/category.route'));
 
   app.get('/byTag', (req, res) => {
     res.render('post/byTag');
   });
 
-  app.use('/account', require('./src/routes/account.route'));
+  app.use('/auth', require('./src/routes/account.route'));
+
+  app.use('/search', require('./src/routes/search.route'));
 
   app.use((req, res) => {
-    res.render('statics/404', { layout: false });
+    res.render('static/404', { layout: false });
+  });
+
+  app.use((err, req, res) => {
+    console.error(err.stack);
+    res.status(err.status || 500).render('static/500', {
+      layout: false,
+      error: process.env.NODE_ENV === 'production' ? null : err,
+    });
   });
 
   return app;

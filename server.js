@@ -7,6 +7,8 @@ require('express-async-errors');
 const express = require('express');
 let app = express();
 
+app.disable('x-powered-by');
+
 const cors = require('cors');
 app.use(cors());
 
@@ -14,17 +16,28 @@ const helmet = require('helmet');
 app.use(helmet());
 
 const morgan = require('morgan');
-app.use(morgan('dev'));
-
 app.use(
-  express.urlencoded({
-    extended: true,
-  }),
+  morgan(
+    '[:date[iso]] :method :url :status :response-time ms - :res[content-length]',
+  ),
 );
 
-app.disable('x-powered-by');
+if (process.env.NODE_ENV === 'production') {
+  const rateLimit = require('express-rate-limit');
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: 'Too many request from this IP, please try again after 15 minutes',
+  });
+  app.use(apiLimiter);
+}
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const exphbs = require('express-handlebars');
+const express_handlebars_sections = require('express-handlebars-sections');
 app.set('views', 'src/views');
 app.set('view engine', 'hbs');
 app.engine(
@@ -34,16 +47,37 @@ app.engine(
     defaultLayout: 'main',
     partialsDir: 'src/views/_partials',
     extname: '.hbs',
+    helpers: {
+      section: express_handlebars_sections(),
+    },
   }),
 );
+
+const { v4 } = require('uuid');
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
+app.use(
+  session({
+    genid: function (req) {
+      return v4();
+    },
+    store: new FileStore(),
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 30 }, // 30 min
+  }),
+);
+
+const passport = require('passport');
+require('./src/strategies/local.strategy');
+require('./src/strategies/facebook.strategy');
+require('./src/strategies/google.strategy');
+app.use(passport.initialize());
+app.use(passport.session());
 
 // require all routes
 app = require('./app')(app);
 
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).render('statics/500', { layout: false });
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`server running on PORT: ${PORT}`));
+app.listen(PORT, () => console.log(`✔️ server running on PORT: ${PORT}`));

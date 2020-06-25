@@ -12,7 +12,8 @@ module.exports = {
       instances: 'max',
       exec_mode: 'cluster', // to load balance
       autorestart: true,
-      watch: true,
+      watch: false,
+      // ignore_watch: ['node_modules', 'sessions', 'public'],
     },
   ],
 };

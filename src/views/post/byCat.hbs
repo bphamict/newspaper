@@ -7,72 +7,41 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-     <div>
-    <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
-    </ol>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="row">
+    {{#each this.category}}
+    <div>
+        <ul class="breadcrumb">
+            <li><a href="#">{{catName}}</a></li>
+            <li><a href="#">sub-cat</a></li>
+        </ul>
+        <div class="row">
+            <div class="col-md-4">
+                <h4>Title</h4>
+                <div class="row">
+                    <div class="col-md-5">
+                        <img src="https://" alt="...">
+                    </div>
+                    <p class="col-md-7">Summary</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>Title</h4>
+                <div class="col-md-5">
+                    <img src="https://" alt="...">
+                </div>
+                <p class="col-md-7">Summary</p>
+            </div>
+            <div class="col-md-4">
+                <h4>Title</h4>
                 <div class="col-md-5">
                     <img src="https://" alt="...">
                 </div>
                 <p class="col-md-7">Summary</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
     </div>
-</div>
-<hr>
-<div>
-    <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
-    </ol>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="row">
-                <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-    </div>
-</div>
+    {{/each}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
