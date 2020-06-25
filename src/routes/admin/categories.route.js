@@ -6,6 +6,7 @@ const isAdmin = require('../../middlewares/isAdmin.middleware');
 
 router.get('/', isAdmin, async function (req, res) {
     const list = await categoriesModel.all();
+    console.log(list);
     res.render('Admin/Categories/list', {categories: list, empty: list.length === 0});
 });
 

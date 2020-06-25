@@ -1,19 +1,13 @@
 const db = require('../../utils/db');
 
-const TABLE_NAME = 'category';
+const TABLE_NAME = 'post';
 
 module.exports = {
     all: function(){
         return db.load(`SELECT * FROM ${TABLE_NAME}`);
     },
-    add: function(entity){
-        return db.create(TABLE_NAME, entity);
-    },
     single: function(id){
         return db.load(`SELECT * FROM ${TABLE_NAME} WHERE id = ${id} `);
-    },
-    singleByName: function(name){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE name = '${name}' `);
     },
     update: function(entity){
         const condition = {
