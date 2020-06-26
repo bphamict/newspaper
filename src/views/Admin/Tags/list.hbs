@@ -1,67 +1,55 @@
- {{#section 'title'}}Tags - Admin page{{/section}}
+{{#section 'title'}}Tags - Admin page{{/section}}
 <ol class="breadcrumb">
-        <li><a href="/admin">Home</a></li>
-        <li class="active">Tags</li>
+    <li><a href="/admin">Home</a></li>
+    <li class="active">Tags</li>
 </ol>
 
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-9">
-            {{!-- <h3 class="panel-title"><strong>List tags</strong></h3> --}}
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-9">
+                {{!-- <h3 class="panel-title"><strong>List tags</strong></h3> --}}
+            </div>
+            <div class="col-sm-2">
+                <a href="/admin/tags/add" class="btn btn-success btn-sm" role="button">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Add a tag
+                </a>
+            </div>
+
         </div>
-        <div class="col-sm-2">
-            <a href="/admin/tags/add" class="btn btn-success btn-sm" role="button">
-                <span class="glyphicon glyphicon-plus-sign"></span> Add a tag
-            </a>
+    </div>
+    <div class="panel-body">
+        {{#if this.empty}}
+        <p class="well">No data...</p>
+        {{else}}
+        <div class="panel panel-default">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col">Name of tag</th>
+                        <th scope="col" class="text-center">Deleted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.tags}}
+                    <tr>
+                        <td class="text-center">{{id}}</td>
+                        <td>{{name}}</td>
+                        <td class="text-center"> {{isDeleted}}</td>
+                        <td class="text-right">
+                            <a class="btn btn-primary btn-sm" href="/admin/tags/edit?id={{id}}" role="button"
+                                title="Edit">
+                                <span class="glyphicon glyphicon-pencil"></span> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+
+                </tbody>
+            </table>
         </div>
-        
+        {{/if}}
     </div>
-  </>
-  <div class="panel-body">
-    {{#if this.empty}}
-    <p class="well">No data...</p>
-    {{else}}
-    <div class="panel panel-default">
-        <table class="table">
-           <thead>
-                <tr>
-                <th scope="col" class="text-center">ID</th>
-                <th scope="col">Name of tag</th>
-                <th scope="col" class="text-center">Deleted</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each this.tags}}
-                <tr>
-                    <td class="text-center">{{id}}</td>
-                    <td>{{name}}</td>
-                    <td class="text-center"> {{isDeleted}}</td>
-                    <td class="text-right">
-                        <a class="btn btn-primary btn-sm" href="/admin/tags/edit?id={{id}}" role="button" title="Edit">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit 
-                        </a>
-                    </td>
-                </tr>
-                {{/each}}
-            
-            </tbody>
-        </table>
-    </div>
-    {{/if}}
-  </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-

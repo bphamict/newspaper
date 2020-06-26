@@ -3,7 +3,7 @@ const db = require('../../utils/db');
 const TABLE_NAME = 'post';
 
 module.exports = {
-    all: function(){
+    all: function(id){
         return db.load(`SELECT * FROM ${TABLE_NAME}`);
     },
     single: function(id){
@@ -21,7 +21,7 @@ module.exports = {
             id: entity.id
         }
         delete entity.id;
-        return db.update(TABLE_NAME, entity, condition);
+        return db.del(TABLE_NAME, entity, condition);
     }
 
 };

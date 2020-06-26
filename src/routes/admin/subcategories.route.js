@@ -31,15 +31,16 @@ router.post('/add', async function (req, res) {
 
 router.get('/edit', isAdmin, async function (req, res) {
     const id = +req.query.id || -1;
-    //const category_id = +req.query.category_id || -1;
     const row = await subcategoriesModel.single(id);
+    const list = await categoriesModel.all();
+    const obj = row[0];
+    
     if(row.length === 0){
         res.send('Invalid parameter.');
     }
-    const obj = row[0];
+    
 
-    console.log(obj);
-    const list = await categoriesModel.all();
+    //console.log(obj);
     res.render('Admin/Subcategories/edit', {subcategory: obj, categories: list});
 });
 
