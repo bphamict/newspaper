@@ -1,0 +1,69 @@
+const express = require('express');
+const db = require('../../utils/db');
+const categoriesModel = require('../../models/admin/categories.model');
+const subcategoriesModel = require('../../models/admin/subcategory.model');
+const router = express.Router();
+const isAdmin = require('../../middlewares/isAdmin.middleware');
+
+router.get('/', isAdmin, async function (req, res) {
+    const list = await subcategoriesModel.all();
+    res.render('Admin/Subcategories/list', {subcategories: list, empty: list.length === 0});
+});
+
+router.get('/add', isAdmin, async function (req, res) {
+    const list = await categoriesModel.all();
+    res.render('Admin/Subcategories/add', {categories: list, empty: list.length === 0});
+});
+
+router.post('/add', async function (req, res) {
+    const row = await categoriesModel.singleByName(req.body.nameCtg);
+    const list = row[0];
+
+    const entity = {
+        category_id: list.id,
+        name: req.body.name,
+        isDeleted: req.body.isDeleted,
+    }
+    
+    await subcategoriesModel.add(entity);
+    res.render('Admin/Subcategories/add');
+});
+
+router.get('/edit', isAdmin, async function (req, res) {
+    const id = +req.query.id || -1;
+    const row = await subcategoriesModel.single(id);
+    if(row.length === 0){
+        res.send('Invalid parameter.');
+    }
+    const subcategory = row[0];
+    const list = await categoriesModel.all();
+    console.log(category);
+    res.render('Admin/Subcategories/edit', {subcategory, categories: list});
+});
+
+router.post('/update', async function (req, res) {
+    const entity = {
+        id: req.body.id,
+        category_id: req.body.category_id,
+        name: req.body.name,
+        isDeleted: req.body.isDeleted,
+    }
+    
+    await subcategoriesModel.update(entity);
+    res.redirect('/Admin/subcategories');
+});
+
+router.post('/delete', async function (req, res) {
+    const entity = {
+        id: req.body.id,
+        category_id: req.body.category_id,
+        name: req.body.name,
+        isDeleted: 1,
+    }
+    console.log(entity);
+    await subcategoriesModel.del(entity);
+    res.redirect('/Admin/subcategories');
+});
+
+module.exports = router;
+

@@ -7,7 +7,7 @@ const express = require('express');
 module.exports = (app) => {
   // must be preloaded before all requests
   app.use(require('./src/middlewares/preloader.middleware'));
-  const isAdmin = require('./src/middlewares/isAdmin.middleware');
+
   
   app.use('/public', express.static('public'));
 
@@ -19,8 +19,8 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.get('/admin', isAdmin, (req, res) => {
-    res.render('Admin/home');
+  app.get('/detail', (req, res) => {
+    res.render('post/detail');
   });
 
   app.use('/auth', require('./src/routes/account.route'));
@@ -29,8 +29,7 @@ module.exports = (app) => {
 
   app.use('/search', require('./src/routes/search.route'));
 
-  app.use('/admin/categories', require('./src/routes/categories.route'));
-  app.use('/admin/tags', require('./src/routes/tags.route'));
+  app.use('/admin', require('./src/routes/admin/admin.route'));
 
   app.use('/post', require('./src/routes/post.route'));
 

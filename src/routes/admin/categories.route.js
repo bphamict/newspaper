@@ -1,11 +1,12 @@
 const express = require('express');
-const db = require('../utils/db');
-const categoriesModel = require('../models/categories.model');
+const db = require('../../utils/db');
+const categoriesModel = require('../../models/admin/categories.model');
 const router = express.Router();
-const isAdmin = require('../middlewares/isAdmin.middleware');
+const isAdmin = require('../../middlewares/isAdmin.middleware');
 
 router.get('/', isAdmin, async function (req, res) {
     const list = await categoriesModel.all();
+    console.log(list);
     res.render('Admin/Categories/list', {categories: list, empty: list.length === 0});
 });
 
