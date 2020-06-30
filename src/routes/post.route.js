@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const postModel = require('../models/post.model');
 const postTagModel = require('../models/post-tag.model');
+const subCategoryModel = require('../models/sub-category.model');
+const categoryModel = require('../models/categories.model');
 const commentModel = require('../models/comment.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
