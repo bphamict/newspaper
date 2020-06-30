@@ -4,11 +4,12 @@ const config = require('../configs/default');
 const storage = multer.diskStorage(config.multerImagePost);
 const upload = multer({storage:storage});
 const subCategoryModel = require('../models/sub-category.model');
-const tagsModel = require('../models/tags.model');
+const tagsModel = require('../models/admin/tags.model');
 const postModel = require('../models/post.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
 const isWriter = require('../middlewares/isWriter.middleware');
+const slugify = require('slugify');
 
 router.get('/post/add', isWriter, async (req, res) => {
     try {
@@ -29,6 +30,7 @@ router.post('/post/add', isWriter, upload.single('featured_image'), async (req, 
         req.body.type = 'FREE';
         req.body.author = req.user.id;
         req.body.featured_image = req.file.filename;
+        req.body.slug = slugify(req.body.title.replace(/[*+~.()'"!=:@|^&${}[\]`;/?,\\<>%]/g, ''), { locale: 'vi' });
         const result = await postModel.add(req.body);
         const postID = result.insertId;
 

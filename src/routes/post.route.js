@@ -1,17 +1,16 @@
 const router = require('express').Router();
 const postModel = require('../models/post.model');
 const postTagModel = require('../models/post-tag.model');
-const subCategoryModel = require('../models/sub-category.model');
-const categoryModel = require('../models/categories.model');
 const commentModel = require('../models/comment.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
 moment.locale('vi')
 
-router.get('/:id', async (req, res) => {
-    const postID = +req.params.id;
-    const [post, postTags, comments] = await Promise.all([postModel.loadByPostIDWithCategoryAndSubCategoryName(postID), postTagModel.loadByPostIDWithName(postID), commentModel.loadNCommentsFromPost(postID, 0, 3)]);
+router.get('/:slug', async (req, res) => {
+    const slug = req.params.slug;
+    const post = await postModel.loadBySlugWithCategoryAndSubCategoryName(slug);
+    const [postTags, comments] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3)]);
     post.created_at = moment(post.created_at).format('LLL');
     comments.forEach(comment => {
         comment.created_at = moment(comment.created_at).format('LLL');
