@@ -64,7 +64,10 @@ app.engine(
           return options.fn(this);
         }
         return options.inverse(this);
-      }
+      },
+      json: function (content) {
+        return JSON.stringify(content);
+      },
     },
   }),
 );

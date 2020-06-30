@@ -19,10 +19,6 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.get('/detail', (req, res) => {
-    res.render('post/detail');
-  });
-
   app.get('/admin', isAdmin, (req, res) => {
     res.render('Admin/home');
   });
@@ -36,6 +32,7 @@ module.exports = (app) => {
   app.use('/admin/categories', require('./src/routes/categories.route'));
   app.use('/admin/tags', require('./src/routes/tags.route'));
 
+  app.use('/post', require('./src/routes/post.route'));
 
   app.use((req, res) => {
     res.render('static/404', { layout: false });

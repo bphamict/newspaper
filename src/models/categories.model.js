@@ -52,5 +52,14 @@ module.exports = {
         }
 
         return rows[0];
+    },
+    findBySubCategoryID: async (subCategoryID) => {
+        const rows = await db.load(`SELECT C.* FROM ${TABLE_NAME} C JOIN SUB_CATEGORY SC ON C.id = SC.category_id WHERE SC.id = ${subCategoryID} AND C.isDeleted = 0`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
     }
 };

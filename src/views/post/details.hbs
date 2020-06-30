@@ -1,0 +1,241 @@
+<ol class="breadcrumb">
+    <li><a href="#">{{this.post.category_name}}</a></li>
+    <li><a href="#">{{this.post.sub_category_name}}</a></li>
+    <span class="post-date">{{this.post.created_at}}</span>
+</ol>
+<h1>{{this.post.title}}</h1>
+<hr>
+<img class="post-featured-image" src="/public/images/post/{{this.post.featured_image}}">
+<p class="post-summary"><b>{{this.post.summary}}</b></p>
+<hr>
+<div>{{{this.post.content}}}</div>
+<div class="breadcrumb">
+    <span>Nhãn:</span>
+    {{#each this.postTags}}
+    <a href="#">{{this.name}}</a>
+    {{#unless @last}}
+    &#124;
+    {{/unless}}
+    {{/each}}
+</div>
+<div class="section">
+    <h4><b>Bình luận</b></h4>
+    <div class="comment-input-container">
+        <textarea class="comment-input" placeholder="Nhập bình luận của bạn..."></textarea>
+        <button class="submit-cmt-btn btn btn-primary">Gửi</button>
+    </div>
+    <div class="comment-list">
+        {{#each comments}}
+            <div class="comment">
+                <span class="comment-username"><b>{{this.full_name}}</b></span><span class="comment-date">{{this.created_at}}</span>
+                <p class="comment-content">{{this.content}}</p>
+            </div>
+        {{/each}}
+    </div>
+    <button class="btn btn-primary load-more">Xem thêm</button>
+</div>
+<div class="section">
+    <h4><b>Bài viết liên quan</b></h4>
+    <div class="related-post-list row">
+        {{#each related}}
+        <div class="related-post-column">
+            <div class="related-post">
+                <img class="related-post-featured-image" src="/public/images/post/{{this.featured_image}}">
+                <div class="related-post-content-container">
+                    <p class="related-post-title">
+                        <b>{{this.title}}</b></p>
+                    <p class="related-post-summary">
+                        {{this.summary}}
+                    </p>
+                    <small>{{this.created_at}}</small>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+{{#section 'js'}}
+<script src="https://twitter.github.io/typeahead.js/js/handlebars.js"></script>
+<script>
+    $(document).ready(function () {
+        let start = 0;
+        const post = {{{ json post }}};
+        const isAuth = {{isAuthenticated}};
+
+        $('.load-more').on('click', function() {
+            start += 3;
+            $.get(`/post/${post.id}/comments?start=${start}`, function(data) {
+                const { comments, atEnd } = data;
+                const newComments = comments.map((comment, index) => {
+                    return `
+                        <div class="comment">
+                            <span style="text-transform:uppercase;"><b>${comment.full_name}</b></span><span style="margin-left: 10px; font-size: 1rem">${comment.created_at}</span>
+                            <p style="margin-bottom: 0">${comment.content}</p>
+                        </div>
+                    `
+                })
+
+                $('.comment-list').append(newComments);
+
+                if(atEnd) {
+                    $('.load-more').hide();
+                }
+            })
+        })
+
+        $('.comment-input').on('click', () => {
+            if(!isAuth) {
+                alert('Hãy đăng nhập vào để gửi bình luận')
+            }
+        })
+
+        $('.submit-cmt-btn').on('click', function() {
+            if(!isAuth) {
+                return false;
+            };
+
+            var comment = $('.comment-input').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: `/post/${post.id}/comments`,
+                data: {
+                    content: comment
+                },
+                success: function(data) {
+                    $('.comment-input').val('');
+                    $('.comment-list').prepend(`
+                        <div class="comment">
+                            <span style="text-transform:uppercase;"><b>${data.full_name}</b></span><span style="margin-left: 10px; font-size: 1rem">${data.created_at}</span>
+                            <p style="margin-bottom: 0">${data.content}</p>
+                        </div>
+                    `)
+                },
+                error: function(xhr, textStatus, error) {
+                    alert('Không thể gửi bình luận');
+                }
+            });
+        })
+    })
+
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    .post-featured-image {
+        width: 100%;
+    }
+
+    .post-date {
+        float:right;
+    }
+
+    .post-summary {
+        margin-top: 1.5rem;
+    }
+
+    .comment-section {
+        margin-bottom: 40px;
+    }
+
+    .comment-input-container {
+        padding: 1.5rem 2rem;
+        height:130px;
+        display:flex;
+        justify-content:space-between;
+        border: 1px solid black;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .comment-input {
+        width: 90%;
+        height: 100%;
+        border:none;
+        resize:none;
+    }
+
+    .submit-cmt-btn {
+        align-self: center;
+    }
+
+    .comment {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius:4px;
+        padding:10px;
+        margin-bottom: 10px;
+    }
+
+    .comment-username {
+        text-transform:uppercase;
+    }
+
+    .comment-content {
+        margin-bottom: 0;
+    }
+
+    .comment-date {
+        margin-left: 10px;
+        font-size: 1rem;
+    }
+
+    .load-more {
+        width: 100%;
+    }
+
+    .related-post-list {
+
+    }
+
+    .related-post-column {
+        width: 20%;
+        float:left;
+        padding: 10px;
+    }
+
+    .related-post {
+        border: 1px solid black;
+        display:flex;
+        flex-direction: column;
+    }
+
+    .related-post-featured-image {
+        width: 100%; height:150px;
+        object-fit:cover;
+    }
+
+    .related-post-content-container {
+        padding: 10px;
+    }
+
+    .related-post-title {
+        font-size: 1.5rem;
+        line-height: 2rem;
+        height: 6rem;
+        overflow: hidden;
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .related-post-summary {
+        line-height: 2rem;
+        height: 4rem;
+        overflow: hidden;
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    @media (max-width: 768px) {
+        .related-post-column {
+            width: 50%;
+            float:left;
+            padding: 10px;
+        }
+    }
+</style>
+{{/section}}
