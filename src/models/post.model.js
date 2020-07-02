@@ -76,5 +76,17 @@ module.exports = {
         }
 
         return rows[0];
+    },
+    increaseView: (postID) => {
+        return db.updateView(TBL, { id: postID });
+    },
+    loadRelatedPost: async (postID, subCategoryID) => {
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE sub_category_id = ${subCategoryID} AND id != ${postID} ORDER BY created_at DESC LIMIT 0, 10`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
     }
 }

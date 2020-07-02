@@ -7,25 +7,34 @@ const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
 moment.locale('vi')
 
+router.get('/error', (req, res) => {
+    res.render('post/error');
+})
+
 router.get('/:slug', async (req, res) => {
     const slug = req.params.slug;
     const post = await postModel.loadBySlugWithCategoryAndSubCategoryName(slug);
-    const [postTags, comments] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3)]);
+    
+    if(!post) {
+        res.redirect('/post/error');
+    }
+
+    const [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
     post.created_at = moment(post.created_at).format('LLL');
-    comments.forEach(comment => {
+
+    comments && comments.forEach(comment => {
         comment.created_at = moment(comment.created_at).format('LLL');
     });
 
-    var relatedPosts = await postModel.loadBySubCategoryID(post.sub_category_id);
-    relatedPosts = relatedPosts.filter(relatedPost => relatedPost.id !== post.id);
-    relatedPosts = relatedPosts.slice(0, 10);
-
+    if(!relatedPosts) {
+        relatedPosts = [];
+    }
     var result = shuffle(relatedPosts).slice(0, 5);
-    result.forEach(post => {
-        post.created_at = moment(post.created_at).format('LL')
-    })
+    result .length !== 0 && result.forEach(post => {
+        post.created_at = moment(post.created_at).format('LL');
+    });
     
-    res.render('post/details', { post, postTags, comments, related: result });
+    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0 });
 })
 
 router.get('/:id/comments', async (req, res) => {

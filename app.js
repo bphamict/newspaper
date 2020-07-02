@@ -19,10 +19,6 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.get('/detail', (req, res) => {
-    res.render('post/detail');
-  });
-
   app.use('/auth', require('./src/routes/account.route'));
 
   app.use('/writer', require('./src/routes/writer.route'));

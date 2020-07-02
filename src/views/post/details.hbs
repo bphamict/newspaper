@@ -25,31 +25,39 @@
         <button class="submit-cmt-btn btn btn-primary">Gửi</button>
     </div>
     <div class="comment-list">
-        {{#each comments}}
+        {{#ifNotEqual commentsLength 0}}
+            {{#each comments}}
             <div class="comment">
                 <span class="comment-username"><b>{{this.full_name}}</b></span><span class="comment-date">{{this.created_at}}</span>
                 <p class="comment-content">{{this.content}}</p>
             </div>
-        {{/each}}
+            {{/each}}
+        {{else}}
+            <p class="empty-comment-text">Chưa có bình luận</p>
+        {{/ifNotEqual}}
     </div>
-    <button class="btn btn-primary load-more">Xem thêm</button>
+    {{#ifLarger commentsLength 3}}
+        <button class="btn btn-primary load-more">Xem thêm</button>
+    {{/ifLarger}}
 </div>
-<div class="section">
+<div class="section" style="margin-top:30px">
     <h4><b>Bài viết liên quan</b></h4>
     <div class="related-post-list row">
         {{#each related}}
         <div class="related-post-column">
-            <div class="related-post">
-                <img class="related-post-featured-image" src="/public/images/post/{{this.featured_image}}">
-                <div class="related-post-content-container">
-                    <p class="related-post-title">
-                        <b>{{this.title}}</b></p>
-                    <p class="related-post-summary">
-                        {{this.summary}}
-                    </p>
-                    <small>{{this.created_at}}</small>
+            <a href="/post/{{this.slug}}">
+                <div class="related-post">
+                    <img class="related-post-featured-image" src="/public/images/post/{{this.featured_image}}">
+                    <div class="related-post-content-container">
+                        <p class="related-post-title">
+                            <b>{{this.title}}</b></p>
+                        <p class="related-post-summary">
+                            {{this.summary}}
+                        </p>
+                        <small>{{this.created_at}}</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         {{/each}}
     </div>
@@ -105,6 +113,7 @@
                 },
                 success: function(data) {
                     $('.comment-input').val('');
+                    $('.empty-comment-text').hide();
                     $('.comment-list').prepend(`
                         <div class="comment">
                             <span style="text-transform:uppercase;"><b>${data.full_name}</b></span><span style="margin-left: 10px; font-size: 1rem">${data.created_at}</span>
@@ -219,6 +228,7 @@
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
+        color: black;
     }
 
     .related-post-summary {
@@ -230,6 +240,13 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
+
+    .empty-comment-text {
+        display:flex;
+        justify-content:center;
+        margin-bottom:20px
+    }
+
     @media (max-width: 768px) {
         .related-post-column {
             width: 50%;
@@ -238,4 +255,8 @@
         }
     }
 </style>
+{{/section}}
+
+{{#section 'title'}}
+{{this.post.title}}
 {{/section}}

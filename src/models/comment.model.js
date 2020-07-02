@@ -23,5 +23,14 @@ module.exports = {
         }
 
         return rows[0];
+    },
+    getNumberOfCommentFromPost: async (postID) => {
+        const rows = await db.load(`SELECT COUNT(*) AS NumberOfComment FROM ${TBL} C JOIN USER U ON C.user_id = U.id WHERE C.post_id = ${postID}`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
     }
 }
