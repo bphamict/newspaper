@@ -15,6 +15,9 @@ module.exports = {
     singleByName: function(name){
         return db.load(`SELECT * FROM ${TABLE_NAME} WHERE name = '${name}' `);
     },
+    singleBySlug: function(slug){
+        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE slug = '${slug}' `);
+    },
     update: function(entity){
         const condition = {
             id: entity.id
