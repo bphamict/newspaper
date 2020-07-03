@@ -42,5 +42,14 @@ module.exports = {
     },
     add: (subCatObj) => {
         return db.create(TBL, subCatObj);
+    },
+    findByPostID: async (postID) => {
+        const rows = await db.load(`SELECT SC.* FROM ${TBL} SC JOIN POST P ON SC.id = P.sub_category_id WHERE P.id = ${postID} AND SC.isDeleted = 0`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
     }
 }

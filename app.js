@@ -19,10 +19,6 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.get('/detail', (req, res) => {
-    res.render('post/detail');
-  });
-
   app.use('/auth', require('./src/routes/account.route'));
 
   app.use('/writer', require('./src/routes/writer.route'));
@@ -31,6 +27,7 @@ module.exports = (app) => {
 
   app.use('/admin', require('./src/routes/admin/admin.route'));
 
+  app.use('/post', require('./src/routes/post.route'));
 
   app.use((req, res) => {
     res.render('static/404', { layout: false });

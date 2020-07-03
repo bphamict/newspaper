@@ -64,6 +64,21 @@ app.engine(
           return options.fn(this);
         }
         return options.inverse(this);
+      },
+      json: function (content) {
+        return JSON.stringify(content);
+      },
+      ifNotEqual: function(v1, v2, options) {
+        if(v1 !== v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      ifLarger: function(v1, v2, options) {
+        if(v1 > v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
       }
     },
   }),
