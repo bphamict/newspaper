@@ -88,5 +88,11 @@ module.exports = {
         }
 
         return rows;
-    }
+    },
+    loadBySlugCategory: (slug) => {
+        return db.load(`SELECT p.* FROM ${TBL} p join category c ON p.category_id = c.id WHERE c.slug = '${slug}'`);
+    },
+    loadBySlugCategoryAndSlugSubcategory: async (slugC,slugSc) => {
+        return await db.load(`SELECT * FROM ${TBL} p join category c ON p.category_id = c.id join sub_category sc on c.id = sc.category_id WHERE c.slug = '${slugC}' AND sc.slug ='${slugSc}'`);
+    },
 }

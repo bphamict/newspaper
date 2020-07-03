@@ -15,6 +15,10 @@ module.exports = (app) => {
     res.render('home');
   });
 
+  // app.get('/a', (req, res) => {
+  //   res.render('post/byCategory');
+  // });
+
   app.get('/about', (req, res) => {
     res.render('static/about');
   });

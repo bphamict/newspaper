@@ -4,7 +4,7 @@ const TABLE_NAME = 'sub_category';
 
 module.exports = {
     all: function(){
-        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id`);
+        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.slug, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id`);
     },
     add: function(entity){
         return db.create(TABLE_NAME, entity);

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jun 22, 2020 at 09:07 AM
--- Server version: 8.0.13-4
--- PHP Version: 7.2.24-0ubuntu0.18.04.6
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th7 03, 2020 lúc 07:02 AM
+-- Phiên bản máy phục vụ: 10.4.8-MariaDB
+-- Phiên bản PHP: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,66 +19,67 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `newspaper`
+-- Cơ sở dữ liệu: `newspaper`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `CATEGORY`
+-- Cấu trúc bảng cho bảng `category`
 --
 
-CREATE TABLE `CATEGORY` (
+CREATE TABLE `category` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
+  `slug` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `COMMENT`
+-- Cấu trúc bảng cho bảng `comment`
 --
 
-CREATE TABLE `COMMENT` (
+CREATE TABLE `comment` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `POST`
+-- Cấu trúc bảng cho bảng `post`
 --
 
-CREATE TABLE `POST` (
+CREATE TABLE `post` (
   `id` int(11) NOT NULL,
-  `featured_image` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `type` enum('FREE','PREMIUM') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `status` enum('PENDING','APPROVED','PUBLISHED','DENIED') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PENDING',
-  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `summary` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `view_count` int(11) NOT NULL DEFAULT '0',
+  `featured_image` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('FREE','PREMIUM') COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('PENDING','APPROVED','PUBLISHED','DENIED') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PENDING',
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `summary` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `view_count` int(11) NOT NULL DEFAULT 0,
   `author` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
   `sub_category_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `slug` varchar(100) NOT NULL
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `slug` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `POST_TAG`
+-- Cấu trúc bảng cho bảng `post_tag`
 --
 
-CREATE TABLE `POST_TAG` (
+CREATE TABLE `post_tag` (
   `post_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -86,19 +87,19 @@ CREATE TABLE `POST_TAG` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ROLE`
+-- Cấu trúc bảng cho bảng `role`
 --
 
-CREATE TABLE `ROLE` (
+CREATE TABLE `role` (
   `id` int(11) NOT NULL,
-  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+  `name` varchar(20) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `ROLE`
+-- Đang đổ dữ liệu cho bảng `role`
 --
 
-INSERT INTO `ROLE` (`id`, `name`) VALUES
+INSERT INTO `role` (`id`, `name`) VALUES
 (1, 'administrator'),
 (2, 'editor'),
 (3, 'writer'),
@@ -107,57 +108,63 @@ INSERT INTO `ROLE` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `SUB_CATEGORY`
+-- Cấu trúc bảng cho bảng `sub_category`
 --
 
-CREATE TABLE `SUB_CATEGORY` (
+CREATE TABLE `sub_category` (
   `id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
+  `slug` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `TAG`
+-- Cấu trúc bảng cho bảng `tag`
 --
 
-CREATE TABLE `TAG` (
+CREATE TABLE `tag` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT '0'
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
+  `slug` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `USER`
+-- Cấu trúc bảng cho bảng `user`
 --
 
-CREATE TABLE `USER` (
+CREATE TABLE `user` (
   `id` int(11) NOT NULL,
-  `blocked` tinyint(1) NOT NULL DEFAULT '0',
-  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `full_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `blocked` tinyint(1) NOT NULL DEFAULT 0,
+  `confirmed` tinyint(1) NOT NULL DEFAULT 0,
+  `full_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dob` date NOT NULL,
-  `provider` enum('facebook','google','github','local') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'local',
-  `social_id` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `role` int(11) NOT NULL DEFAULT '4',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `provider` enum('facebook','google','github','local') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'local',
+  `social_id` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `role` int(11) NOT NULL DEFAULT 4,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
+--
+-- Đang đổ dữ liệu cho bảng `user`
+--
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `USER_SUBCRIBE`
+-- Cấu trúc bảng cho bảng `user_subcribe`
 --
 
-CREATE TABLE `USER_SUBCRIBE` (
+CREATE TABLE `user_subcribe` (
   `user_id` int(11) NOT NULL,
   `expiry_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -165,180 +172,181 @@ CREATE TABLE `USER_SUBCRIBE` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `USER_VERIFY`
+-- Cấu trúc bảng cho bảng `user_verify`
 --
 
-CREATE TABLE `USER_VERIFY` (
+CREATE TABLE `user_verify` (
   `user_id` int(11) NOT NULL,
-  `code` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `type` enum('RESET_PASSWORD','CONFIRM_ACCOUNT') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+  `code` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('RESET_PASSWORD','CONFIRM_ACCOUNT') COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `CATEGORY`
+-- Chỉ mục cho bảng `category`
 --
-ALTER TABLE `CATEGORY`
+ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `COMMENT`
+-- Chỉ mục cho bảng `comment`
 --
-ALTER TABLE `COMMENT`
+ALTER TABLE `comment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_COMMENT_USER` (`user_id`),
   ADD KEY `FK_COMMENT_POST` (`post_id`);
 
 --
--- Indexes for table `POST`
+-- Chỉ mục cho bảng `post`
 --
-ALTER TABLE `POST`
+ALTER TABLE `post`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_POST_CATEGORY` (`category_id`),
   ADD KEY `FK_POST_SUB_CATEGORY` (`sub_category_id`);
 
 --
--- Indexes for table `POST_TAG`
+-- Chỉ mục cho bảng `post_tag`
 --
-ALTER TABLE `POST_TAG`
+ALTER TABLE `post_tag`
   ADD PRIMARY KEY (`post_id`,`tag_id`),
   ADD KEY `FK_POST_TAG_TAG` (`tag_id`);
 
 --
--- Indexes for table `ROLE`
+-- Chỉ mục cho bảng `role`
 --
-ALTER TABLE `ROLE`
+ALTER TABLE `role`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `SUB_CATEGORY`
+-- Chỉ mục cho bảng `sub_category`
 --
-ALTER TABLE `SUB_CATEGORY`
+ALTER TABLE `sub_category`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_SUB_CATEGORY_CATEGORY` (`category_id`);
 
 --
--- Indexes for table `TAG`
+-- Chỉ mục cho bảng `tag`
 --
-ALTER TABLE `TAG`
+ALTER TABLE `tag`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `USER`
+-- Chỉ mục cho bảng `user`
 --
-ALTER TABLE `USER`
+ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_USER_ROLE` (`role`);
 
 --
--- Indexes for table `USER_SUBCRIBE`
+-- Chỉ mục cho bảng `user_subcribe`
 --
-ALTER TABLE `USER_SUBCRIBE`
+ALTER TABLE `user_subcribe`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Indexes for table `USER_VERIFY`
+-- Chỉ mục cho bảng `user_verify`
 --
-ALTER TABLE `USER_VERIFY`
+ALTER TABLE `user_verify`
   ADD KEY `FK_USER_VERIFY_USER` (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `CATEGORY`
+-- AUTO_INCREMENT cho bảng `category`
 --
-ALTER TABLE `CATEGORY`
+ALTER TABLE `category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `COMMENT`
+-- AUTO_INCREMENT cho bảng `comment`
 --
-ALTER TABLE `COMMENT`
+ALTER TABLE `comment`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `POST`
+-- AUTO_INCREMENT cho bảng `post`
 --
-ALTER TABLE `POST`
+ALTER TABLE `post`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `ROLE`
+-- AUTO_INCREMENT cho bảng `role`
 --
-ALTER TABLE `ROLE`
+ALTER TABLE `role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `SUB_CATEGORY`
+-- AUTO_INCREMENT cho bảng `sub_category`
 --
-ALTER TABLE `SUB_CATEGORY`
+ALTER TABLE `sub_category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `TAG`
+-- AUTO_INCREMENT cho bảng `tag`
 --
-ALTER TABLE `TAG`
+ALTER TABLE `tag`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `USER`
+-- AUTO_INCREMENT cho bảng `user`
 --
-ALTER TABLE `USER`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `COMMENT`
+-- Các ràng buộc cho bảng `comment`
 --
-ALTER TABLE `COMMENT`
-  ADD CONSTRAINT `FK_COMMENT_POST` FOREIGN KEY (`post_id`) REFERENCES `POST` (`id`),
-  ADD CONSTRAINT `FK_COMMENT_USER` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+ALTER TABLE `comment`
+  ADD CONSTRAINT `FK_COMMENT_POST` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
+  ADD CONSTRAINT `FK_COMMENT_USER` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `POST`
+-- Các ràng buộc cho bảng `post`
 --
-ALTER TABLE `POST`
-  ADD CONSTRAINT `FK_POST_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `CATEGORY` (`id`),
-  ADD CONSTRAINT `FK_POST_SUB_CATEGORY` FOREIGN KEY (`sub_category_id`) REFERENCES `SUB_CATEGORY` (`id`);
+ALTER TABLE `post`
+  ADD CONSTRAINT `FK_POST_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  ADD CONSTRAINT `FK_POST_SUB_CATEGORY` FOREIGN KEY (`sub_category_id`) REFERENCES `sub_category` (`id`);
 
 --
--- Constraints for table `POST_TAG`
+-- Các ràng buộc cho bảng `post_tag`
 --
-ALTER TABLE `POST_TAG`
-  ADD CONSTRAINT `FK_POST_TAG_POST` FOREIGN KEY (`post_id`) REFERENCES `POST` (`id`),
-  ADD CONSTRAINT `FK_POST_TAG_TAG` FOREIGN KEY (`tag_id`) REFERENCES `TAG` (`id`);
+ALTER TABLE `post_tag`
+  ADD CONSTRAINT `FK_POST_TAG_POST` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
+  ADD CONSTRAINT `FK_POST_TAG_TAG` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`);
 
 --
--- Constraints for table `SUB_CATEGORY`
+-- Các ràng buộc cho bảng `sub_category`
 --
-ALTER TABLE `SUB_CATEGORY`
-  ADD CONSTRAINT `FK_SUB_CATEGORY_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `CATEGORY` (`id`);
+ALTER TABLE `sub_category`
+  ADD CONSTRAINT `FK_SUB_CATEGORY_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 
 --
--- Constraints for table `USER`
+-- Các ràng buộc cho bảng `user`
 --
-ALTER TABLE `USER`
-  ADD CONSTRAINT `FK_USER_ROLE` FOREIGN KEY (`role`) REFERENCES `ROLE` (`id`);
+ALTER TABLE `user`
+  ADD CONSTRAINT `FK_USER_ROLE` FOREIGN KEY (`role`) REFERENCES `role` (`id`);
 
 --
--- Constraints for table `USER_SUBCRIBE`
+-- Các ràng buộc cho bảng `user_subcribe`
 --
-ALTER TABLE `USER_SUBCRIBE`
-  ADD CONSTRAINT `FK_SUBCRIBE_USER` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+ALTER TABLE `user_subcribe`
+  ADD CONSTRAINT `FK_SUBCRIBE_USER` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `USER_VERIFY`
+-- Các ràng buộc cho bảng `user_verify`
 --
-ALTER TABLE `USER_VERIFY`
-  ADD CONSTRAINT `FK_USER_VERIFY_USER` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+ALTER TABLE `user_verify`
+  ADD CONSTRAINT `FK_USER_VERIFY_USER` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

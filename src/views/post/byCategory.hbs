@@ -1,0 +1,26 @@
+<h3>{{this.nameCategory.name}}</h3>
+<ul class="nav nav-pills">
+    {{#each this.listSubCg}}
+    <li><a href="/post/bySubategory/{{slug}}">{{name}}</a></li>
+    {{/each}}
+</ul>
+<div class="row">
+
+    {{#each this.posts}}
+    <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+
+            <img src="..." alt="..." style="width: 100%;">
+            <div class="caption">
+                <h3>{{title}}</h3>
+                <p>{{summary}}</p>
+                <p>
+                    <a href="/post/{{slug}}" class="btn btn-primary" role="button">See</a>
+
+                </p>
+            </div>
+
+        </div>
+    </div>
+    {{/each}}
+</div>
