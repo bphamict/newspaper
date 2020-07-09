@@ -5,7 +5,7 @@ const commentModel = require('../models/comment.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
-moment.locale('vi')
+moment.locale('vi');
 
 router.get('/error', (req, res) => {
     res.render('post/error');

@@ -64,5 +64,20 @@ module.exports = {
         }
 
         return rows[0];
+    },
+    loadVacantCategories: async (userID = -1) => {
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE user_id IS NULL OR user_id = ${userID}`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+    },
+    deleteUser: (entity) => {
+        const condition = {
+            user_id: entity.userID,
+        }
+        return db.update(TABLE_NAME, { user_id: null }, condition);
     }
 };

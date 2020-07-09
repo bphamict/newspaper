@@ -1,0 +1,99 @@
+<h1 style="text-align:center; margin-bottom:20px">Danh sách người dùng</h1>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr class="">
+                <th scope="col" class="col-md-1">ID</th>
+                <th scope="col" class="col-md-3">Họ tên</th>
+                <th scope="col" class="col-md-3">Email</th>
+                <th scope="col" class="col-md-2" style="text-align: center;">Vai trò</th>
+                <th scope="col" class="col-md-3" style="text-align: center;">
+                    <a class="btn btn-success" role="button" href="/admin/users/add">Thêm
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each this.userList}}
+            <tr>
+                <td style="vertical-align: middle;">{{this.id}}</td>
+                <td style="vertical-align: middle;">{{this.full_name}}</td>
+                <td style="vertical-align: middle;">{{this.email}}</td>
+                <td style="vertical-align: middle; text-align: center; text-transform:uppercase"><span
+                        class="text-danger" style="padding: 5px;">{{this.role_name}}</span></td>
+                <td style="text-align:center" class="action-cell-{{this.id}}">
+                    <a id="{{this.id}}" class="btn btn-primary" role="b utton" href="/admin/users/{{this.id}}/details">Chỉnh sửa
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                    <a id="{{this.id}}" class="btn btn-danger del-btn" role="button">Xóa
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel"
+    style="align-items: center; justify-content: center;">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa user này?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-btn" class="btn btn-primary" style="margin-top: 1rem;"
+                    data-dismiss="modal">Xóa</button>
+                <button id="cancel-btn" class="btn btn-primary" style="margin-top: 1rem;"
+                    data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        $('.modal').hide();
+
+        var parent = null;
+        var currentID = null;
+
+        $('#confirm-btn').on('click', function () {
+            $.ajax({
+                type: 'POST',
+                url: `/admin/users/${currentID}/delete`,
+                data: {},
+                success: function(data) {
+                    if(data.success) {
+                        parent.html('<div style="padding: 6px 12px; border: 1px solid transparent; text-transform:uppercase">Đã xóa</div>');
+                        parent = null;
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    parent = null;
+                }
+            })
+            $('.modal').hide();
+        });
+
+        $('#cancel-btn').on('click', function () {
+            $('.modal').hide();
+            parent = null;
+            currentID = null;
+        })
+
+        $('.del-btn').on('click', function() {
+            parent = $(this).parent();
+            currentID = $(this).attr('id');
+            $('.modal').show();
+        })
+    })
+</script>
+{{/section}}
+
+{{#section 'title'}}
+Danh sách người dùng
+{{/section}}

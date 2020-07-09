@@ -79,4 +79,36 @@ module.exports = {
     const condition = { id };
     return db.delete(USER_TABLE_NAME, condition);
   },
+  loadAll: async (userID) => {
+    const rows = await db.load(`SELECT * FROM ${USER_TABLE_NAME} WHERE id != ${userID}`);
+
+    if(rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows);
+  },
+  loadAllWithRoleName: async (userID) => {
+    const rows = await db.load(`SELECT U.*, R.name AS role_name FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id WHERE U.id != ${userID} AND U.isDeleted = '0' ORDER BY U.id ASC`);
+
+    if(rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows);
+  },
+  loadUserDetails: async (userID) => {
+    const rows = await db.load(
+      `SELECT U.*, R.name AS role_name, US.expiry_time FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id LEFT JOIN USER_SUBCRIBE US ON U.id = US.user_id WHERE U.id = ${userID} AND U.isDeleted = '0'`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows[0]);
+  },
+  deleteUser: (userID) => {
+    return db.update(USER_TABLE_NAME, { isDeleted: '1' }, { id: userID });
+  }
 };
