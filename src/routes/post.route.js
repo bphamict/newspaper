@@ -2,6 +2,7 @@ const router = require('express').Router();
 const postModel = require('../models/post.model');
 const postTagModel = require('../models/post-tag.model');
 const commentModel = require('../models/comment.model');
+const userSubscribeModel = require('../models/user-subscribe.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
@@ -19,6 +20,20 @@ router.get('/:slug', async (req, res) => {
         res.redirect('/post/error');
     }
 
+    var blur = false;
+    var blurMsg = '';
+    if(post.type === 'PREMIUM') {
+        if(!req.user) {
+            blur = true;
+            blurMsg = 'Hãy trở thành độc giả để xem bài viết này';
+        } else {
+            const userSubscribe = await userSubscribeModel.loadByID(req.user.id);
+            if(userSubscribe && moment().isBefore(userSubscribe.expiry_time, 'second')) {
+                blur = true;
+                blurMsg = 'Hãy gia hạn tài khoản để xem bài viết này';
+            }
+        }
+    }
     const [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
     post.created_at = moment(post.created_at).format('LLL');
 
@@ -34,7 +49,7 @@ router.get('/:slug', async (req, res) => {
         post.created_at = moment(post.created_at).format('LL');
     });
     
-    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0 });
+    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0, blur, blurMsg });
 })
 
 router.get('/:id/comments', async (req, res) => {
