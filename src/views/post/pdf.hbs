@@ -1,0 +1,22 @@
+<div >
+    <div style="background-color: #f5f5f5; padding: 8px 15px">
+        <span>{{this.post.category_name}}</span> /
+        <span>{{this.post.sub_category_name}}</span>
+        <span style="float: right;">{{this.post.created_at}}</span>
+    </div>
+    <h1>{{this.post.title}}</h1>
+    <hr>
+    <img class="post-featured-image" src="/public/images/post/{{this.post.featured_image}}">
+    <p class="post-summary"><b>{{this.post.summary}}</b></p>
+    <hr>
+    <div>{{{this.post.content}}}</div>
+    <div class="breadcrumb">
+        <span>Nhãn:</span>
+        {{#each this.postTags}}
+        <span>{{this.name}}</span>
+        {{#unless @last}}
+        &#124;
+        {{/unless}}
+        {{/each}}
+    </div>
+</div>

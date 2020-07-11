@@ -27,6 +27,7 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.5.0",
     "helmet": "^3.22.0",
+    "html-pdf": "^2.2.0",
     "lodash": "^4.17.15",
     "mailgun-js": "^0.22.0",
     "moment": "^2.26.0",
