@@ -9,13 +9,14 @@ const { check, validationResult, query } = require('express-validator');
 const moment = require('moment');
 const userSubscribeModel = require('../../models/user-subscribe.model');
 const categoryModel = require('../../models/admin/categories.model');
+const isAdmin = require('../../middlewares/isAdmin.middleware');
 moment.locale('vi');
 
-router.get('/error', (req, res) => {
+router.get('/error', isAdmin, (req, res) => {
     res.render('Admin/User/error');
 })
 
-router.get('/', async (req, res) => {
+router.get('/', isAdmin, async (req, res) => {
     var userList = await userModel.loadAllWithRoleName(6);
 
     if(!userList) {
@@ -25,7 +26,7 @@ router.get('/', async (req, res) => {
     res.render('Admin/User/list', { userList });
 });
 
-router.get('/:id/details', async (req, res) => {
+router.get('/:id/details', isAdmin, async (req, res) => {
     var userID = +req.params.id;
     var [user, roles] = await Promise.all([userModel.loadUserDetails(userID), roleModel.loadAll()]);
     if(!user) {
@@ -40,7 +41,7 @@ router.get('/:id/details', async (req, res) => {
     res.render('Admin/User/details', { user, roles, expired, vacantCategories });
 })
 
-router.post('/:id/details', async (req, res) => {
+router.post('/:id/details', isAdmin, async (req, res) => {
     req.body.role = +req.body.role;
     const userID = +req.params.id;
     const role_id = req.body.role;
@@ -67,7 +68,7 @@ router.post('/:id/details', async (req, res) => {
     res.redirect('/admin/users');
 })
 
-router.post('/:id/delete', async (req, res) => {
+router.post('/:id/delete', isAdmin, async (req, res) => {
     var userID = +req.params.id;
     var success = false;
     const result = await userModel.deleteUser(userID);
@@ -77,7 +78,7 @@ router.post('/:id/delete', async (req, res) => {
     res.send({ success });
 })
 
-router.post('/isEmail', [
+router.post('/isEmail', isAdmin, [
     check('email')
       .notEmpty()
       .withMessage('Email không được để trống.')
@@ -98,13 +99,13 @@ router.post('/isEmail', [
       res.send({ msg });
 })
 
-router.get('/add', async (req, res) => {
+router.get('/add', isAdmin, async (req, res) => {
     const roles = await roleModel.loadAll();
     const vacantCategories = await categoryModel.loadVacantCategories();
     res.render('Admin/User/add', { roles, vacantCategories });
 })
 
-router.post('/add', async (req, res) => {
+router.post('/add', isAdmin, async (req, res) => {
     const categoryID = +req.body.category;
     req.body = _.pick(req.body, ['full_name', 'email', 'dob', 'password', 'role']);
     req.body = _.assign(req.body, {
