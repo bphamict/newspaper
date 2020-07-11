@@ -28,7 +28,7 @@ router.get('/:slug', async (req, res) => {
             blurMsg = 'Hãy trở thành độc giả để xem bài viết này';
         } else {
             const userSubscribe = await userSubscribeModel.loadByID(req.user.id);
-            if(userSubscribe && moment().isBefore(userSubscribe.expiry_time, 'second')) {
+            if(userSubscribe && moment().isAfter(userSubscribe.expiry_time, 'second')) {
                 blur = true;
                 blurMsg = 'Hãy gia hạn tài khoản để xem bài viết này';
             }
