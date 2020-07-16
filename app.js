@@ -29,6 +29,8 @@ module.exports = (app) => {
 
   app.use('/post', require('./src/routes/post.route'));
 
+  app.use('/editor', require('./src/routes/editor.route'));
+
   app.use((req, res) => {
     res.render('static/404', { layout: false });
   });

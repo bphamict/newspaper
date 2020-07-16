@@ -79,5 +79,14 @@ module.exports = {
             user_id: entity.userID,
         }
         return db.update(TABLE_NAME, { user_id: null }, condition);
+    },
+    loadByUserID: async (userID) => {
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE user_id = ${userID} AND isDeleted = 0`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
     }
 };

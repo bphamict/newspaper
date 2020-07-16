@@ -10,6 +10,8 @@ const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
 const isWriter = require('../middlewares/isWriter.middleware');
 const slugify = require('slugify');
+const moment = require('moment');
+moment.locale('vi');
 
 router.get('/post/add', isWriter, async (req, res) => {
     try {
@@ -55,9 +57,18 @@ router.post('/image', isWriter, upload.single('file'), (req, res) => {
     res.json({ location: `/public/images/post/${req.file.filename}` });
 })
 
-router.get('/post/list', isWriter, async (req, res) => {
-    const posts = await postModel.loadByUserID(req.user.id);
-    res.render('writer/list-post', { posts });
+router.get('/post/list', async (req, res) => {
+    const posts = await postModel.loadByUserID(1);
+    var numberOfPost = 0;
+    if(posts) {
+        numberOfPost = posts.length;
+        posts.forEach(post => {
+            if(post.publish_time) {
+                post.publish_time = moment(post.publish_time).format('LLL');
+            }
+        })
+    }
+    res.render('writer/list-post', { posts, numberOfPost });
 })
 
 router.get('/post/edit', isWriter, async (req, res) => {
@@ -86,6 +97,8 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
     req.body.sub_category_id = parseInt(req.body.sub_category_id);
     const sub_category = await subCategoryModel.findByID(req.body.sub_category_id);
     req.body.category_id = sub_category.category_id;
+    req.body.status = 'PENDING';
+    req.body.editor_note = null;
     let tags = req.body.tag;
     delete req.body.tag;
 

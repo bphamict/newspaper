@@ -70,7 +70,9 @@ CREATE TABLE `POST` (
   `sub_category_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `slug` varchar(100) NOT NULL
+  `slug` varchar(100) NOT NULL,
+  `editor_note` text,
+  `publish_time`: datetime,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

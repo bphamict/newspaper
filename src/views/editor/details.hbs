@@ -1,0 +1,347 @@
+<div>
+    <ol class="breadcrumb">
+        <li><a href="#">{{this.post.category_name}}</a></li>
+        <li><a href="#">{{this.post.sub_category_name}}</a></li>
+        <span class="post-date" style="float: right;">{{this.post.created_at}}</span>
+    </ol>
+    <h1>{{this.post.title}}</h1>
+    <hr>
+    <img class="post-featured-image" src="/public/images/post/{{this.post.featured_image}}">
+    <p class="post-summary"><b>{{this.post.summary}}</b></p>
+    <hr>
+    <div>{{{this.post.content}}}</div>
+    <div class="breadcrumb">
+        <span>Nhãn:</span>
+        {{#each this.postTags}}
+        <a href="#">{{this.name}}</a>
+        {{#unless @last}}
+        &#124;
+        {{/unless}}
+        {{/each}}
+    </div>
+</div>
+<div style="margin-bottom: 40px; margin-top: 40px; text-align:center; background-color: #f0f0f0; padding: 20px">
+    <p style="font-size: 2rem;"><b>Đánh giá của biên tập viên</b></p>
+    <a class="btn btn-success accept-btn" data-toggle="modal" data-target="#acceptModal">Duyệt</a>
+    <a class="btn btn-danger decline-btn" data-toggle="modal" data-target="#declineModal">Từ chối</a>
+</div>
+<div class="modal" id="acceptModal" role="dialog" aria-labelledby="myModalLabel"
+    style="align-items: center; justify-content: center;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <p style="font-size: 2rem;"><b>Duyệt</b></p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Chuyên mục</label>
+                    <select class="form-control select-category" name="sub_category_id">
+                        {{#each this.subCategories}}
+                        <option value="{{this.id}}" {{#ifEqual this.id @root.post.sub_category_id}}selected{{/ifEqual}}>
+                            {{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="form-group" style="position: relative;">
+                    <label>Nhãn</label>
+                    <div class="input-group">
+                        <div class="form-control tag-container">
+                            {{#each this.postTags}}
+                            <span class="selected-item">{{this.name}}<span class="glyphicon glyphicon-remove remove-icon"></span></span>
+                            {{/each}}
+                        </div>
+                        <div class="input-group-btn" style="height: 40px">
+                            <button class="btn btn-default btn-tag" style="height: 100%;" type="button">
+                                <span class="glyphicon glyphicon-menu-down icon-btn" aria-hidden="true"
+                                    style="outline: none;"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <small class="tag-container-error text-danger"></small>
+                    <div class="option-container">
+                        {{#each this.tags}}
+                        {{#ifTagNotInPostTag this @root.postTags}}
+                        <p class="option-item">{{this.name}}</p>
+                        {{/ifTagNotInPostTag}}
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ngày xuất bản bài viết</label>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' class="form-control publish-date" style="height: 40px;"/>
+                        <span class="input-group-addon" style="height: 40px;">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <small class="publish-date-error text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Loại bài viết</label>
+                    <select class="form-control select-type" name="type">
+                        <option value="FREE" selected>FREE</option>
+                        <option value="PREMIUM">PREMIUM</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="accept-confirm-btn" class="btn btn-primary" style="margin-top: 1rem;">Xác
+                    nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="declineModal" role="dialog" aria-labelledby="myModalLabel"
+    style="align-items: center; justify-content: center;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <p style="font-size: 2rem;"><b>Từ chối</b></p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="input-category">Lý do từ chối</label>
+                    <textarea class="form-control editor-note" style="resize: none; height: 200px"></textarea>
+                    <small class="editor-note-error text-danger"></small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="decline-confirm-btn" class="btn btn-primary" style="margin-top: 1rem;">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        var optionShow = false;
+        const post = {{{ json this.post }}};
+        moment.locale('vi');
+        const oldTags = $('.tag-container').html().trim();
+        $('.accept-btn').on('click', function () {
+            $('#acceptModal').css('display', 'flex');
+        })
+
+        $('.decline-btn').on('click', function () {
+            $('#declineModal').css('display', 'flex');
+        })
+
+        $('#datetimepicker1').datetimepicker();
+
+        $('.btn-tag').on('click', function (e) {
+            if ($('.option-container>[class=option-item]').length === 0) {
+                return;
+            }
+
+            if (!optionShow) {
+                $(this).css('border-bottom-right-radius', '0');
+                $('.tag-container').css('border-bottom-left-radius', '0');
+                $('.option-container').show();
+                optionShow = true;
+                $('.icon-btn').removeClass('glyphicon-menu-down');
+                $('.icon-btn').addClass('glyphicon-menu-up');
+            } else {
+                $(this).css('border-bottom-right-radius', '4px');
+                $('.tag-container').css('border-bottom-left-radius', '4px');
+                $('.option-container').hide();
+                optionShow = false;
+                $('.icon-btn').removeClass('glyphicon-menu-up');
+                $('.icon-btn').addClass('glyphicon-menu-down');
+            }
+        })
+
+        $('#acceptModal').on('hide.bs.modal', function (e) {
+            $('.select-category option').prop('selected', function () {
+                return this.defaultSelected;
+            });
+            $('.select-type option').prop('selected', function() {
+                return this.defaultSelected;
+            })
+            $('.modal-body').find('input').val('');
+            $('.modal-body').find('.option-item').removeClass('not-active');
+            $('.modal-body').find('.tag-container').html(oldTags);
+            $(this).css('border-bottom-right-radius', '4px');
+            $('.tag-container').css('border-bottom-left-radius', '4px');
+            $('.option-container').hide();
+            optionShow = false;
+            $('.icon-btn').removeClass('glyphicon-menu-up');
+            $('.icon-btn').addClass('glyphicon-menu-down');
+        });
+
+        $('#declineModal').on('hide.bs.modal', function (e) {
+            $('.modal-body').find('textarea').val('');
+        })
+
+        $(document).on('click', '.remove-icon', function (e) {
+            const str = $(this).parent().html();
+            const tagName = str.replace('<span class="glyphicon glyphicon-remove remove-icon"></span>', '');
+            const item = $(`.option-item:contains('${tagName}')`);
+            item.removeClass('not-active');
+            $(this).parent().remove();
+        })
+
+        $('.option-item').on('click', function () {
+            const value = $(this).html();
+            $(this).addClass('not-active')
+            $('.tag-container').append(`<span class="selected-item">${value}<span class="glyphicon glyphicon-remove remove-icon"></span></span>`);
+            if ($('.option-container>[class=option-item]').length === 0) {
+                $('.btn-tag').css('border-bottom-right-radius', '4px');
+                $('.tag-container').css('border-bottom-left-radius', '4px');
+                $('.option-container').hide();
+                $('.icon-btn').removeClass('glyphicon-menu-up');
+                $('.icon-btn').addClass('glyphicon-menu-down');
+                optionShow = false;
+            }
+        })
+
+        $('#accept-confirm-btn').on('click', async function() {
+            var hasError = false;
+            $('.tag-container-error').html('');
+            $('.publish-date-error').html('');
+            const subCategory = $('.select-category').val();
+            const tagsArray = [];
+            const publish_time = $('.publish-date').val();
+            const type = $('.select-type').val();
+            $('.tag-container').children().each(function(index) {
+                tagsArray.push($(this).text())
+            })
+            if(tagsArray.length === 0) {
+                hasError = true;
+                $('.tag-container-error').html('Nhãn không được để trống');
+            }
+            if(!publish_time) {
+                hasError = true;
+                $('.publish-date-error').html('Ngày xuất bản không được để trống');
+            } else {
+                const time = moment(publish_time, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
+                if(moment().isAfter(time)) {
+                    hasError = true;
+                    $('.publish-date-error').html('Ngày xuất bản không hợp lệ');
+                }
+            }
+            if(!hasError) {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/editor/post/${post.id}/accept`,
+                    data: {
+                        sub_category_id: subCategory,
+                        tags: tagsArray.join(),
+                        publish_time,
+                        type
+                    },
+                    success: function(data) {
+                        if(data.success) {
+                            window.location.replace('/editor/posts');
+                        }
+                    },
+                    error: function(error) {
+                        if(error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+        })
+
+        $('#decline-confirm-btn').on('click', async function() {
+            var hasError = false;
+            $('.editor-note-error').html('');
+            const editor_note = $('.editor-note').val();
+            if(!editor_note) {
+                hasError = true;
+                $('.editor-note-error').html('Lý do không được để trống');
+            }
+
+            if(!hasError) {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/editor/post/${post.id}/decline`,
+                    data: {
+                        editor_note,
+                    },
+                    success: function(data) {
+                        if(data.success) {
+                            window.location.replace('/editor/posts');
+                        }
+                    },
+                    error: function(error) {
+                        if(error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+        })
+    })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/vi.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css">
+<style>
+    .option-container {
+        width: 100%;
+        max-height: 150px;
+        background-color: #fff;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        position: absolute;
+        z-index: 3;
+        border: 0.5px solid black;
+        border-top: 0;
+        overflow: auto;
+        display: none;
+    }
+
+    .option-item {
+        margin: 0;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .option-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .tag-container {
+        vertical-align: middle;
+        height: auto;
+        min-height: 40px;
+    }
+
+    .not-active {
+        display: none;
+    }
+
+    .selected-item {
+        padding: 2px 5px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin-right: 5px;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+
+    .remove-icon {
+        margin-left: 8px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    *:focus {
+        outline: 0 !important;
+    }
+</style>
+{{/section}}
+
+{{#section 'title'}}
+Chi tiết bài viết - {{this.post.title}}
+{{/section}}

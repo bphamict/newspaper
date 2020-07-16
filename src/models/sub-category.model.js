@@ -31,8 +31,8 @@ module.exports = {
 
         return rows[0];
     },
-    loadByParentCategory: async (parentName) => {
-        const rows = await db.load(`SELECT SUB_CAT.* FROM ${TBL} SUB_CAT JOIN ${CAT_TBL} CAT ON SUB_CAT.category_id = CAT.id WHERE CAT.name = '${parentName}' AND SUB_CAT.isDeleted = 0`);
+    loadByParentCategory: async (parentID) => {
+        const rows = await db.load(`SELECT SUB_CAT.* FROM ${TBL} SUB_CAT JOIN ${CAT_TBL} CAT ON SUB_CAT.category_id = CAT.id WHERE CAT.id = '${parentID}' AND SUB_CAT.isDeleted = 0`);
 
         if(rows.length === 0) {
             return null;

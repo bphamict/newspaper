@@ -2,6 +2,9 @@
     <h2 style="text-align: center; margin-bottom: 2rem">Danh sách bài viết</h2>
 </div>
 <div>
+    {{#ifEqual numberOfPost 0}}
+    <p style="text-align: center; font-weight:bold">Bạn chưa có bài viết nào</p>
+    {{/ifEqual}}
     {{#each posts}}
     <div class="card">
         <img class="card-img" src="/public/images/post/{{this.featured_image}}">
@@ -28,17 +31,57 @@
                     {{/ifEqual}}
                 </span>
                 {{#ifEqual this.status 'DENIED'}}
-                <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
+                <span>
+                    {{#ifNotEqual this.editor_note null}}
+                    <a id={{this.id}} class="btn btn-danger editor-note-btn" data-toggle="modal"
+                        data-target=".{{this.id}}-modal">Lời nhắn của biên tập viên</a>
+                    {{/ifNotEqual}}
+                    <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
+                </span>
                 {{/ifEqual}}
                 {{#ifEqual this.status 'PENDING'}}
                 <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
                 {{/ifEqual}}
+                {{#ifEqual this.status 'APPROVED'}}
+                <span>Ngày xuất bản: <b>{{this.publish_time}}</b></span>
+                {{/ifEqual}}
+                {{#ifEqual this.status 'PUBLISHED'}}
+                <span>Ngày xuất bản: <b>{{this.publish_time}}</b></span>
+                {{/ifEqual}}
+            </div>
+        </div>
+    </div>
+    <div class="modal {{this.id}}-modal" id="myModal" role="dialog" data-backdrop="static"
+        aria-labelledby="myModalLabel" style="align-items: center; justify-content: center;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" data-dismiss="modal">&times;</span>
+                    <p style="font-size: 2rem;"><b>Lời nhắn của biên tập viên viên viên</b></p>
+                </div>
+                <div class="modal-body">
+                    <p>{{this.editor_note}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-btn" class="btn btn-primary" style="margin-top: 1rem;"
+                        data-dismiss="modal">Đóng</button>
+                </div>
             </div>
         </div>
     </div>
     {{/each}}
 </div>
 
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        $('.editor-note-btn').on('click', function () {
+            const id = $(this).attr('id');
+            $(`.${id}-modal`).css('display', 'flex');
+        })
+    })
+</script>
+{{/section}}
 
 {{#section 'css'}}
 <style>
@@ -48,7 +91,8 @@
         padding: 10px;
         display: flex;
         margin-bottom: 10px;
-        border-style: solid;
+        border: 0.5px solid black;
+        background-color: #f5f5f5;
     }
 
     .card-img {
