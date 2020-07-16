@@ -15,9 +15,9 @@ router.get('/error', (req, res) => {
 router.get('/:slug', async (req, res) => {
     const slug = req.params.slug;
     const post = await postModel.loadBySlugWithCategoryAndSubCategoryName(slug);
-    
-    if(!post || moment().isBefore(post.publish_time)) {
-        res.redirect('/post/error');
+
+    if(!post || post.status === 'PENDING' || post.status === 'DENIED' || (post.status === 'APPROVED' && moment().isBefore(post.publish_time))) {
+        return res.redirect('/post/error');
     }
 
     var blur = false;

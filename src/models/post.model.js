@@ -69,7 +69,7 @@ module.exports = {
         return rows[0];
     },
     loadBySlugWithCategoryAndSubCategoryName: async (slug) => {
-        const rows = await db.load(`SELECT P.*, C.name AS category_name, SC.name AS sub_category_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE P.slug = '${slug}' AND P.status = 'PUBLISHED'`);
+        const rows = await db.load(`SELECT P.*, C.name AS category_name, SC.name AS sub_category_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE P.slug = '${slug}'`);
 
         if(rows.length === 0) {
             return null;

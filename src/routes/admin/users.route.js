@@ -30,7 +30,7 @@ router.get('/:id/details', isAdmin, async (req, res) => {
     var userID = +req.params.id;
     var [user, roles] = await Promise.all([userModel.loadUserDetails(userID), roleModel.loadAll()]);
     if(!user) {
-        res.redirect('/admin/users/error');
+        return res.redirect('/admin/users/error');
     }
     const vacantCategories = await categoryModel.loadVacantCategories(user.id);
     user.created_at = moment(user.created_at).format('LL');

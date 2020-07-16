@@ -29,7 +29,7 @@ router.get('/post/:id', async (req, res) => {
     const post = await postModel.loadPendingPostByID(postID);
 
     if(!post || post.category_id !== category.id) {
-        res.redirect('/editor/error');
+        return res.redirect('/editor/error');
     }
 
     const [postTags, tags, subCategories] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), tagModel.loadAll(), subCategoryModel.loadByParentCategory(category.id)]);
