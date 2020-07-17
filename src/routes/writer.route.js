@@ -64,6 +64,11 @@ router.get('/post/list', isWriter, async (req, res) => {
         numberOfPost = posts.length;
         posts.forEach(post => {
             if(post.publish_time) {
+                if(post.status === 'APPROVED' && moment().isSameOrAfter(post.publish_time)) {
+                    post.isPublished = true;
+                } else {
+                    post.isPublished = false;
+                }
                 post.publish_time = moment(post.publish_time).format('LLL');
             }
         })

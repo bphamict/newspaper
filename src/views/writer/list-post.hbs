@@ -16,6 +16,9 @@
             <div style="justify-content: space-between; flex-direction: row; display:flex; align-items: flex-end">
                 <span>
                     Trạng thái:
+                    {{#ifEqual this.isPublished true}}
+                    <span class="card-status text-success">ĐÃ XUẤT BẢN</span>
+                    {{else}}
                     {{#ifEqual this.status 'PENDING'}}
                     <span class="card-status">CHƯA ĐƯỢC DUYỆT</span>
                     {{else}}
@@ -25,7 +28,8 @@
                     {{#ifEqual this.status 'DENIED'}}
                     <span class="card-status text-danger">BỊ TỪ CHỐI</span>
                     {{else}}
-                    <span class="card-status text-success">ĐÃ XUẤT BẢN</span>
+                    <span class="card-status text-success">ĐÃ XUẤT BẢN</span> 
+                    {{/ifEqual}}
                     {{/ifEqual}}
                     {{/ifEqual}}
                     {{/ifEqual}}

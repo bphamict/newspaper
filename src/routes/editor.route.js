@@ -5,26 +5,29 @@ const postTagModel = require('../models/post-tag.model');
 const tagModel = require('../models/admin/tags.model');
 const subCategoryModel = require('../models/admin/subcategory.model');
 const moment = require('moment');
+const isEditor = require('../middlewares/isEditor.middleware');
 moment.locale('vi')
 
 router.get('/error', (req, res) => {
     res.render('editor/error');
 })
 
-router.get('/posts', async (req, res) => {
-    const category = await categoryModel.loadByUserID(15);
+router.get('/posts', isEditor, async (req, res) => {
+    const category = await categoryModel.loadByUserID(req.user.id);
     var posts = null;
     var isManaging = !!category;
+    var categoryName = '';
 
     if(category) {
         posts = await postModel.loadPendingPostsByCategory(category.id);
+        categoryName = category.name;
     }
 
-    res.render('editor/list', { posts, isManaging });
+    res.render('editor/list', { posts, isManaging, categoryName });
 })
 
-router.get('/post/:id', async (req, res) => {
-    const category = await categoryModel.loadByUserID(15);
+router.get('/post/:id', isEditor, async (req, res) => {
+    const category = await categoryModel.loadByUserID(req.user.id);
     const postID = +req.params.id;
     const post = await postModel.loadPendingPostByID(postID);
 
@@ -38,9 +41,9 @@ router.get('/post/:id', async (req, res) => {
     res.render('editor/details', { post, postTags, tags, subCategories });
 })
 
-router.post('/post/:id/accept', async (req, res) => {
+router.post('/post/:id/accept', isEditor, async (req, res) => {
     const postID = +req.params.id;
-    const [category, post] = await Promise.all([categoryModel.loadByUserID(15), postModel.loadPendingPostByID(postID)]);
+    const [category, post] = await Promise.all([categoryModel.loadByUserID(req.user.id), postModel.loadPendingPostByID(postID)]);
     if(!post || post.category_id !== category.id) {
         return res.send({ success: false });
     }
@@ -70,9 +73,9 @@ router.post('/post/:id/accept', async (req, res) => {
     }
 })
 
-router.post('/post/:id/decline', async (req, res) => {
+router.post('/post/:id/decline', isEditor, async (req, res) => {
     const postID = +req.params.id;
-    const [category, post] = await Promise.all([categoryModel.loadByUserID(15), postModel.loadPendingPostByID(postID)]);
+    const [category, post] = await Promise.all([categoryModel.loadByUserID(req.user.id), postModel.loadPendingPostByID(postID)]);
     if(!post || post.category_id !== category.id) {
         return res.send({ success: false });
     }
