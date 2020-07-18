@@ -23,7 +23,7 @@ module.exports = {
         return db.delete(TBL, condition);
     },
     loadByPostIDWithName: async (postID) => {
-        const rows = await db.load(`SELECT T.id, T.name FROM ${TBL} PT JOIN TAG T ON PT.tag_id = T.id WHERE post_id = ${postID}`);
+        const rows = await db.load(`SELECT T.id, T.name FROM ${TBL} PT JOIN TAG T ON PT.tag_id = T.id WHERE PT.post_id = ${postID}`);
 
         if(rows.length === 0) {
             return null;

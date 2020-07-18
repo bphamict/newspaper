@@ -1,4 +1,4 @@
-<div >
+<div class="container">
     <div style="background-color: #f5f5f5; padding: 8px 15px">
         <span>{{this.post.category_name}}</span> /
         <span>{{this.post.sub_category_name}}</span>
@@ -13,7 +13,7 @@
     <div class="breadcrumb">
         <span>Nhãn:</span>
         {{#each this.postTags}}
-        <span>{{this.name}}</span>
+        <span>{{this}}</span>
         {{#unless @last}}
         &#124;
         {{/unless}}

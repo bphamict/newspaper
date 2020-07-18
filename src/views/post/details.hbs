@@ -10,6 +10,11 @@
     <p class="post-summary"><b>{{this.post.summary}}</b></p>
     <hr>
     <div>{{{this.post.content}}}</div>
+    {{#ifEqual this.post.type 'PREMIUM'}}
+    <div style="margin-bottom: 30px; text-align:center">
+        <a class="btn btn-primary" href="/public/files/{{this.post.slug}}.pdf" download><span class="glyphicon glyphicon-download-alt" style="margin-right: 10px" aria-hidden="true"></span>Tải PDF</a>
+    </div>
+    {{/ifEqual}}
     <div class="breadcrumb">
         <span>Nhãn:</span>
         {{#each this.postTags}}

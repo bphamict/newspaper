@@ -6,6 +6,7 @@ const tagModel = require('../models/admin/tags.model');
 const subCategoryModel = require('../models/admin/subcategory.model');
 const moment = require('moment');
 const isEditor = require('../middlewares/isEditor.middleware');
+const { convertToPDF } = require('../utils/toPdf');
 moment.locale('vi')
 
 router.get('/error', (req, res) => {
@@ -66,6 +67,11 @@ router.post('/post/:id/accept', isEditor, async (req, res) => {
                 });
             }
         });
+
+        if(req.body.type === 'PREMIUM') {
+            const acceptedPost = await postModel.loadByPostIDWithCategoryAndSubCategoryName(postID);
+            convertToPDF && convertToPDF(acceptedPost, tags);
+        }
 
         res.send({ success: true });
     } catch(error) {
