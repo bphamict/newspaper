@@ -38,10 +38,13 @@
 </div>
 <hr>
 <div>
+    {{#each this.cats}}
+    <hr>
     <ol class="breadcrumb">
-        <li><a href="/byTag/2">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
+        <li><a href="#">{{catName}}</a></li>
+        {{#each subCatName}}
+        <li><a href="#">{{this}}</a></li>
+        {{/each}}
     </ol>
     <div class="row">
         <div class="col-md-4">
@@ -68,39 +71,7 @@
                 <p class="col-md-7">Summary</p>
         </div>
     </div>
-</div>
-<hr>
-<div>
-    <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
-    </ol>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="row">
-                <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-    </div>
+    {{/each}}
 </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
