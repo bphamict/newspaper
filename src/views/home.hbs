@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-
 <div class="carousel-inner" role="listbox">
-    <div class="item active">
-        <img src="https://images.unsplash.com/photo-1506153456649-ed4ed08d1e0c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d631d4911c05368cf6699b828116473d&auto=format&fit=crop&w=800&q=60" alt="...">
+    {{#each this.post}}
+    <div class="item">
+        <img src="{{Image}}" alt="...">
         <div class="carousel-caption">
-            Seashore
+            {{Title}}
         </div>
     </div>
-    <div class="item">
+    {{/each}}
+{{!--     <div class="item">
         <img src="https://images.unsplash.com/photo-1504416285472-eccf03dd31eb?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a121a890a07652296c0cff8d74f242ef&auto=format&fit=crop&w=800&q=60" alt="...">
         <div class="carousel-caption">
             Chinese Restorant
@@ -28,7 +30,13 @@
         <div class="carousel-caption">
             Cars
         </div>
-    </div>  
+    </div>
+    <div class="item">
+        <img src="https://images.unsplash.com/photo-1504416285472-eccf03dd31eb?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a121a890a07652296c0cff8d74f242ef&auto=format&fit=crop&w=800&q=60" alt="...">
+        <div class="carousel-caption">
+            Chinese
+        </div>
+    </div>   --}}
 </div>
   <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -42,7 +50,7 @@
 <hr>
 <div>
     <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
+        <li><a href="/byTag/2">Category</a></li>
         <li><a href="#">Sub-cat1</a></li>
         <li><a href="#">Sub-cat2</a></li>
     </ol>

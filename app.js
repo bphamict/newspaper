@@ -10,9 +10,7 @@ module.exports = (app) => {
 
   app.use('/public', express.static('public'));
 
-  app.get('/', (req, res) => {
-    res.render('home');
-  });
+  app.use('/', require('./src/routes/home.route'));
 
   app.get('/about', (req, res) => {
     res.render('static/about');
@@ -24,9 +22,7 @@ module.exports = (app) => {
 
   app.use('/byCat', require('./src/routes/category.route'));
 
-  app.get('/byTag', (req, res) => {
-    res.render('post/byTag');
-  });
+  app.use('/byTag', require('./src/routes/tag.route'));
 
   app.use('/auth', require('./src/routes/account.route'));
 

@@ -6,22 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
+    <style>
+    hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:lightgray;
+        height: 1px;
+        }    
+    </style>
 </head>
 <body>     
 <div>
-    <h3>Tag Name</h3>
+    <h1>{{this.tagName}}</h1>
     <br>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Title</h4>
+    <div>
+        {{#each this.tag}}
+        <hr>
+        <article>
+            <h3>{{title}}</h3>
+            <div class="col-md-3">
+                    <img src="{{featured_image}}" alt="...">
+                </div>
+                <p class="col-md-9">{{sumary}}</p>
+        </article>
+        {{!-- <div class="col-md-4">
+            <h4>{{title}}</h4>
             <div class="row">
                 <div class="col-md-5">
                     <img src="https://" alt="...">
                 </div>
                 <p class="col-md-7">Summary</p>
             </div>
-        </div>
-        <div class="col-md-4">
+        </div> --}}
+        {{/each}}
+        {{!-- <div class="col-md-4">
             <h4>Title</h4>
             <div class="col-md-5">
                     <img src="https://" alt="...">
@@ -34,7 +54,7 @@
                     <img src="https://" alt="...">
                 </div>
                 <p class="col-md-7">Summary</p>
-        </div>
+        </div> --}}
     </div>
 </div>
 
