@@ -3,10 +3,22 @@ const homeModel = require('../models/home.model');
 
 router.get('/', async function(req, res){
     const list = await homeModel.all();
-    console.log(list);
+
+    const first = list[0];
+    const rest = [];
+    list.forEach(element => {
+        if(element === first){
+            return;
+        }
+        rest.push({
+            Image: element.Image,
+            Title: element.Title,
+        })
+    });
 
     res.render('home',{
-        post: list      
+        first: first,
+        post: rest      
     });
 })
 
