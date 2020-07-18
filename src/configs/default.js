@@ -1,3 +1,4 @@
+const appRoot = require('app-root-path');
 module.exports = {
   app: {
     name: 'Newspaper',
@@ -44,5 +45,6 @@ module.exports = {
       "bottom": "1in",
       "left": "0.5in"
     },
+    base: `file:///${appRoot.path}/public/images/`,
   }
 };

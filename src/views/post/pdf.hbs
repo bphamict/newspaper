@@ -1,22 +1,40 @@
-<div class="container">
-    <div style="background-color: #f5f5f5; padding: 8px 15px">
-        <span>{{this.post.category_name}}</span> /
-        <span>{{this.post.sub_category_name}}</span>
-        <span style="float: right;">{{this.post.created_at}}</span>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{#if _sections.title}}{{{_sections.title}}} - {{app.name}}{{else}}{{app.name}}{{/if}}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.tiny.cloud/1/mqjp19j7s814osukaw32ul1epfsa6tq2gk4zy229fvog9vud/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
+</head>
+
+<body>
+    <div class="container" style="margin-top: 60px;">
+        <div>
+            <span>{{this.post.category_name}}</span> /
+            <span>{{this.post.sub_category_name}}</span>
+            <span style="float: right;">{{this.post.created_at}}</span>
+        </div>
+        <h1>{{this.post.title}}</h1>
+        <hr>
+        <img class="post-featured-image" src="../../public/images/post/{{this.post.featured_image}}">
+        <p class="post-summary"><b>{{this.post.summary}}</b></p>
+        <hr>
+        <div>{{{this.post.content}}}</div>
+        <div>
+            <span>Nhãn:</span>
+            {{#each this.postTags}}
+            <span>{{this}}</span>
+            {{#unless @last}}
+            &#124;
+            {{/unless}}
+            {{/each}}
+        </div>
     </div>
-    <h1>{{this.post.title}}</h1>
-    <hr>
-    <img class="post-featured-image" src="/public/images/post/{{this.post.featured_image}}">
-    <p class="post-summary"><b>{{this.post.summary}}</b></p>
-    <hr>
-    <div>{{{this.post.content}}}</div>
-    <div class="breadcrumb">
-        <span>Nhãn:</span>
-        {{#each this.postTags}}
-        <span>{{this}}</span>
-        {{#unless @last}}
-        &#124;
-        {{/unless}}
-        {{/each}}
-    </div>
-</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+
+</html>

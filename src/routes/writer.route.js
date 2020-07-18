@@ -58,7 +58,7 @@ router.post('/image', isWriter, upload.single('file'), (req, res) => {
 })
 
 router.get('/post/list', isWriter, async (req, res) => {
-    const posts = await postModel.loadByUserID(1);
+    const posts = await postModel.loadByUserID(req.user.id);
     var numberOfPost = 0;
     if(posts) {
         numberOfPost = posts.length;
