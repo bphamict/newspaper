@@ -32,7 +32,7 @@ router.post('/post/add', isWriter, upload.single('featured_image'), async (req, 
         req.body.type = 'FREE';
         req.body.author = req.user.id;
         req.body.featured_image = req.file.filename;
-        req.body.slug = slugify(req.body.title.replace(/[*+~.()'"!=:@|^&${}[\]`;/?,\\<>%]/g, ''), { locale: 'vi' });
+        req.body.slug = slugify(req.body.title.toLowerCase().replace(/[*+~.()'"!=:@|^&${}[\]`;/?,\\<>%]/g, ''), { locale: 'vi' });
         const result = await postModel.add(req.body);
         const postID = result.insertId;
 
