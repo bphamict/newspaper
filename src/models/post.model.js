@@ -106,5 +106,14 @@ module.exports = {
         }
 
         return rows[0];
+    },
+    searchPosts: async (searchStr, searchBy = 'title') => {
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE MATCH(${searchBy}) AGAINST (${searchStr} IN BOOLEAN MODE)`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
     }
 }

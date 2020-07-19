@@ -64,6 +64,7 @@ CREATE TABLE `POST` (
   `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `summary` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `content_text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `view_count` int(11) NOT NULL DEFAULT '0',
   `author` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
