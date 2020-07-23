@@ -74,6 +74,9 @@ CREATE TABLE `POST` (
   `slug` varchar(100) NOT NULL,
   `editor_note` text,
   `publish_time`: datetime,
+  FULLTEXT(title),
+  FULLTEXT(summary),
+  FULLTEXT(content_text),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
