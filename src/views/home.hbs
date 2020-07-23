@@ -6,10 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
+    <style>
+        hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:lightgray;
+        height: 1px;
+        }  
+    </style>
 </head>
 <body>
-    
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="row">
+          <div class="col-md-9">
+              <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 <div class="carousel-inner" role="listbox">
     <div class="item active">
         <img href="#" src="{{this.first.Image}}" alt="...">
@@ -36,7 +47,6 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
-<hr>
 <div>
     {{#each this.cats}}
     <hr>
@@ -73,6 +83,29 @@
     </div>
     {{/each}}
 </div>
+          </div>
+          <div class="col-md-3">
+                <ul class="nav nav-tabs">
+                <li role="presentation" class="active"><a>Newest</a></li>
+                </ul>
+                 <br>
+                 {{#each this.top10Newest}}
+                <a class="tab-content" href="#">{{Title}}</a>
+                <hr>
+                 {{/each}}
+        </div>
+        <div class="col-md-3">
+                <ul class="nav nav-tabs">
+                <li role="presentation" class="active"><a>Most view</a></li>
+                </ul>
+                 <br>
+        {{#each this.top10View}}
+                <a class="tab-content" href="#">{{Title}}</a>
+                <hr>
+                 {{/each}}
+        </div>
+
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
