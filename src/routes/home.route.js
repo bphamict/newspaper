@@ -15,7 +15,7 @@ router.get('/', async function(req, res){
             Title: element.Title,
         })
     });
-
+    
     const catsWithSubs = await homeModel.catWithSubs();
 
     name = catsWithSubs[0].catName;
