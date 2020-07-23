@@ -27,7 +27,7 @@ router.get('/:id', async function(req, res){
             page_items.push(item);
         }
     }
-    res.render('post/byTag',{
+    res.render('post/byTag', {
         tagName,
         tag: l,
         page_items,

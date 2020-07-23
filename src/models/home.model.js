@@ -1,8 +1,8 @@
 const db = require('../utils/db');
 
 module.exports = {
-    top3View:function(){
-        return db.load(`SELECT featured_image as Image, title as Title FROM post ORDER BY view_count DESC LIMIT 3`);
+    top3ViewLastWeek:function(){
+        return db.load(`SELECT featured_image as Image, title as Title FROM post WHERE post.updated_at > DATE_ADD(Now(), INTERVAL - 7 DAY) ORDER BY view_count DESC LIMIT 3`);
     },
 
     catWithSubs:function(){

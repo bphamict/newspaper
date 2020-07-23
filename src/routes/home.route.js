@@ -2,7 +2,7 @@ const router = require('express').Router();
 const homeModel = require('../models/home.model');
 
 router.get('/', async function(req, res){
-    const postsForCarousel = await homeModel.top3View();
+    const postsForCarousel = await homeModel.top3ViewLastWeek();
 
     const first = postsForCarousel[0];
     const rest = [];
