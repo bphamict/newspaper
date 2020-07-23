@@ -1,55 +1,150 @@
 <div class="panel panel-default">
-    <div class="panel-heading">Search</div>
+    <div class="panel-heading">
+        <div class="input-group">
+            <input type="text" class="form-control search-input" placeholder="Search for...">
+            <span class="input-group-btn">
+                <button class="btn btn-default search-btn" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
     <div class="panel-body">
-        <h4>Search for keywords: <b>{{q}}</b></h4>
+        <div>
+            <span style="font-size: 1.75rem;">Keywords: <b>{{q}}</b></span>
+            <span style="font-size: 1.75rem; float: right;">Tìm theo:
+                <select id="select-search-by">
+                    <option value="title" {{#ifEqual this.search_by 'title'}}selected{{/ifEqual}}>Tiêu đề</option>
+                    <option value="summary" {{#ifEqual this.search_by 'summary'}}selected{{/ifEqual}}>Nội dung tóm tắt
+                    </option>
+                    <option value="content_text" {{#ifEqual this.search_by 'content_text'}}selected{{/ifEqual}}>Nội dung
+                        bài viết</option>
+                </select>
+            </span>
+        </div>
         <hr>
-        <div class="media">
-            <div class="media-left">
-                <a href="#">
-                    <img class="media-object"
-                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNzJhN2M2NjllNiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE3MmE3YzY2OWU2Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMi4xNzE4NzUiIHk9IjM2LjUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+"
-                        alt="...">
-                </a>
+        {{#each this.posts}}
+        <a class="card" href="/post/{{this.slug}}">
+            <img class="card-img" src="/public/images/post/{{this.featured_image}}">
+            <div class="card-body">
+                <div>
+                    <p class="card-title">{{this.title}}</p>
+                    <p class="card-summary">{{this.summary}}</p>
+                </div>
+                <div>
+                    <span style="float:right">Ngày xuất bản: <b>{{this.publish_time}}</b></span>
+                </div>
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">Top aligned media</h4>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras
-                purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                fringilla. Donec lacinia congue felis in faucibus.
+        </a>
+        {{/each}}
 
-                Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus
-                et magnis dis parturient montes, nascetur ridiculus mus.
-            </div>
-        </div>
-        <div class="media">
-            <div class="media-left">
-                <a href="#">
-                    <img class="media-object"
-                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNzJhN2M2NjllNiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE3MmE3YzY2OWU2Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMi4xNzE4NzUiIHk9IjM2LjUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+"
-                        alt="...">
-                </a>
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading">Top aligned media</h4>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras
-                purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                fringilla. Donec lacinia congue felis in faucibus.
-
-                Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus
-                et magnis dis parturient montes, nascetur ridiculus mus.
-            </div>
-        </div>
-
-        <nav aria-label="...">
+        {{#ifNotEqual numOfPage 0}}
+        <nav aria-label="Page navigation">
             <ul class="pagination" style="display: flex;justify-content: center;margin-top: 30px;">
-                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
+                <li class="prev-page {{#unless this.canGoPrev}}disabled{{/unless}}"
+                    {{#if this.canGoPrev}}onclick="goPrev()" style="cursor: pointer;" {{/if}}>
+                    <span>
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+                {{#each this.pageItems}}
+                <li class="page-item {{#if this.isActive}}active{{/if}}"
+                    style="{{#if this.isActive}}pointer-events: none;{{/if}} cursor: pointer;">
+                    <span>{{this.value}}</span></li>
+                {{/each}}
+                <li class="next-page {{#unless this.canGoNext}}disabled{{/unless}}"
+                    {{#if this.canGoNext}}onclick="goNext()" style="cursor: pointer;" {{/if}}>
+                    <span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
             </ul>
         </nav>
+        {{/ifNotEqual}}
     </div>
 </div>
 
-{{#section 'title'}}Search{{/section}}
+{{#section 'title'}}Search keyword: {{q}}{{/section}}
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        function redirect(text) {
+            window.location.assign(`/search?q=${encodeURI(text.trim())}&search_by=${$('#select-search-by').val()}&page=1`);
+        }
+
+        $('.search-btn').on('click', function () {
+            redirect($('.search-input').val());
+        })
+
+        $('.search-input').keypress(function (e) {
+            if (e.keyCode == 13) {
+                redirect($(this).val());
+            }
+        })
+
+        $('.page-item').on('click', function () {
+            window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${$(this).text()}`);
+        })
+
+        $('#select-search-by').on('change', function () {
+            window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$(this).val()}`);
+        })
+    })
+    function goPrev() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value - 1}`); 
+    }
+
+    function goNext() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value + 1}`);
+    }
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    .card {
+        padding: 10px;
+        display: flex;
+        margin-bottom: 10px;
+        border: 0.5px solid black;
+        background-color: #f5f5f5;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .card-img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+        line-height: 1.2em;
+        max-height: 2.4em;
+        overflow: hidden;
+    }
+
+    .card-summary {
+        font-size: 1.5rem;
+        line-height: 1.2em;
+        height: 3.6em;
+        overflow: hidden;
+    }
+</style>
+{{/section}}

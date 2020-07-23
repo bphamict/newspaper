@@ -11,7 +11,8 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'newspaper',
     connectionLimit: 50,
-    dateStrings: true
+    dateStrings: true,
+    charset: 'utf8mb4'
   },
   pagination: {
     limit: 6,

@@ -1,4 +1,5 @@
 const db = require('../utils/db');
+const { hasAccent } = require('../utils/str-utils');
 
 const TBL = 'POST';
 
@@ -107,13 +108,27 @@ module.exports = {
 
         return rows[0];
     },
-    searchPosts: async (searchStr, searchBy = 'title') => {
-        const rows = await db.load(`SELECT * FROM ${TBL} WHERE MATCH(${searchBy}) AGAINST (${searchStr} IN BOOLEAN MODE)`);
+    searchPosts: async (searchStr, searchBy = 'title', limit, offset, isAuthenticated) => {
+        var orderIfAuthenticated = '';
+        if(isAuthenticated) {
+            orderIfAuthenticated = "FIELD(type, 'PREMIUM', 'FREE'),"
+        }
+
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} publish_time DESC LIMIT ${offset}, ${limit}`);
 
         if(rows.length === 0) {
             return null;
         }
 
         return rows;
+    },
+    getNumberOfSearchPost: async (searchStr, searchBy = 'title') => {
+        const rows = await db.load(`SELECT COUNT(*) AS total FROM ${TBL} WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW()))`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0].total;
     }
 }
