@@ -12,7 +12,7 @@ module.exports = {
     connectionLimit: 50,
   },
   pagination: {
-    limit: 3,
+    limit: 5,
   },
   authentication: {
     saltRounds: 10,
