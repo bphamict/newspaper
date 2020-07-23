@@ -62,6 +62,8 @@ router.post('/:id/details', isAdmin, async (req, res) => {
     delete req.body.category;
     if(!req.body.password) {
         delete req.body.password;
+    } else {
+        req.body.password = bcrypt.hashSync(req.body.password, authentication.saltRounds);
     }
     req.body.id = userID;
     await userModel.update(req.body);
