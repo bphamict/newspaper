@@ -3,35 +3,38 @@ const tagModel = require('../models/tag.model');
 const configs = require('../configs/default');
 
 router.get('/:id', async function(req, res){
-    // const list = await tagModel.allByTag(req.params.id);
-    // console.log(list);
-
-    // tagName = list[0].name;
-
     const page = +req.query.page || 1;
     if(page < 0) page = 1;
     const offset = (page - 1) * configs.pagination.limit;
-    const l = await tagModel.pageByTag(req.params.id, configs.pagination.limit, offset);
+
+    const [l, total] = await Promise.all([
+        tagModel.pageByTag(req.params.id, configs.pagination.limit, offset),
+        tagModel.countByTag(req.params.id)
+    ])
 
     tagName = l[0].name;
 
-    const total = await tagModel.countByTag(req.params.id);
     const nPages = Math.ceil(total[0].total / configs.pagination.limit);
 
     const page_items = [];
     for(let i = 1; i <= nPages; i++){
-        const item = {
-            value: i
+        if(i === page - 1 || i === page || i === page + 1)
+        {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item);
         }
-        page_items.push(item);
     }
-
-    console.log(nPages);
-
     res.render('post/byTag',{
-        tagName: tagName,
+        tagName,
         tag: l,
-        page_items: page_items
+        page_items,
+        prev_value: page - 1,
+        next_value: page + 1,
+        can_go_prev: page > 1,
+        can_go_next: page < nPages,
     });
 })
 

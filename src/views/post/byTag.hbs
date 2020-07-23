@@ -15,6 +15,9 @@
         background-color:lightgray;
         height: 1px;
         }    
+    .disabled {
+    pointer-events: none;
+}
     </style>
 </head>
 <body>     
@@ -32,22 +35,29 @@
         </article>
         {{/each}}
     </div>
-<nav aria-label="...">
+<nav class="text-center" aria-label="...">
     <ul class="pagination">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
+        <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
+            <a class="page-link" href="?page={{prev_value}}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
         {{#each this.page_items}}
+        {{#if isActive}}
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                {{value}}
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+        {{else}}
         <li class="page-item">
             <a class="page-link" href="?page={{value}}">{{value}}</a>
         </li>
+        {{/if}}
         {{/each}}
-        {{!-- <li><a href="#">2 <span class="sr-only"></span></a></li>
-        <li><a href="#">3 <span class="sr-only"></span></a></li> --}}
-        <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
+        <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
+            <a class="page-link" href="?page={{next_value}}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
