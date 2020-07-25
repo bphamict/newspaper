@@ -6,42 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
+    <style>
+        hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:lightgray;
+        height: 1px;
+        } 
+        .disabled {
+    pointer-events: none;
+    </style>
 </head>
 
 <body>
-    {{#each this.category}}
     <div>
         <ul class="breadcrumb">
-            <li><a href="#">{{catName}}</a></li>
-            <li><a href="#">sub-cat</a></li>
+            <li><a href="#">{{this.catName}}</a></li>
+            {{#each this.subCats}}
+            <li><a href="#">{{name}}</a></li>
+            {{/each}}
         </ul>
-        <div class="row">
-            <div class="col-md-4">
-                <h4>Title</h4>
-                <div class="row">
-                    <div class="col-md-5">
-                        <img src="https://" alt="...">
-                    </div>
-                    <p class="col-md-7">Summary</p>
+        {{#each this.cat}}
+        <hr>
+        <article>
+            <h3>{{title}}</h3>
+            <div class="col-md-3">
+                    <img src="{{featured_image}}" alt="...">
                 </div>
-            </div>
-            <div class="col-md-4">
-                <h4>Title</h4>
-                <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-            </div>
-            <div class="col-md-4">
-                <h4>Title</h4>
-                <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-            </div>
-        </div>
+                <p class="col-md-9">{{sumary}}</p>
+        </article>
+        {{/each}}
+        <nav class="text-center" aria-label="...">
+    <ul class="pagination">
+        <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
+            <a class="page-link" href="?page={{prev_value}}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {{#each this.page_items}}
+        {{#if isActive}}
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                {{value}}
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+        {{else}}
+        <li class="page-item">
+            <a class="page-link" href="?page={{value}}">{{value}}</a>
+        </li>
+        {{/if}}
+        {{/each}}
+        <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
+            <a class="page-link" href="?page={{next_value}}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+       
     </div>
-    {{/each}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
