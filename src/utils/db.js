@@ -53,4 +53,17 @@ module.exports = {
       });
     });
   },
+
+  updateView: function (table, condition) {
+    return new Promise(function (resolve, reject) {
+      const sql = `update ${table} set view_count = view_count + 1 where ?`;
+      pool.query(sql, [condition], function (error, results) {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results);
+      });
+    });
+  }
 };

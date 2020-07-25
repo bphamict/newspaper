@@ -70,17 +70,7 @@ router.get('/', async function(req, res){
         cats[i].posts = posts;
         posts = [];
     }
-    // cats.forEach(element => {
-        
-    //     cats['posts'] = posts;
-    //     console.log(cId);
-    //     console.log(posts);
-    //     posts = [];
-    //     cId = element.catId;
-    // })
-
-    console.log(cats);
-
+    
     res.render('home',{
         first: first,
         post: rest,

@@ -10,6 +10,7 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'newspaper',
     connectionLimit: 50,
+    dateStrings: true
   },
   pagination: {
     limit: 5,
@@ -26,4 +27,22 @@ module.exports = {
       RESET_PASSWORD: 'RESET_PASSWORD',
     },
   },
+  multerImagePost: {
+    destination: function (req, file, cb) {
+      cb(null, 'public/images/post');
+    },
+    filename: function (req, file, cb) {
+      const extension = file.mimetype.split('/')[1];
+      cb(null, file.fieldname + '-' + Date.now() + '.' + extension);
+    }
+  },
+  toPdfOption: {
+    format: 'A4',
+    border: {
+      "top": "1in",            // default is 0, units: mm, cm, in, px
+      "right": "0.5in",
+      "bottom": "1in",
+      "left": "0.5in"
+    },
+  }
 };

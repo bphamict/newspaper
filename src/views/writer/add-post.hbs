@@ -1,0 +1,242 @@
+<div class="title-container">
+    <h2 style="text-align: center;">Thêm bài viết</h2>
+</div>
+<form id="form-add-post" enctype="multipart/form-data" class="form-container" method="POST">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="input-image">Ảnh đại diện bài viết</label>
+                <input type="file" id="input-image" name='featured_image' style="display: none;"
+                    accept="image/png,image/jpeg">
+                <div class="image-view">
+                    <button type="button" class="btn btn-md btn-default" id="place-holder-btn"
+                        style="position: absolute;">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-md btn-danger" id="delete-btn"
+                        style="display: none; position:absolute; top: 0px; right: 0px">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="form-group">
+                <label for="input-title">Tiêu đề</label>
+                <input type="text" class="form-control" id="input-title" name="title">
+            </div>
+            <div class="form-group">
+                <label for="input-summary">Tóm tắt</label>
+                <textarea class="form-control" id="input-summary" name="summary" cols="40" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="input-category">Chuyên mục</label>
+        <select class="form-control" name="sub_category_id">
+            {{#each this.subCategories}}
+            <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="input-tag">Nhãn</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="input-tag" name="tag" readonly>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="modal-button" data-toggle="modal"
+                    data-target="#myModal">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="input-content">Nội dung bài viết</label>
+        <input type="text" class="form-control" id="input-content" name="content">
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu bài</button>
+</form>
+<div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel"
+    style="align-items: center; justify-content: center;">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <p style="font-size: 2rem;"><b>Danh sách nhãn</b></p>
+            </div>
+            <div class="modal-body">
+                <div class="list-container">
+                    {{#each this.tags}}
+                    <div>
+                        <input class="radio-check" type="radio" value="{{this.name}}">
+                        <label>{{this.name}}</label>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-tag-btn" class="btn btn-primary" style="margin-top: 1rem;"
+                    data-dismiss="modal">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{#section 'js'}}
+<script>
+    $(document).ready(() => {
+        tinymce.init({
+            selector: '#input-content',
+            plugins: 'paste image link autolink lists table media',
+            menubar: false,
+            height: 450,
+            image_caption: true,
+            image_class_list: [
+                {title: 'img-responsive', value: 'img-responsive'}
+            ],
+            toolbar: [
+                'undo redo | formatselect bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright | forecolor backcolor | table link image media',
+            ],
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '/writer/image');
+
+                xhr.onload = function () {
+                    var json;
+
+                    if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+
+                    success(json.location);
+                };
+
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                xhr.send(formData);
+            }
+        });
+
+        $('#input-summary').keyup(function (e) {
+            if (e.keyCode === 13) {
+                modifiedText = $(this).val().split("\n").slice(0, 1);
+                $(this).val(modifiedText);
+            }
+        })
+
+        $('#place-holder-btn').on('click', () => {
+            $('input[name=featured_image]').trigger('click');
+        })
+
+        $('input[name=featured_image]').change(function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#place-holder-btn').css('display', 'none');
+                $('.image-view').append(`<img class="post-avatar" src="${e.target.result}">`);
+                $('#delete-btn').css('display', '');
+            }
+            reader.readAsDataURL(this.files[0]);
+        })
+
+        $('#delete-btn').click(() => {
+            $('input[name=featured_image]').val(null);
+            $('#delete-btn').css('display', 'none');
+            $('#place-holder-btn').css('display', '');
+            $('.post-avatar').remove();
+        })
+
+        $('#modal-button').on('click', () => {
+            $('.modal').css('display', 'flex');
+            const length = $('.radio-check').length;
+            if (length > 10) {
+                $('.list-container').css('overflow-y', 'scroll');
+            }
+        })
+
+        function saveTags() {
+            $('.modal').css('display', 'none');
+            let tagString = '';
+            $('.radio-check').each(function (i) {
+                if ($(this).is(':checked')) {
+                    tagString += $(this).val() + ' | ';
+                }
+            })
+            $('#input-tag').val(tagString)
+        }
+
+        $('.close').on('click', saveTags)
+
+        $('#save-tag-btn').on('click', saveTags)
+
+        $('.radio-check').dblclick(function () {
+            if ($(this).is(':checked')) {
+                $(this).removeAttr('checked');
+            }
+        });
+
+        $('#form-add-post').on('submit', function (e) {
+            if (!$('#input-image').val() || !$('#input-title').val() || !$('#input-summary').val() || !$('#input-tag').val() || !$('#input-content').val()) {
+                alert('Phải điền vào mọi trường')
+                return false;
+            }
+            return true;
+        })
+    })
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    .form-container {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .list-container {
+        overflow-y: hidden;
+    }
+
+    .post-avatar {
+        object-fit: cover;
+        width: 100%;
+        height: 100%
+    }
+
+    .image-view {
+        background-color: gray;
+        border-radius: 20px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        width: 200px;
+        overflow: hidden
+    }
+
+    .title-container {
+        width: 60%;
+        margin: auto;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem
+    }
+</style>
+{{/section}}
+
+{{#section 'title'}}
+Thêm bài viết
+{{/section}}

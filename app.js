@@ -8,6 +8,7 @@ module.exports = (app) => {
   // must be preloaded before all requests
   app.use(require('./src/middlewares/preloader.middleware'));
 
+  
   app.use('/public', express.static('public'));
 
   app.use('/', require('./src/routes/home.route'));
@@ -26,7 +27,13 @@ module.exports = (app) => {
 
   app.use('/auth', require('./src/routes/account.route'));
 
+  app.use('/writer', require('./src/routes/writer.route'));
+
   app.use('/search', require('./src/routes/search.route'));
+
+  app.use('/admin', require('./src/routes/admin/admin.route'));
+
+  app.use('/post', require('./src/routes/post.route'));
 
   app.use((req, res) => {
     res.render('static/404', { layout: false });

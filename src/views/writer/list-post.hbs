@@ -1,0 +1,94 @@
+<div class="title-container">
+    <h2 style="text-align: center; margin-bottom: 2rem">Danh sách bài viết</h2>
+</div>
+<div>
+    {{#each posts}}
+    <div class="card">
+        <img class="card-img" src="/public/images/post/{{this.featured_image}}">
+        <div class="card-body">
+            <div>
+                <p class="card-title">{{this.title}}</p>
+                <p class="card-summary">{{this.summary}}</p>
+            </div>
+            <div style="justify-content: space-between; flex-direction: row; display:flex; align-items: flex-end">
+                <span>
+                    Trạng thái:
+                    {{#ifEqual this.status 'PENDING'}}
+                    <span class="card-status">CHƯA ĐƯỢC DUYỆT</span>
+                    {{else}}
+                    {{#ifEqual this.status 'APPROVED'}}
+                    <span class="card-status text-primary">ĐƯỢC DUYỆT</span>
+                    {{else}}
+                    {{#ifEqual this.status 'DENIED'}}
+                    <span class="card-status text-danger">BỊ TỪ CHỐI</span>
+                    {{else}}
+                    <span class="card-status text-success">ĐÃ XUẤT BẢN</span>
+                    {{/ifEqual}}
+                    {{/ifEqual}}
+                    {{/ifEqual}}
+                </span>
+                {{#ifEqual this.status 'DENIED'}}
+                <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
+                {{/ifEqual}}
+                {{#ifEqual this.status 'PENDING'}}
+                <a class="btn btn-primary edit-btn" href="/writer/post/edit?id={{this.id}}">Chỉnh sửa bài viết</a>
+                {{/ifEqual}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+
+{{#section 'css'}}
+<style>
+    .title-container {}
+
+    .card {
+        padding: 10px;
+        display: flex;
+        margin-bottom: 10px;
+        border-style: solid;
+    }
+
+    .card-img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+        line-height: 1.2em;
+        max-height: 2.4em;
+        overflow: hidden;
+    }
+
+    .card-summary {
+        font-size: 1.5rem;
+        line-height: 1.2em;
+        height: 3.6em;
+        overflow: hidden;
+    }
+
+    .card-status {
+        font-weight: bold;
+    }
+
+    .edit-btn {}
+</style>
+{{/section}}
+
+{{#section 'title'}}
+Danh sách bài viết
+{{/section}}
