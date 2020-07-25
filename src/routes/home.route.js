@@ -1,12 +1,14 @@
 const router = require('express').Router();
 const homeModel = require('../models/home.model');
+const { catWithSubs } = require('../models/home.model');
 
 router.get('/', async function(req, res){
-    const [postsForCarousel, catsWithSubs, top10Newest, top10View] = await Promise.all([
+    const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat] = await Promise.all([
         homeModel.top3ViewLastWeek(),
         homeModel.catWithSubs(),
         homeModel.top10Newest(),
-        homeModel.top10View()
+        homeModel.top10View(),
+        homeModel.postsOrderByCat()
     ])
 
     const first = postsForCarousel[0];
@@ -22,29 +24,60 @@ router.get('/', async function(req, res){
     });
 
     name = catsWithSubs[0].catName;
+    ID = catsWithSubs[0].Id;
     subs = [];
     cats = [];
+    posts = [];
+
     catsWithSubs.forEach(element => {
         if(element.catName === name)
         {
-            subs.push(element.subCatName);
+            subs.push(element.subCatName);   
         }
         else
         {
             cats.push({
+                id: ID,
                 catName: name,
                 subCatName: subs,
+                posts
             })
 
             name = element.catName;
+            ID = element.Id;
             subs = [];
             subs.push(element.subCatName);
         }
+        
     })
     cats.push({
+        id: ID,
         catName: name,
         subCatName: subs,
+        posts
     })
+
+    cId = cats[0].id;
+
+    for(let i = 0; i < cats.length; i++)
+    {
+        postsOrderByCat.forEach(element => {
+            if(element.CatId === cats[i].id)
+            {
+                posts.push(element);
+            }
+        })
+        cats[i].posts = posts;
+        posts = [];
+    }
+    // cats.forEach(element => {
+        
+    //     cats['posts'] = posts;
+    //     console.log(cId);
+    //     console.log(posts);
+    //     posts = [];
+    //     cId = element.catId;
+    // })
 
     console.log(cats);
 

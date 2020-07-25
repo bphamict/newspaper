@@ -57,29 +57,17 @@
         {{/each}}
     </ol>
     <div class="row">
+        {{#each posts}}
         <div class="col-md-4">
-            <h4>Title</h4>
+            <h4>{{Title}}</h4>
             <div class="row">
                 <div class="col-md-5">
-                    <img src="https://" alt="...">
+                    <img src="{{Image}}" alt="...">
                 </div>
-                <p class="col-md-7">Summary</p>
+                <p class="col-md-7">{{Summary}}</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
+        {{/each}}
     </div>
     {{/each}}
 </div>
