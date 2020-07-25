@@ -70,7 +70,7 @@ router.get('/', async function(req, res){
         cats[i].posts = posts;
         posts = [];
     }
-    
+
     res.render('home',{
         first: first,
         post: rest,

@@ -51,9 +51,9 @@
     {{#each this.cats}}
     <hr>
     <ol class="breadcrumb">
-        <li><a href="#">{{catName}}</a></li>
+        <li><a href="/byCat/{{id}}">{{catName}}</a></li>
         {{#each subCatName}}
-        <li><a href="#">{{this}}</a></li>
+        <li><a href="/byCat/{{../id}}">{{this}}</a></li>
         {{/each}}
     </ol>
     <div class="row">
