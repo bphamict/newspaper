@@ -24,5 +24,9 @@ module.exports = {
 		post.title as Title, 
 		post.sumary as Summary, 
 		(row_number() over (PARTITION BY post.category_id ORDER BY post.category_id DESC)) AS CatRank FROM post`);
+    },
+
+    categories:function(){
+        return db.load(`SELECT * FROM category`);
     }
 };

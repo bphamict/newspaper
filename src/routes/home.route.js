@@ -1,14 +1,14 @@
 const router = require('express').Router();
 const homeModel = require('../models/home.model');
-const { catWithSubs } = require('../models/home.model');
 
 router.get('/', async function(req, res){
-    const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat] = await Promise.all([
+    const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat, categories] = await Promise.all([
         homeModel.top3ViewLastWeek(),
         homeModel.catWithSubs(),
         homeModel.top10Newest(),
         homeModel.top10View(),
-        homeModel.postsOrderByCat()
+        homeModel.postsOrderByCat(),
+        homeModel.categories()
     ])
 
     const first = postsForCarousel[0];
@@ -76,7 +76,8 @@ router.get('/', async function(req, res){
         post: rest,
         cats: cats,
         top10Newest,  
-        top10View
+        top10View,
+        categories
     });
 })
 

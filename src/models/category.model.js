@@ -6,7 +6,7 @@ module.exports = {
     },
 
     pageByCat:function(catId, limit, offset){
-        return db.load(`SELECT * FROM post JOIN category ON post.category_id = category.id WHERE category.id = ${catId} LIMIT ${limit} OFFSET ${offset}`);
+        return db.load(`SELECT * FROM post JOIN category ON post.category_id = category.id WHERE category.id = '${catId}' LIMIT ${limit} OFFSET ${offset}`);
     },
 
     countByCat:function(catId){

@@ -14,10 +14,24 @@
         width: 96%;               
         background-color:lightgray;
         height: 1px;
-        }  
+        } 
+        .nav > li > a:hover{
+    background-color:transparent;
+}
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+  <div>
+    <ul class="nav navbar-nav">
+        {{#each this.categories}}
+        <li><a href="/byCat/{{id}}">{{name}}</a></li>
+        {{/each}}
+    </ul>
+  </div>
+</nav>
+    
+   
     <div class="row">
           <div class="col-md-9">
               <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
