@@ -23,8 +23,10 @@ router.get('/', async function(req, res){
         })
     });
 
+    console.log(catsWithSubs);
+
     name = catsWithSubs[0].catName;
-    ID = catsWithSubs[0].Id;
+    ID = catsWithSubs[0].Id; 
     subs = [];
     cats = [];
     posts = [];

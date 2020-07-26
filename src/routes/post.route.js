@@ -34,7 +34,7 @@ router.get('/:slug', async (req, res) => {
             }
         }
     }
-    const [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
+    let [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
     post.created_at = moment(post.created_at).format('LLL');
 
     comments && comments.forEach(comment => {

@@ -31,9 +31,9 @@
         {{#each this.cat}}
         <hr>
         <article>
-            <h3>{{title}}</h3>
+            <h3><a href="/post/{{slug}}">{{title}}</a></h3>
             <div class="col-md-3">
-                    <img src="{{featured_image}}" alt="...">
+                    <img href="/post/{{slug}}" src="{{featured_image}}" alt="...">
                 </div>
                 <p class="col-md-9">{{sumary}}</p>
         </article>
