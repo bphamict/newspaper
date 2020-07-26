@@ -24,15 +24,29 @@
         </div>
         <hr>
         {{#each this.posts}}
-        <a class="card" href="/post/{{this.slug}}">
-            <img class="card-img" src="/public/images/post/{{this.featured_image}}">
-            <div class="card-body">
-                <div>
-                    <p class="card-title">{{this.title}}</p>
-                    <p class="card-summary">{{this.summary}}</p>
+        <a style="color: inherit;" href="/post/{{this.slug}}">
+            <div class="card">
+                <div style="display: flex;">
+                    <img class="card-img" src="/public/images/post/{{this.featured_image}}">
+                    <div class="card-body">
+                        <div>
+                            <p class="card-title">{{this.title}}</p>
+                            <p class="card-summary">{{this.summary}}</p>
+                        </div>
+                        <div>
+                            <span>{{this.category_name}} / {{this.sub_cagegory_name}}</span>
+                            <span style="float:right"><b>{{this.publish_time}}</b></span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span style="float:right">Ngày xuất bản: <b>{{this.publish_time}}</b></span>
+                <div style="margin-top: 10px;">
+                    <p>Tags:
+                        {{#each @root.post_tags}}
+                            {{#ifEqual this.post_id ../id}}
+                            <span style="background-color: gray; padding: 5px; color:white; border-radius: 4px">{{this.name}}</span>
+                            {{/ifEqual}}
+                        {{/each}}
+                    </p>
                 </div>
             </div>
         </a>
@@ -109,12 +123,9 @@
 <style>
     .card {
         padding: 10px;
-        display: flex;
         margin-bottom: 10px;
         border: 0.5px solid black;
         background-color: #f5f5f5;
-        color: inherit;
-        cursor: pointer;
     }
 
     .card-img {
@@ -146,5 +157,9 @@
         height: 3.6em;
         overflow: hidden;
     }
+
+    a:hover { 
+        text-decoration: none; 
+    } 
 </style>
 {{/section}}

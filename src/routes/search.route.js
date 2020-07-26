@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const postModel = require('../models/post.model');
 const { hasAccent, cleanStrFromSpecialCharacters } = require('../utils/str-utils');
+const postTagModel = require('../models/post-tag.model');
 const moment = require('moment');
 moment.locale('vi');
 
@@ -9,7 +10,7 @@ router.get('/', async (req, res) => {
   var page = +req.query.page || 1;
   const offset = (page - 1) * 10;
 
-  const [posts, total] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset), postModel.getNumberOfSearchPost(req.query.q, search_by)]);
+  const [posts, total, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset), postModel.getNumberOfSearchPost(req.query.q, search_by), postTagModel.loadAllWithName()]);
 
   posts && posts.forEach((post) => {
     post.publish_time = moment(post.publish_time).format('DD/MM/YYYY - HH:mm');
@@ -75,6 +76,7 @@ router.get('/', async (req, res) => {
     pageItems,
     search_by,
     numOfPage,
+    post_tags
   });
 });
 
