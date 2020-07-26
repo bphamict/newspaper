@@ -1,3 +1,7 @@
+<ol class="breadcrumb">
+    <li><a href="/admin">Home</a></li>
+    <li class="active">Users</li>
+</ol>
 <h1 style="text-align:center; margin-bottom:20px">Danh sách người dùng</h1>
 <div class="table-responsive">
     <table class="table table-striped">
@@ -23,7 +27,7 @@
                 <td style="vertical-align: middle; text-align: center; text-transform:uppercase"><span
                         class="text-danger" style="padding: 5px;">{{this.role_name}}</span></td>
                 <td style="text-align:center" class="action-cell-{{this.id}}">
-                    <a id="{{this.id}}" class="btn btn-primary" role="b utton" href="/admin/users/{{this.id}}/details">Chỉnh sửa
+                    <a id="{{this.id}}" class="btn btn-primary" role="button" href="/admin/users/{{this.id}}/details">Chỉnh sửa
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                     <a id="{{this.id}}" class="btn btn-danger del-btn" role="button">Xóa

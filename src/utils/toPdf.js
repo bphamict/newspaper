@@ -5,7 +5,8 @@ const appRoot = require('app-root-path');
 const { toPdfOption } = require('../configs/default');
 
 const convertToPDF = async (post, postTags) => {
-    const success = true;
+    let success = true;
+    console.log('post', post.slug)
     var template = fs.readFileSync(appRoot.path + '\\src\\views\\post\\pdf.hbs');
     var html = hbs.compile(template.toString())({post, postTags});
     await pdf.create(html, toPdfOption).toFile(appRoot.path + `\\public\\files\\${post.slug}.pdf`, function (err, res) {

@@ -75,6 +75,7 @@ CREATE TABLE `post` (
   `slug` varchar(100) NOT NULL,
   `editor_note` text,
   `publish_time`: datetime,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
   FULLTEXT(title),
   FULLTEXT(summary),
   FULLTEXT(content_text),
