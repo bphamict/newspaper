@@ -130,5 +130,23 @@ module.exports = {
         }
 
         return rows[0].total;
-    }
+    },
+    loadBySlugCategory: async (slug) => {
+        const rows = await db.load(`SELECT p.* FROM ${TBL} p join category c ON p.category_id = c.id WHERE c.slug = '${slug}'`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+    },
+    loadBySlugCategoryAndSlugSubcategory: async (slugC,slugSc) => {
+        const rows = await db.load(`SELECT * FROM ${TBL} p join category c ON p.category_id = c.id join sub_category sc on c.id = sc.category_id WHERE c.slug = '${slugC}' AND sc.slug ='${slugSc}'`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+    },
 }

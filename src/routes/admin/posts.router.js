@@ -46,9 +46,11 @@ router.post('/update_status', async function (req, res) {
         category_id: req.body.category_id,
         sub_category_id: req.body.sub_category_id,
         created_at: req.body.created_at,
-        updated_at: req.body.updated_at,
+        updated_at: req.body.updated_at
     }
     
     await postsModel.update(entity);
     res.redirect('/Admin/categories');
 });
+
+module.exports = router;

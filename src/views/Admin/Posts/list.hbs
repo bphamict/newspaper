@@ -1,0 +1,51 @@
+{{#section 'title'}}Posts - Admin page{{/section}}
+<ol class="breadcrumb">
+    <li><a href="/admin">Home</a></li>
+    <li class="active">Posts</li>
+</ol>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <form class="form-inline" action="#">
+            <div class="row">
+                <div class="col-sm-8"></div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="txtTileP">Find post:</label>
+                        <input type="email" class="form-control" id="tilePost" placeholder="input title">
+                    </div>
+                    <button type="submit" class="btn btn-success">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel-body">
+        {{#if this.empty}}
+        <p class="well">No data...</p>
+        {{else}}
+        <div class="row">
+            {{#each this.posts}}
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+
+                    <img src="..." alt="..." style="width: 100%;" >
+                    <div class="caption">
+                        <h3>{{title}}</h3>
+                        <p>{{summary}}</p>
+                        <p>
+                            <a href="/admin/posts/detail?id={{id}}" class="btn btn-primary" role="button">Detail</a>
+                            <a href="/admin/posts/update_status?id={{id}}" class="btn btn-success" role="button">Update status</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        
+        {{/if}}
+    </div>
+    
+
+</div>
+</div>

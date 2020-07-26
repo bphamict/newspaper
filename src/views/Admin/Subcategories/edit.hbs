@@ -1,0 +1,108 @@
+ {{#section 'title'}}Edit - Subcategories - Admin page{{/section}}
+<ol class="breadcrumb">
+    <li><a href="/admin">Home</a></li>
+    <li><a href="/admin/subcategories">Subcategory</a></li>
+    <li class="active">Add</li>
+</ol>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Add Subcategory</h3>
+    </div>
+    <div class="panel-body">
+        <form method="POST" action="" id="frmAdd">
+            <div class="form-group">
+                <label for="txtSubcategoryID">ID</label>
+                <input type="text" class="form-control" id="txtID" name="id" readonly value={{this.subcategory.id}}>
+                
+            </div>
+            <div class="form-group">
+                <label for="txtSubcategoryName">Name of subcategory</label>
+                <input type="text" class="form-control" id="txtName" name="name" autofocus value='{{this.subcategory.name}}'>
+                <p style="color:red" id="validateName"></p>
+            </div>
+            <div class="form-group">
+                <label for="txtCategoryName">Choose main category</label>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="txtNameCtg" name="nameCtg" value='{{this.subcategory.category_name}}' readonly>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" style="width: 100%;" type="button"
+                                data-toggle="dropdown">Main category
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                {{#each this.categories}}
+                                <li>
+                                    <a class="dropdown-item" type="button">{{name}}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <a href="/admin/categories/add" class="btn btn-success btn-sm" role="button"
+                            style="width: 100%;">
+                            <span class="glyphicon glyphicon-plus-sign"></span> Add
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="txtCategoryName">Status</label>
+                <input type="text" class="form-control" id="txtIsExist" name="isDeleted" value={{this.subcategory.isDeleted}}>
+
+            </div>
+            <a href="/admin/subcategories" class="btn btn-success" role="button">
+                <span class="glyphicon glyphicon-backward"></span>
+            </a>
+            <button type="submit" class="btn btn-primary" id="btn" formaction="/admin/subcategories/update">
+                <span class="glyphicon glyphicon-ok-circle"></span> Save
+            </button>
+            {{#if this.subcategory.isDeleted}}
+            <button type="submit" class="btn btn-danger" disabled formaction="/admin/subcategories/delete">
+                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+            </button>
+            {{else}}
+            <button type="submit" class="btn btn-danger" formaction="/admin/subcategories/delete">
+                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+            </button>
+            {{/if}}
+
+        </form>
+    </div>
+</div>
+{{#section 'js'}}
+<script>
+    var elements = document.getElementsByClassName('dropdown-item');
+
+    Array.from(elements).forEach((element) => {
+        element.addEventListener('click', (event) => {
+            document.getElementById('txtNameCtg').value = `${event.target.innerText}`;
+        });
+    });
+
+
+    function required(input) {
+        if (input.value.length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    var form = document.getElementById("frmAdd");
+
+    form.addEventListener("submit", function () {
+        var txtName = document.getElementById("txtName");
+        if (!required(txtName)) {
+            event.preventDefault();
+            document.getElementById("validateName").innerHTML = "The name of category field is not empty!!!";
+            txtName.focus();
+        }
+
+    }, true);
+</script>
+{{/section}}

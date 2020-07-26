@@ -4,18 +4,17 @@ const TABLE_NAME = 'sub_category';
 
 module.exports = {
     all: function(){
-        return db.load(`SELECT * FROM ${TABLE_NAME}`);
+        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.slug, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id`);
     },
     add: function(entity){
         return db.create(TABLE_NAME, entity);
     },
-    single: function(id, category_id){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE id = ${id} and category_id = ${category_id}`);
+    single: function(id){
+        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id WHERE s.id = ${id}`);
     },
     update: function(entity){
         const condition = {
-            id: entity.id,
-            category_id: entity.category_id
+            id: entity.id
         }
         delete entity.id;
         return db.update(TABLE_NAME, entity, condition);
@@ -23,11 +22,8 @@ module.exports = {
     del: function(entity){
         const condition = {
             id: entity.id,
-            category_id: entity.category_id
-
         }
         delete entity.id;
-        delete entity.category_id;
         return db.update(TABLE_NAME, entity, condition);
     },
     loadByParentCategory: async (parentID) => {

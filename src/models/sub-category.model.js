@@ -51,5 +51,14 @@ module.exports = {
         }
 
         return rows[0];
-    }
+    },
+    allBySlugCategory: (slug) => {
+        return db.load(`SELECT c.id AS idCtg, sc.* FROM ${TBL} sc JOIN category c on sc.category_id = c.id WHERE c.slug ='${slug}'`);
+    },
+    
+    findNameCgBySlug: (slug) => {
+        return db.load(`SELECT * FROM ${CAT_TBL} WHERE slug ='${slug}'`);
+        
+    },
+    
 }
