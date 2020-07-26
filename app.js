@@ -31,6 +31,8 @@ module.exports = (app) => {
 
   app.use('/editor', require('./src/routes/editor.route'));
 
+  app.use('/account', require('./src/routes/profile.route'));
+
   app.use((req, res) => {
     res.render('static/404', { layout: false });
   });

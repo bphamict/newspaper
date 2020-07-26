@@ -1,0 +1,169 @@
+<div style="display: flex;flex-direction: column">
+    <h1 style="text-align:center">Hồ sơ người dùng</h1>
+    <form style="width: 30%; margin:auto; padding-bottom: 30px; padding-top: 30px" method="POST" id="user-form">
+        <input type="text" id="inputID" name="id" value="{{this.user.id}}" style="display:none">
+        <div class="form-group">
+            <label for="inputFullName">Họ tên</label>
+            <input type="text" class="form-control" id="inputFullName" name="full_name" value="{{this.user.full_name}}">
+            <div class="full-name-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="inputEmail" name="email" value="{{this.user.email}}">
+            <div class="email-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="inputDOB">Ngày sinh</label>
+            <input type="date" class="form-control" id="inputDOB" name="dob" value="{{this.user.dob}}">
+            <div class="dob-error"></div>
+        </div>
+        {{#ifEqual this.user.role 4}}
+        <div class="form-group subscriber-expiry-date">
+            <label>Thời hạn</label>
+            <div class="input-group">
+                <input class="form-control expire-value" value="{{this.user.expiry_value}}" name="expiry_time" style="display: none;"></input>
+                <p class="form-control expire-text">{{this.user.expiry_time}}</p>
+                <span class="input-group-btn">
+                    <button class="btn btn-default extend-btn" type="button" {{#unless this.expired}}disabled{{/unless}}>Gia hạn</button>
+                </span>
+            </div>
+        </div>
+        {{/ifEqual}}
+        {{#ifEqual this.user.role 3}}
+        <div class="form-group input-3">
+            <label for="inputPseudonym">Bút danh</label>
+            <input type="text" class="form-control" id="inputPseudonym" name="writer_pseudonym" value="{{this.user.writer_pseudonym}}">
+            <div class="pseudonym-error"></div>
+        </div>
+        {{/ifEqual}}
+        <div>
+            <a href="/account/change-password"><small>Đổi mật khẩu</small></a>
+        </div>
+        <div style="text-align:center; margin-top: 30px">
+            <button role="button" class="btn btn-primary check-btn">Lưu</button>
+        </div>
+    </form>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function() {
+        const user = {{{ json user }}};
+        moment.locale('vi');
+
+        $('.extend-btn').on('click', function(){
+            var newDate = moment(new Date()).add(10080, 'm');
+            $('.expire-text').html(newDate.format('LLL'));
+            $('.expire-value').val(newDate.format('YYYY-MM-DD HH:mm:ss'));
+            $('.extend-btn').attr('disabled', 'true');
+        });
+
+        async function validate() {
+            $('.full-name-error').html('');
+            $('.email-error').html('');
+            $('.dob-error').html('');
+            $('.pseudonym-error').html('');
+            let hasError = false;
+
+            const fullName = $('#inputFullName').val();
+            if(!fullName) {
+                $('.full-name-error').html('<small class="text-danger">Họ tên không được để trống</small>');
+                hasError = true;
+            } else if(fullName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').match(/[^A-Za-z ]/g)) {
+                $('.full-name-error').html('<small class="text-danger">Họ tên không hợp lệ</small>');
+                hasError = true;
+            }
+            console.log('haserror1', hasError)
+
+            const email = $('#inputEmail').val();
+            if(!email) {
+                $('.email-error').html('<small class="text-danger">Email không được để trống</small>')
+                hasError = true;
+            } else if(email !== user.email) {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/account/checkEmail`,
+                    data: {
+                        email,
+                    },
+                    success: function(data) {
+                        if(!data.isEmail) {
+                            $('.email-error').html(`<small class="text-danger">Email không hợp lệ</small>`);
+                            hasError = true;
+                        } else if (!data.isAvailable) {
+                            $('.email-error').html(`<small class="text-danger">Đã có người sử dụng email</small>`);
+                            hasError = true;
+                        }
+                    },
+                    error: function(error) {
+                        if(error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+            console.log('haserror2', hasError)
+
+            const dob = $('#inputDOB').val();
+            if(!dob) {
+                $('.dob-error').html('<small class="text-danger">Ngày sinh không được để trống</small>');
+                hasError = true;
+            } else if(moment().isSameOrBefore(dob, 'day')) {
+                $('.dob-error').html('<small class="text-danger">Ngày không hợp lệ</small>');
+                hasError = true;
+            }
+            console.log('haserror3', hasError)
+
+            if(user.role === 3) {
+                const pseudonym = $('#inputPseudonym').val();
+                if(!pseudonym) {
+                    $('.pseudonym-error').html('<small class="text-danger">Bút danh không được để trống</small>')
+                    hasError = true;
+                } else if(pseudonym !== user.pseudonym) {
+                    await $.ajax({
+                        type: 'POST',
+                        url: `/account/checkPseudonym`,
+                        data: {
+                            pseudonym,
+                        },
+                        success: function(data) {
+                            if(!data.isAvailable) {
+                                $('.pseudonym-error').html(`<small class="text-danger">Bút danh đã tồn tại</small>`);
+                                hasError = true;
+                            }
+                        },
+                        error: function(error) {
+                            if(error) {
+                                console.log(error);
+                            }
+                        }
+                    })
+                }
+            }
+            console.log('haserror4', hasError)
+
+            if(!hasError) {
+                console.log('aaa');
+                $('#user-form').off('submit').submit();
+            } else {
+                return false;
+            }
+        }
+
+        $('#user-form').on('submit', (e) => {
+            e.preventDefault();
+            validate();
+        })
+    })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/vi.min.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    
+</style>
+{{/section}}
+
+{{#section 'title'}}Hồ sơ người dùng{{/section}}
