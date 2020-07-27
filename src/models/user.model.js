@@ -143,5 +143,27 @@ module.exports = {
     }
 
     return rows[0];
+  },
+  getTotal: async (userID) => {
+    const rows = await db.load(
+      `select count(*) as total from ${USER_TABLE_NAME} where id != ${userID} and blocked != 1`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0].total;
+  },
+  loadWithRoleName: async (userID, offset, limit) => {
+    const rows = await db.load(
+      `select U.*, R.name AS role_name FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id WHERE U.id != ${userID} AND U.blocked = '0' ORDER BY U.id ASC LIMIT ${offset}, ${limit}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows;
   }
 };

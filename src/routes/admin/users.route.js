@@ -17,13 +17,73 @@ router.get('/error', isAdmin, (req, res) => {
 })
 
 router.get('/', isAdmin, async (req, res) => {
-    var userList = await userModel.loadAllWithRoleName(6);
+    var page = +req.query.page || 1;
+    const offset = (page - 1) * 10;
+    var [userList, total] = await Promise.all([userModel.loadWithRoleName(req.user.id, offset, 10), userModel.getTotal(req.user.id)]);
 
+    const numOfPage = Math.ceil(total / 10);
+    if(page < 1 || page > numOfPage) {
+        page = 1;
+    }
+
+    const pageItems = [];
+    if(numOfPage > 5) {
+        const isNearEnd = page + 2 > numOfPage;
+        if(!isNearEnd) {
+            for(let i = page - 2; i <= page; i++) {
+                if(i > 0) {
+                    pageItems.push({
+                        value: i,
+                        isActive: i === page
+                    })
+                }
+            }
+
+            const numberOfPage = pageItems.length;
+
+            for(let i = page + 1; i <= page + (5 - numberOfPage); i++) {
+                pageItems.push({
+                    value: i,
+                    isActive: false,
+                })
+            }
+        } else {
+            for(let i = page; i <= numOfPage; i++) {
+                pageItems.push({
+                    value: i,
+                    isActive: i === page,
+                })
+            }
+
+            const numberOfPage = pageItems.length;
+
+            for(let i = page - 1; i >=  page - (5 - numberOfPage); i--) {
+                pageItems.unshift({
+                    value: i,
+                    isActive: false,
+                })
+            }
+        }
+    } else {
+        for(let i = 1; i <= numOfPage; i++) {
+            pageItems.push({
+                value: i,
+                isActive: i === page,
+            })
+        }
+    }
+    
     if(!userList) {
         userList = [];
     }
 
-    res.render('Admin/User/list', { userList });
+    res.render('Admin/User/list', { 
+        userList,
+        canGoPrev: page > 1,
+        canGoNext: page < numOfPage,
+        pageItems,
+        numOfPage
+    });
 });
 
 router.get('/:id/details', isAdmin, async (req, res) => {

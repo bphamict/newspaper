@@ -107,6 +107,7 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
     req.body.category_id = sub_category.category_id;
     req.body.status = 'PENDING';
     req.body.editor_note = null;
+    req.body.publish_time = null;
     let tags = req.body.tag;
     delete req.body.tag;
 
