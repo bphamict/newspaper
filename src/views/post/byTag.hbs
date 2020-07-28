@@ -18,23 +18,44 @@
     .disabled {
     pointer-events: none;
 }
+ a {
+    text-decoration: none; 
+    color: grey; 
+}
+img{
+    width: 100px;
+    height: 100px;
+}
+pre{
+    background-color: white;
+    border-color: white;
+}
     </style>
 </head>
 <body>     
-<div>
+<div style="margin-top: -40px;">
     <h1>{{this.tagName}}</h1>
     <div>
         {{#each this.tag}}
         <hr>
         <article>
-            <h3><a href="/post/{{slug}}">{{title}}</a></h3>
-            <div class="col-md-3">
+            <h4><a href="/post/{{slug}}">{{title}}</a></h4>
+            <div class="col-md-2">
                     <img src="{{featured_image}}" alt="...">
                 </div>
-                <p class="col-md-9">{{sumary}}</p>
+                <div class="col-md-10" style="margin-left: -60px;">
+                <p >{{summary}}</p>
+                <p><small>{{updated_at}}</small></p>
+                </div>
+                
         </article>
         {{/each}}
     </div>
+            <pre></pre>
+        <pre></pre>
+        <pre></pre>
+        <pre></pre>
+        <pre></pre>
 <nav class="text-center" aria-label="...">
     <ul class="pagination">
         <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
