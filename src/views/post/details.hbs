@@ -1,7 +1,7 @@
 <div {{#if this.blur}}style="filter:blur(10px); pointer-events: none"{{/if}}>
     <ol class="breadcrumb">
-        <li><a href="#">{{this.post.category_name}}</a></li>
-        <li><a href="#">{{this.post.sub_category_name}}</a></li>
+        <li><a href="/byCat/{{this.post.category_id}}">{{this.post.category_name}}</a></li>
+        <li><a href="/byCat/{{this.post.category_id}}">{{this.post.sub_category_name}}</a></li>
         <span class="post-date">{{this.post.created_at}}</span>
     </ol>
     <h1>{{this.post.title}}</h1>
@@ -13,7 +13,7 @@
     <div class="breadcrumb">
         <span>Nhãn:</span>
         {{#each this.postTags}}
-        <a href="#">{{this.name}}</a>
+        <a href="/byTag/{{this.id}}">{{this.name}}</a>
         {{#unless @last}}
         &#124;
         {{/unless}}

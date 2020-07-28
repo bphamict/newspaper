@@ -16,8 +16,12 @@
         height: 1px;
         } 
         .nav > li > a:hover{
-    background-color:transparent;
-}
+        background-color:transparent;
+        }
+        a {
+        position: absolute;
+        z-index: 9999;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +81,7 @@
             <h4><a href="/post/{{Slug}}">{{Title}}</a></h4>
             <div class="row">
                 <div class="col-md-5">
-                    <img href="/post/{{Slug}}" src="{{Image}}" alt="...">
+                    <img href="/post/{{Slug}}" src="https://m.media-amazon.com/images/I/91eyAbX9F7L._SS500_.jpg{{!-- {{Image}} --}}" alt="...">
                 </div>
                 <p class="col-md-7">{{Summary}}</p>
             </div>

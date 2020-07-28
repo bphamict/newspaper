@@ -15,7 +15,7 @@ router.get('/error', (req, res) => {
 router.get('/:slug', async (req, res) => {
     const slug = req.params.slug;
     const post = await postModel.loadBySlugWithCategoryAndSubCategoryName(slug);
-    
+
     if(!post) {
         res.redirect('/post/error');
     }
