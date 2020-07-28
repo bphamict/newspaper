@@ -10,6 +10,7 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'newspaper',
     connectionLimit: 50,
+    dateStrings: true
   },
   pagination: {
     limit: 6,
@@ -34,5 +35,14 @@ module.exports = {
       const extension = file.mimetype.split('/')[1];
       cb(null, file.fieldname + '-' + Date.now() + '.' + extension);
     }
+  },
+  toPdfOption: {
+    format: 'A4',
+    border: {
+      "top": "1in",            // default is 0, units: mm, cm, in, px
+      "right": "0.5in",
+      "bottom": "1in",
+      "left": "0.5in"
+    },
   }
 };

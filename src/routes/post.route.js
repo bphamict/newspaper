@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const postModel = require('../models/post.model');
+const sub_categoryModel = require('../models/sub-category.model');
 const postTagModel = require('../models/post-tag.model');
 const commentModel = require('../models/comment.model');
-const SubcategoryModel = require('../models/sub-category.model');
+const userSubscribeModel = require('../models/user-subscribe.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
-const subCategoryModel = require('../models/sub-category.model');
 moment.locale('vi');
 
 router.get('/error', (req, res) => {
@@ -21,20 +21,22 @@ router.get('/:slug', async (req, res) => {
     res.redirect('/post/error');
   }
 
-  const [
-    postTags,
-    comments,
-    numberOfCmt,
-    relatedPosts,
-    viewCountResult,
-  ] = await Promise.all([
-    postTagModel.loadByPostIDWithName(post.id),
-    commentModel.loadNCommentsFromPost(post.id, 0, 3),
-    commentModel.getNumberOfCommentFromPost(post.id),
-    postModel.loadRelatedPost(post.id, post.sub_category_id),
-    postModel.increaseView(post.id),
-  ]);
-  post.created_at = moment(post.created_at).format('LLL');
+    var blur = false;
+    var blurMsg = '';
+    if(post.type === 'PREMIUM') {
+        if(!req.user) {
+            blur = true;
+            blurMsg = 'Hãy trở thành độc giả để xem bài viết này';
+        } else {
+            const userSubscribe = await userSubscribeModel.loadByID(req.user.id);
+            if(userSubscribe && moment().isAfter(userSubscribe.expiry_time, 'second')) {
+                blur = true;
+                blurMsg = 'Hãy gia hạn tài khoản để xem bài viết này';
+            }
+        }
+    }
+    const [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
+    post.created_at = moment(post.created_at).format('LLL');
 
   comments &&
     comments.forEach((comment) => {
@@ -49,15 +51,9 @@ router.get('/:slug', async (req, res) => {
     result.forEach((post) => {
       post.created_at = moment(post.created_at).format('LL');
     });
-
-  res.render('post/details', {
-    post,
-    postTags,
-    comments,
-    related: result,
-    commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0,
-  });
-});
+    
+    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0, blur, blurMsg });
+})
 
 router.get('/:id/comments', async (req, res) => {
   let start = parseInt(req.query.start);
@@ -88,10 +84,10 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
   res.send(comment);
 });
 
-router.get('/byCategory/:slugCategory', async (req, res) => {
+router.get('/category/:slugCategory', async (req, res) => {
     const slugCategory = req.params.slugCategory;
-    const rowsCg = await subCategoryModel.findNameCgBySlug(slugCategory);
-    var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
+    const rowsCg = await sub_categoryModel.findNameCgBySlug(slugCategory);
+    var listSubCg = await sub_categoryModel.allBySlugCategory(slugCategory);
     const  nameCategory = rowsCg[0];
     var posts = await postModel.loadBySlugCategory(slugCategory);
     console.log(posts);
@@ -100,7 +96,7 @@ router.get('/byCategory/:slugCategory', async (req, res) => {
     
   });
 
-  router.get('/bySubcategory/:slugSubcategory', async (req, res) => {
+  router.get('/sub_category/:slugSubcategory', async (req, res) => {
     const slugSubcategory = req.params.slugSubcategory;
     const rowsCg = await subCategoryModel.findNameCgBySlug(slugCategory);
     var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
