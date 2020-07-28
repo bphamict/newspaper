@@ -15,8 +15,8 @@
             <div class="col-lg-4">
                 {{#if this.post.featured_image}}
                 <img id="myImg"
-                    src="https://imgproxy4.cdnforo.com/iXhfyXGU9G4zWyNhF4sBhKc72S3RnXmdn73FMNJA8JQ/h:144/plain/https://sa.tinhte.vn/2018/10/4455874_og.jpg"
-                    class="img-responsive" alt="Image">
+                    src="../../../../public/imgs/newpapers/{{this.post.id}}/{{this.post.featured_image}}" alt="{{this.post.title}}" title="{{this.post.title}}"
+                    class="img-responsive">
                 {{else}}
                 <span class="glyphicon glyphicon-picture" style="width: 50%;"></span>
                 {{/if}}
