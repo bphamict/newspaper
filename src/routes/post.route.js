@@ -7,6 +7,7 @@ const userSubscribeModel = require('../models/user-subscribe.model');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
+const { query } = require('express-validator');
 moment.locale('vi');
 
 router.get('/error', (req, res) => {
@@ -85,14 +86,42 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
 });
 
 router.get('/category/:slugCategory', async (req, res) => {
+    const page = +req.query.page || 1;
+    if(page < 0) page = 1;
+    const limit = 1;
+    const offset = (page - 1) * limit;
+
     const slugCategory = req.params.slugCategory;
     const rowsCg = await sub_categoryModel.findNameCgBySlug(slugCategory);
     var listSubCg = await sub_categoryModel.allBySlugCategory(slugCategory);
     const  nameCategory = rowsCg[0];
-    var posts = await postModel.loadBySlugCategory(slugCategory);
+    //var posts = await postModel.loadBySlugCategory(slugCategory);
+    var posts = await postModel.pageBySlugCategory(slugCategory,limit,offset);
+
+    const total = await postModel.countBySlugCategory(slugCategory);
+    const nPages = Math.ceil(total/limit);
+    
+    const page_items = [];
+    for(let i = 1; i<=nPages; i++){
+      const item = {
+        value: i,
+        isActive: i === page
+      }
+      page_items.push(item);
+    }
+
     console.log(posts);
 
-    res.render('post/byCategory', { nameCategory, listSubCg, posts });
+    res.render('post/byCategory', { 
+      nameCategory, 
+      listSubCg, 
+      posts, 
+      page_items,
+      prev_value: page - 1,
+      next_value: page + 1,
+      can_go_prev: page > 1,
+      can_go_next: page < nPages,
+     });
     
   });
 
