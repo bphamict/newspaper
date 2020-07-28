@@ -9,7 +9,7 @@ const slugify = require('slugify');
 router.get('/', isAdmin, async function (req, res) {
   const page = +req.query.page || 1;
   if(page < 0) page = 1;
-  const limit = 1;
+  const limit = 10;
   const offset = (page - 1) * limit;
 
   const list = await subcategoriesModel.page(limit,offset);
