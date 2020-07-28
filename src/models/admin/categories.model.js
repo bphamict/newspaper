@@ -82,5 +82,12 @@ module.exports = {
             user_id: entity.userID,
         }
         return db.update(TABLE_NAME, { user_id: null }, condition);
-    }
+    },
+    page: function(limit, offset){
+        return db.load(`SELECT * FROM ${TABLE_NAME} limit ${limit} offset ${offset}`);
+    },
+    count: async () => {
+        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME}`);
+        return row[0].total;
+    },
 };

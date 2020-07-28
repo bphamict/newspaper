@@ -25,6 +25,13 @@ module.exports = {
         }
         delete entity.id;
         return db.update(TABLE_NAME, entity, condition);
-    }
+    },
+    page: function(limit, offset){
+        return db.load(`SELECT * FROM ${TABLE_NAME} limit ${limit} offset ${offset}`);
+    },
+    count: async () => {
+        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME}`);
+        return row[0].total;
+    },
 
 };

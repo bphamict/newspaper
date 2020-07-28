@@ -6,11 +6,35 @@ const isAdmin = require('../../middlewares/isAdmin.middleware');
 const slugify = require('slugify');
 
 router.get('/', isAdmin, async function (req, res) {
-  const list = await categoriesModel.all();
+  const page = +req.query.page || 1;
+  if(page < 0) page = 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  //const list = await categoriesModel.all();
+  const list = await categoriesModel.page(limit,offset);
+
+  const total = await categoriesModel.count();
+  const nPages = Math.ceil(total/limit);
+  
+  const page_items = [];
+  for(let i = 1; i<=nPages; i++){
+    const item = {
+      value: i,
+      isActive: i === page
+    }
+    page_items.push(item);
+  }
+
   console.log(list);
   res.render('Admin/Categories/list', {
     categories: list,
     empty: list.length === 0,
+    page_items,
+    prev_value: page - 1,
+    next_value: page + 1,
+    can_go_prev: page > 1,
+    can_go_next: page < nPages,
   });
 });
 

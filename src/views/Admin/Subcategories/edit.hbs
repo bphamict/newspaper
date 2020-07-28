@@ -1,13 +1,13 @@
- {{#section 'title'}}Edit - Subcategories - Admin page{{/section}}
+ {{#section 'title'}}Chỉnh sửa - Danh mục con - Trang Admin{{/section}}
 <ol class="breadcrumb">
-    <li><a href="/admin">Home</a></li>
-    <li><a href="/admin/subcategories">Subcategory</a></li>
-    <li class="active">Add</li>
+    <li><a href="/admin">Trang chủ</a></li>
+    <li><a href="/admin/subcategories">Danh mục con</a></li>
+    <li class="active">Chỉnh sửa</li>
 </ol>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Add Subcategory</h3>
+        <h3 class="panel-title">Chỉnh sửa danh mục con</h3>
     </div>
     <div class="panel-body">
         <form method="POST" action="" id="frmAdd">
@@ -17,12 +17,12 @@
                 
             </div>
             <div class="form-group">
-                <label for="txtSubcategoryName">Name of subcategory</label>
+                <label for="txtSubcategoryName">Tên danh mục con</label>
                 <input type="text" class="form-control" id="txtName" name="name" autofocus value='{{this.subcategory.name}}'>
                 <p style="color:red" id="validateName"></p>
             </div>
             <div class="form-group">
-                <label for="txtCategoryName">Choose main category</label>
+                <label for="txtCategoryName">Chọn danh mục chính</label>
                 <div class="row">
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="txtNameCtg" name="nameCtg" value='{{this.subcategory.category_name}}' readonly>
@@ -30,7 +30,7 @@
                     <div class="col-sm-2">
                         <div class="dropdown">
                             <button class="btn btn-primary dropdown-toggle" style="width: 100%;" type="button"
-                                data-toggle="dropdown">Main category
+                                data-toggle="dropdown">Danh mục chính
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -45,7 +45,7 @@
                     <div class="col-sm-1">
                         <a href="/admin/categories/add" class="btn btn-success btn-sm" role="button"
                             style="width: 100%;">
-                            <span class="glyphicon glyphicon-plus-sign"></span> Add
+                            <span class="glyphicon glyphicon-plus-sign"></span> Thêm
                         </a>
                     </div>
                 </div>
@@ -60,15 +60,15 @@
                 <span class="glyphicon glyphicon-backward"></span>
             </a>
             <button type="submit" class="btn btn-primary" id="btn" formaction="/admin/subcategories/update">
-                <span class="glyphicon glyphicon-ok-circle"></span> Save
+                <span class="glyphicon glyphicon-ok-circle"></span> Cập nhật
             </button>
             {{#if this.subcategory.isDeleted}}
             <button type="submit" class="btn btn-danger" disabled formaction="/admin/subcategories/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
             </button>
             {{else}}
             <button type="submit" class="btn btn-danger" formaction="/admin/subcategories/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
             </button>
             {{/if}}
 
@@ -99,7 +99,7 @@
         var txtName = document.getElementById("txtName");
         if (!required(txtName)) {
             event.preventDefault();
-            document.getElementById("validateName").innerHTML = "The name of category field is not empty!!!";
+            document.getElementById("validateName").innerHTML = "Tên danh mục không được bỏ trống!!!";
             txtName.focus();
         }
 

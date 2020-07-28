@@ -1,13 +1,13 @@
- {{#section 'title'}}Edit - Tags - Admin page{{/section}}
+ {{#section 'title'}}Chỉnh sửa - Tags - Trang Admin{{/section}}
 <ol class="breadcrumb">
-        <li><a href="/admin">Home</a></li>
-        <li><a href="/admin/tags">Tags</a></li>
-        <li class="active">Add</li>
+        <li><a href="/admin">Trang chủ</a></li>
+        <li><a href="/admin/tags">Tag</a></li>
+        <li class="active">Chỉnh sửa</li>
 </ol>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Add tag</h3>
+        <h3 class="panel-title">Chỉnh sửa tag</h3>
     </div>
     <div class="panel-body">
         <form method="POST">
@@ -17,12 +17,12 @@
                 
             </div>
             <div class="form-group">
-                <label for="txtCategoryName">Name of tag</label>
+                <label for="txtCategoryName">Tên tag</label>
                 <input type="text" class="form-control" id="txtName" name="name" autofocus value='{{this.tag.name}}'>
                 
             </div>
             <div class="form-group">
-                <label for="txtCategoryName">Status</label>
+                <label for="txtCategoryName">Trạng thái</label>
                 <input type="text" class="form-control" id="txtIsExist" name="isDeleted" value={{this.tag.isDeleted}}>
                 
             </div>
@@ -30,15 +30,15 @@
                 <span class="glyphicon glyphicon-backward"></span>
             </a>
             <button type="submit" class="btn btn-primary" formaction="/admin/tags/update">
-                <span class="glyphicon glyphicon-ok-circle"></span> Save
+                <span class="glyphicon glyphicon-ok-circle"></span> Cập nhật
             </button>
             {{#if this.tag.isDeleted}}
             <button type="submit" class="btn btn-danger" disabled formaction="/admin/tags/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
             </button>
             {{else}}
             <button type="submit" class="btn btn-danger" formaction="/admin/tags/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
             </button>
             {{/if}}
         </form>
