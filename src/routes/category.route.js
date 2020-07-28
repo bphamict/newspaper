@@ -7,10 +7,10 @@ router.get('/:id', async function(req, res){
     if(page < 0) page = 1;
     const offset = (page - 1) * configs.pagination.limit;
 
-    const [l, total, subCats] = await Promise.all([
+    const [l, total, subCats, tagsList] = await Promise.all([
         categoryModel.pageByCat(req.params.id, configs.pagination.limit, offset),
         categoryModel.countByCat(req.params.id),
-        categoryModel.subCats(req.params.id)
+        categoryModel.subCats(req.params.id),
     ])
 
     catName = l[0].name;
