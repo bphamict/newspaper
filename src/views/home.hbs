@@ -18,30 +18,69 @@
         .nav > li > a:hover{
         background-color:transparent;
         }
-        a {
-        position: absolute;
-        z-index: 9999;
-        }
+        article {
+  float: left;
+  width: 70%;
+}
+
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+aside{
+    float:right;
+}
+
+.carousel {
+  width:790px;
+  height:360px;
+}
+
+.carousel-caption a{
+    font-size: 25px;
+    color: white;
+}
+
+.carousel-inner > .item > img {
+  width:790px;
+  height:360px;
+}
+
+pre{
+    background-color: white;
+    border-color: white;
+}
+{{!-- .secondNav{
+    padding-top: 52px;
+} --}}
+a {
+    text-decoration: none; 
+    color: grey; 
+}
+img{
+    width: 100px;
+    height: 100px;
+}
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-bottom">
+    <nav class="navbar navbar-fixed-bottom {{!-- secondNav --}}">
   <div>
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-default navbar-nav">
         {{#each this.categories}}
         <li><a href="/byCat/{{id}}">{{name}}</a></li>
         {{/each}}
     </ul>
   </div>
 </nav>
-    
-   
-    <div class="row">
-          <div class="col-md-9">
-              <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <section>
+        <article>
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 <div class="carousel-inner" role="listbox">
     <div class="item active">
-        <img href="/post/{{this.first.Slug}}" src="{{this.first.Image}}" alt="..." {{!-- width="200" height="200" --}}> 
+        <img href="/post/{{this.first.Slug}}" src="{{this.first.Image}}" alt="..."> 
         <div class="carousel-caption">
             <a href="/post/{{this.first.Slug}}">{{this.first.Title}}</a>
             
@@ -51,7 +90,8 @@
     <div class="item">
         <img href="/post/{{Slug}}" src="{{Image}}" alt="...">
         <div class="carousel-caption">
-            {{Title}}
+            <a href="/post/{{Slug}}">{{Title}}</a>
+            
         </div>
     </div>
     {{/each}}
@@ -66,6 +106,8 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
+        </article>
+        <article>
 <div>
     {{#each this.cats}}
     <hr>
@@ -81,23 +123,25 @@
             <h4><a href="/post/{{Slug}}">{{Title}}</a></h4>
             <div class="row">
                 <div class="col-md-5">
-                    <img href="/post/{{Slug}}" src="https://m.media-amazon.com/images/I/91eyAbX9F7L._SS500_.jpg{{!-- {{Image}} --}}" alt="...">
+                    <img href="/post/{{Slug}}" src="{{Image}}" alt="...">
                 </div>
-                <p class="col-md-7">{{Summary}}</p>
+                <p class="col-md-7">{{Summary}}</p>                     
             </div>
+            <p><small>{{Date}}</small></p>
         </div>
         {{/each}}
     </div>
     {{/each}}
 </div>
-          </div>
-          <div class="col-md-3">
+        </article>
+         <div class="col-md-3" style="margin-top: -360px;">   
                 <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a>Newest</a></li>
                 </ul>
                  <br>
                  {{#each this.top10Newest}}
                 <a class="tab-content" href="/post/{{Slug}}">{{Title}}</a>
+                <p><small>{{Date}}</small></p>
                 <hr>
                  {{/each}}
         </div>
@@ -108,11 +152,14 @@
                  <br>
                 {{#each this.top10View}}
                 <a class="tab-content" href="/post/{{Slug}}">{{Title}}</a>
+                <p><small>{{Date}}</small></p>
                 <hr>
                  {{/each}}
         </div>
-
-
+        
+    </section>
+            <pre></pre>
+            <pre></pre>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

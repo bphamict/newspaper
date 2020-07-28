@@ -15,11 +15,11 @@ module.exports = {
     },
     
     top10Newest:function(){
-        return db.load(`SELECT id as Id, title as Title, slug as Slug FROM post ORDER BY updated_at DESC LIMIT 10`);
+        return db.load(`SELECT id as Id, title as Title, slug as Slug, updated_at as Date FROM post ORDER BY updated_at DESC LIMIT 10`);
     },
 
     top10View:function(){
-        return db.load(`SELECT id as Id, title as Title, slug as Slug FROM post ORDER BY view_count DESC LIMIT 10`);
+        return db.load(`SELECT id as Id, title as Title, slug as Slug, updated_at as Date FROM post ORDER BY view_count DESC LIMIT 10`);
     },
 
     postsOrderByCat:function(){
@@ -29,6 +29,7 @@ module.exports = {
 		post.title as Title, 
 		post.summary as Summary,
         post.slug as Slug,
+        post.updated_at as Date,
 		(row_number() over (PARTITION BY post.category_id ORDER BY post.category_id DESC)) AS CatRank FROM post`);
     },
 

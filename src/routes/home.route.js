@@ -20,10 +20,9 @@ router.get('/', async function(req, res){
         rest.push({
             Image: element.Image,
             Title: element.Title,
+            Slug: element.Slug,
         })
     });
-
-    console.log(catsWithSubs);
 
     name = catsWithSubs[0].catName;
     ID = catsWithSubs[0].Id; 
@@ -73,13 +72,15 @@ router.get('/', async function(req, res){
         posts = [];
     }
 
+    console.log(rest);
+
     res.render('home',{
         first: first,
         post: rest,
         cats: cats,
         top10Newest,  
         top10View,
-        categories
+        categories,
     });
 })
 
