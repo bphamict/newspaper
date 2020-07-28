@@ -171,13 +171,14 @@
 
         function saveTags() {
             $('.modal').css('display', 'none');
-            let tagString = '';
+            let tagArray = [];
             $('.radio-check').each(function (i) {
                 if ($(this).is(':checked')) {
-                    tagString += $(this).val() + ' | ';
+                    tagArray.push($(this).val());
                 }
             })
-            $('#input-tag').val(tagString)
+            let tagString = tagArray.join(' | ');
+            $('#input-tag').val(tagString);
         }
 
         $('.close').on('click', saveTags)

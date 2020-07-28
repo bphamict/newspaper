@@ -2,6 +2,11 @@
     <h2 style="text-align: center; margin-bottom: 2rem">Danh sách bài viết</h2>
 </div>
 <div>
+    <div style="margin-bottom: 20px; display: flex; justify-content:flex-end">
+        <a class="btn btn-success" role="button" href="/writer/post/add">Thêm
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </a>
+    </div>
     {{#ifEqual numberOfPost 0}}
     <p style="text-align: center; font-weight:bold">Bạn chưa có bài viết nào</p>
     {{/ifEqual}}

@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-    <li><a href="/admin">Home</a></li>
-    <li class="active">Users</li>
+    <li><a href="/admin">Trang Admin</a></li>
+    <li class="active">Danh sách người dùng</li>
 </ol>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -8,7 +8,7 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-9"></div>
             <div class="col-sm-2">
-                <a class="btn btn-success" role="button" href="/admin/users/add">Add a user
+                <a class="btn btn-success" role="button" href="/admin/users/add">Thêm
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </a>
             </div>
@@ -21,9 +21,9 @@
                     <thead>
                         <tr class="">
                             <th scope="col" class="col-md-1">ID</th>
-                            <th scope="col" class="col-md-3">Full name</th>
+                            <th scope="col" class="col-md-3">Họ tên</th>
                             <th scope="col" class="col-md-3">Email</th>
-                            <th scope="col" class="col-md-2" style="text-align: center;">Role</th>
+                            <th scope="col" class="col-md-2" style="text-align: center;">Vai trò</th>
                             <th scope="col" class="col-md-3" style="text-align: center;"></th>
                         </tr>
                     </thead>
@@ -34,13 +34,27 @@
                             <td style="vertical-align: middle;">{{this.full_name}}</td>
                             <td style="vertical-align: middle;">{{this.email}}</td>
                             <td style="vertical-align: middle; text-align: center; text-transform:uppercase"><span
-                                    class="text-danger" style="padding: 5px;">{{this.role_name}}</span></td>
+                                    class="text-danger" style="padding: 5px;">
+                                    {{#ifEqual this.role_name 'writer'}}
+                                    phóng viên
+                                    {{else}}
+                                    {{#ifEqual this.role_name 'editor'}}
+                                    biên tập viên
+                                    {{else}}
+                                    {{#ifEqual this.role_name 'admin'}}
+                                    quản trị viên
+                                    {{else}}
+                                    độc giả
+                                    {{/ifEqual}}
+                                    {{/ifEqual}}
+                                    {{/ifEqual}}
+                                    </span></td>
                             <td style="text-align:center" class="action-cell-{{this.id}}">
                                 <a id="{{this.id}}" class="btn btn-primary" role="button"
-                                    href="/admin/users/{{this.id}}/details">Edit
+                                    href="/admin/users/{{this.id}}/details">Chỉnh sửa
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
-                                <a id="{{this.id}}" class="btn btn-danger del-btn" role="button">Delete
+                                <a id="{{this.id}}" class="btn btn-danger del-btn" role="button">Xóa
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </a>
                             </td>
@@ -49,7 +63,8 @@
                     </tbody>
                 </table>
             </div>
-            {{#ifNotEqual numOfPage 0}}
+        </div>
+        {{#ifNotEqual numOfPage 0}}
             <nav aria-label="Page navigation">
                 <ul class="pagination" style="display: flex;justify-content: center;margin-top: 30px;">
                     <li class="prev-page {{#unless this.canGoPrev}}disabled{{/unless}}"
@@ -72,7 +87,6 @@
                 </ul>
             </nav>
             {{/ifNotEqual}}
-        </div>
     </div>
 </div>
 <div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel"
@@ -107,7 +121,7 @@
                 data: {},
                 success: function (data) {
                     if (data.success) {
-                        parent.html('<div style="padding: 6px 12px; border: 1px solid transparent; text-transform:uppercase">Đã xóa</div>');
+                        parent.html('<div style="padding: 6px 12px; border: 1px solid transparent; text-transform:uppercase">Đã xóa!</div>');
                         parent = null;
                     }
                 },
@@ -151,5 +165,5 @@
 {{/section}}
 
 {{#section 'title'}}
-Danh sách người dùng
+Danh sách người dùng - Trang Admin
 {{/section}}

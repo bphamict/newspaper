@@ -1,12 +1,23 @@
-{{#section 'title'}}Posts - Admin page{{/section}}
+{{#section 'title'}}Danh sách bài viết - Trang Admin{{/section}}
 <ol class="breadcrumb">
-    <li><a href="/admin">Home</a></li>
-    <li class="active">Posts</li>
+    <li><a href="/admin">Trang Admin</a></li>
+    <li class="active">Danh sách bài viết</li>
 </ol>
 <div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-9"></div>
+            <div class="col-sm-2">
+                <a class="btn btn-success" role="button" href="/admin/posts/add">Thêm
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="panel-body">
         {{#if this.empty}}
-        <p class="well">There is currently no post</p>
+        <p class="well">Hiện không có bài viết nào</p>
         {{else}}
         <div class="row">
             {{#each this.posts}}
@@ -17,9 +28,9 @@
                         <h3 class="post-title">{{title}}</h3>
                         <p class="post-summary">{{summary}}</p>
                         <p style="margin-top: 30px;">
-                            <a href="/admin/posts/detail?id={{id}}" class="btn btn-primary" role="button">Detail</a>
+                            <a href="/admin/posts/detail?id={{id}}" class="btn btn-primary" role="button">Chi tiết</a>
                             {{#ifEqual this.status 'PENDING'}}
-                            <a href="/admin/posts/update_status?id={{id}}" class="btn btn-success" role="button">Update status</a>
+                            <a href="/admin/posts/update_status?id={{id}}" class="btn btn-success" role="button">Cập nhật trạng thái</a>
                             {{/ifEqual}}
                         </p>
                     </div>

@@ -15,10 +15,8 @@
             <span style="font-size: 1.75rem; float: right;">Tìm theo:
                 <select id="select-search-by">
                     <option value="title" {{#ifEqual this.search_by 'title'}}selected{{/ifEqual}}>Tiêu đề</option>
-                    <option value="summary" {{#ifEqual this.search_by 'summary'}}selected{{/ifEqual}}>Nội dung tóm tắt
-                    </option>
-                    <option value="content_text" {{#ifEqual this.search_by 'content_text'}}selected{{/ifEqual}}>Nội dung
-                        bài viết</option>
+                    <option value="summary" {{#ifEqual this.search_by 'summary'}}selected{{/ifEqual}}>Tóm tắt</option>
+                    <option value="content_text" {{#ifEqual this.search_by 'content_text'}}selected{{/ifEqual}}>Nội dung bài viết</option>
                 </select>
             </span>
         </div>
@@ -88,11 +86,11 @@
         }
 
         $('.search-btn').on('click', function () {
-            redirect($('.search-input').val());
+            !!$('.search-input').val() && redirect($('.search-input').val());
         })
 
         $('.search-input').keypress(function (e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode == 13 && !!$(this).val()) {
                 redirect($(this).val());
             }
         })

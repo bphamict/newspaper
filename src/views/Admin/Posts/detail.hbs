@@ -1,8 +1,8 @@
-{{#section 'title'}}Posts - Admin page{{/section}}
+{{#section 'title'}}Chi tiết bài viết - Trang Admin{{/section}}
 <ol class="breadcrumb">
-    <li><a href="/admin">Home</a></li>
-    <li><a href="/admin/posts">Posts</a></li>
-    <li class="active">Detail</a></li>
+    <li><a href="/admin">Trang Admin</a></li>
+    <li><a href="/admin/posts">Danh sách bài viết</a></li>
+    <li class="active">Chi tiết</a></li>
 </ol>
 
 <div class="panel panel-default">
@@ -11,10 +11,10 @@
             <span class="glyphicon glyphicon-backward"></span>
         </a>
         <a class="btn btn-primary" style="float: right;" href="/admin/posts/edit?id={{this.post.id}}">
-            <span class="glyphicon glyphicon-pencil"></span> Edit
+            <span class="glyphicon glyphicon-pencil"></span> Chỉnh sửa
         </a>
         <a class="btn btn-danger del-btn" style="float: right; margin-right: 5px">
-            <span class="glyphicon glyphicon-trash"></span> Delete
+            <span class="glyphicon glyphicon-trash"></span> Xóa
         </a>
     </div>
     <div class="panel-body">
@@ -25,31 +25,31 @@
             </div>
             <div class="col-lg-6">
                 <p><b>ID:</b> {{this.post.id}}</p>
-                <p><span class="glyphicon glyphicon-book"></span><b> Category:</b> {{this.post.category_name}}</p>
-                <p><span class="glyphicon glyphicon-book"></span><b> Sub category:</b> {{this.post.sub_category_name}}</p>
+                <p><span class="glyphicon glyphicon-book"></span><b> Chuyên mục:</b> {{this.post.category_name}}</p>
+                <p><span class="glyphicon glyphicon-book"></span><b> Chuyên mục con:</b> {{this.post.sub_category_name}}</p>
                 <p>
-                    <span style="margin-right: 20px;"><span class="glyphicon glyphicon-tag"></span><b> Type:</b> {{this.post.type}}</span>
-                    <span class="glyphicon glyphicon-tag"></span><b> Status:</b>
+                    <span style="margin-right: 20px;"><span class="glyphicon glyphicon-tag"></span><b> Loại:</b> {{this.post.type}}</span>
+                    <span class="glyphicon glyphicon-tag"></span><b> Trạng thái:</b>
                     {{#ifEqual this.post.isPublished true}}
-                    <span class="text-success">PUBLISHED</span>
+                    <span class="text-success">ĐÃ XUẤT BẢN</span>
                     {{else}}
                     {{#ifEqual this.post.status 'PENDING'}}
-                    <span>PENDING</span>
+                    <span>CHƯA ĐƯỢC DUYỆT</span>
                     {{else}}
                     {{#ifEqual this.post.status 'APPROVED'}}
-                    <span class="text-primary">APPROVED</span>
+                    <span class="text-primary">ĐÃ ĐƯỢC DUYỆT</span>
                     {{else}}
                     {{#ifEqual this.post.status 'DENIED'}}
-                    <span class="text-danger">DENIED</span>
+                    <span class="text-danger">BỊ TỪ CHỐI</span>
                     {{else}}
-                    <span class="text-success">PUBLISHED</span> 
+                    <span class="text-success">ĐÃ XUẤT BẢN</span> 
                     {{/ifEqual}}
                     {{/ifEqual}}
                     {{/ifEqual}}
                     {{/ifEqual}}
                 </p>
-                <p><span class="glyphicon glyphicon-eye-open"></span> <b> Views:</b> {{this.post.view_count}}</p>
-                <p style=""><span class="glyphicon glyphicon-tag"></span><b> Tags:</b>
+                <p><span class="glyphicon glyphicon-eye-open"></span> <b> Lượt xem:</b> {{this.post.view_count}}</p>
+                <p style=""><span class="glyphicon glyphicon-tag"></span><b> Nhãn:</b>
                     {{#each this.postTags}}
                     <span style="background-color: gray; padding: 5px; color:white">{{this.name}}</span>
                     {{/each}}
@@ -59,7 +59,7 @@
         <br>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Sumary</h3>
+                <h3 class="panel-title">Tóm tắt</h3>
             </div>
             <div class="panel-body">
                 {{this.post.summary}}
@@ -68,7 +68,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Content</h3>
+                <h3 class="panel-title">Nội dung</h3>
             </div>
             <div class="panel-body">
                 {{{this.post.content}}}

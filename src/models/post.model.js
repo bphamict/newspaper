@@ -114,7 +114,7 @@ module.exports = {
             orderIfAuthenticated = "FIELD(type, 'PREMIUM', 'FREE'),"
         }
 
-        const rows = await db.load(`SELECT P.*, C.name as category_name, SC.name as sub_cagegory_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} publish_time DESC LIMIT ${offset}, ${limit}`);
+        const rows = await db.load(`SELECT P.*, C.name as category_name, SC.name as sub_cagegory_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND P.isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} publish_time DESC LIMIT ${offset}, ${limit}`);
 
         if(rows.length === 0) {
             return null;

@@ -109,7 +109,8 @@ router.post('/:id/details', isAdmin, async (req, res) => {
         req.body.expiry_time = moment(req.body.expiry_time).format('YYYY-MM-DD HH:mm:ss');
     }
     if(role_id === 4) {
-        await Promise.all([userSubscribeModel.update({ userID: userID, expiry_time: req.body.expiry_time }), categoryModel.deleteUser({ userID })]);
+        await userSubscribeModel.delete(userID);
+        await Promise.all([userSubscribeModel.add({ user_id: userID, expiry_time: req.body.expiry_time }), categoryModel.deleteUser({ userID })]);
     } else if (role_id === 3) {
         await Promise.all([userSubscribeModel.delete(userID), categoryModel.deleteUser({ userID }), userModel.update({ id: userID, writer_pseudonym: req.body.full_name })]);
     } else {
