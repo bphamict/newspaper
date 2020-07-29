@@ -4,6 +4,7 @@ const sub_categoryModel = require('../models/sub-category.model');
 const postTagModel = require('../models/post-tag.model');
 const commentModel = require('../models/comment.model');
 const userSubscribeModel = require('../models/user-subscribe.model');
+const config = require('../configs/default');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
@@ -111,7 +112,7 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
 router.get('/category/:slugCategory', async (req, res) => {
   const page = +req.query.page || 1;
   if (page < 0) page = 1;
-  const limit = 10;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
   const slugCategory = req.params.slugCategory;
@@ -151,7 +152,7 @@ router.get('/category/:slugCategory', async (req, res) => {
 router.get('/sub_category/:slugSubcategory', async (req, res) => {
   const page = +req.query.page || 1;
   if (page < 0) page = 1;
-  const limit = 10;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
   const slugSub_category = req.params.slugSubcategory;

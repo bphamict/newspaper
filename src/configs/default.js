@@ -14,6 +14,7 @@ module.exports = {
   },
   pagination: {
     limit: 6,
+    
   },
   authentication: {
     saltRounds: 10,

@@ -2,12 +2,13 @@ const express = require('express');
 const db = require('../../utils/db');
 const postsModel = require('../../models/admin/posts.model');
 const router = express.Router();
+const config = require('../../configs/default');
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 
 router.get('/', isAdmin, async function (req, res) {
   const page = +req.query.page || 1;
   if (page < 0) page = 1;
-  const limit = 10;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
   const list = await postsModel.page(limit, offset);
@@ -42,7 +43,7 @@ router.get('/detail', isAdmin, async function (req, res) {
     res.send('Invalid parameter.');
   }
   const post = row[0];
-  console.log(post);
+  //console.log(post);
   res.render('Admin/Posts/detail', { post });
 });
 
@@ -86,7 +87,7 @@ router.get('/edit', isAdmin, async function (req, res) {
     res.send('Invalid parameter.');
   }
   const post = row[0];
-  console.log(post);
+  //console.log(post);
   res.render('Admin/Posts/edit', { post });
 });
 

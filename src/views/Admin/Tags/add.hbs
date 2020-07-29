@@ -12,7 +12,7 @@
     <div class="panel-body">
         <form method="POST" action="" id="frmAdd">
             <div class="form-group">
-                <label for="txtCategoryName">Tên tag</label>
+                <label for="txtCategoryName">Tên nhãn</label>
                 <input type="text" class="form-control" id="txtName" name="name" autofocus>
                 <p style="color: red;" id="txtValidate"></p>
                 
@@ -48,7 +48,7 @@
         var txtName = document.getElementById("txtName");
         if(!required(txtName)){
             event.preventDefault();
-            document.getElementById("txtValidate").innerHTML = "Tên tag không được bỏ trống!!!";
+            document.getElementById("txtValidate").innerHTML = "Tên nhãn không được bỏ trống!!!";
             txtName.focus();
         }
         

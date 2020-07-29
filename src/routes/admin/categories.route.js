@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../../utils/db');
 const categoriesModel = require('../../models/admin/categories.model');
+const config = require('../../configs/default');
 const router = express.Router();
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 const slugify = require('slugify');
@@ -8,7 +9,7 @@ const slugify = require('slugify');
 router.get('/', isAdmin, async function (req, res) {
   const page = +req.query.page || 1;
   if(page < 0) page = 1;
-  const limit = 10;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
   //const list = await categoriesModel.all();
@@ -26,7 +27,7 @@ router.get('/', isAdmin, async function (req, res) {
     page_items.push(item);
   }
 
-  console.log(list);
+  //console.log(list);
   res.render('Admin/Categories/list', {
     categories: list,
     empty: list.length === 0,
@@ -61,7 +62,7 @@ router.get('/:slug/edit', isAdmin, async function (req, res) {
     res.send('Invalid parameter.');
   }
   const category = row[0];
-  console.log(category);
+  //console.log(category);
   res.render('Admin/Categories/edit', { category });
 });
 
@@ -85,7 +86,7 @@ router.post('/delete', async function (req, res) {
     lower: true,
     locale: 'vi'
   });
-  console.log(entity);
+  //console.log(entity);
   await categoriesModel.del(entity);
   res.redirect('/Admin/categories');
 });

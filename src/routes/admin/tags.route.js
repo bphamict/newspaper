@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../../utils/db');
 const tagsModel = require('../../models/admin/tags.model');
+const config = require('../../configs/default');
 const router = express.Router();
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 const slugify = require('slugify');
@@ -8,7 +9,7 @@ const slugify = require('slugify');
 router.get('/', isAdmin, async function (req, res) {
   const page = +req.query.page || 1;
   if(page < 0) page = 1;
-  const limit = 10;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
   const list = await tagsModel.page(limit,offset);

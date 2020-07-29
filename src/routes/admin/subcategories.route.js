@@ -2,31 +2,32 @@ const express = require('express');
 const db = require('../../utils/db');
 const categoriesModel = require('../../models/admin/categories.model');
 const subcategoriesModel = require('../../models/admin/subcategories.model');
+const config = require('../../configs/default');
 const router = express.Router();
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 const slugify = require('slugify');
 
 router.get('/', isAdmin, async function (req, res) {
   const page = +req.query.page || 1;
-  if(page < 0) page = 1;
-  const limit = 10;
+  if (page < 0) page = 1;
+  const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
-  const list = await subcategoriesModel.page(limit,offset);
+  const list = await subcategoriesModel.page(limit, offset);
 
   const total = await subcategoriesModel.count();
-  const nPages = Math.ceil(total/limit);
-  
+  const nPages = Math.ceil(total / limit);
+
   const page_items = [];
-  for(let i = 1; i<=nPages; i++){
+  for (let i = 1; i <= nPages; i++) {
     const item = {
       value: i,
-      isActive: i === page
-    }
+      isActive: i === page,
+    };
     page_items.push(item);
   }
 
-  console.log(list);
+  //console.log(list);
   res.render('Admin/Subcategories/list', {
     subcategories: list,
     empty: list.length === 0,
@@ -40,7 +41,7 @@ router.get('/', isAdmin, async function (req, res) {
 
 router.get('/add', isAdmin, async function (req, res) {
   const list = await categoriesModel.all();
-  console.log(list);
+  //console.log(list);
   res.render('Admin/Subcategories/add', {
     categories: list,
     empty: list.length === 0,
@@ -76,7 +77,7 @@ router.get('/:slug/edit/:id', isAdmin, async function (req, res) {
     res.send('Invalid parameter.');
   }
 
-  console.log(obj);
+  //console.log(obj);
   res.render('Admin/Subcategories/edit', {
     subcategory: obj,
     categories: list,
@@ -98,7 +99,7 @@ router.post('/update', async function (req, res) {
       }),
       isDeleted: req.body.isDeleted,
     };
-    console.log(entity);
+    //console.log(entity);
     await subcategoriesModel.update(entity);
     res.redirect('/Admin/subcategories');
   }
@@ -109,7 +110,7 @@ router.post('/delete', async function (req, res) {
     id: req.body.id,
     isDeleted: 1,
   };
-  console.log(entity);
+  //console.log(entity);
   await subcategoriesModel.del(entity);
   res.redirect('/Admin/subcategories');
 });
