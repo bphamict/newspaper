@@ -60,5 +60,9 @@ module.exports = {
         return db.load(`SELECT * FROM ${CAT_TBL} WHERE slug ='${slug}'`);
         
     },
+    findSlugCatBySlugSub_Cat: async (slug) => {
+        const row = await db.load(`SELECT c.slug FROM ${TBL} sc JOIN ${CAT_TBL} c on sc.category_id=c.id WHERE sc.slug = '${slug}'`);
+        return row[0];
+    },
     
 }

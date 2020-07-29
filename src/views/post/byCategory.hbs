@@ -1,33 +1,38 @@
 <h3>{{this.nameCategory.name}}</h3>
 <ul class="nav nav-pills">
-    {{#each this.listSubCg}}
-    <li><a href="/post/sub_category/{{slug}}">{{name}}</a></li>
-    {{/each}}
+  {{#each this.listSubCg}}
+  <li><a href="/post/sub_category/{{slug}}">{{name}}</a></li>
+  {{/each}}
 </ul>
+
+
+{{#if this.empty}}
+<p class="well">Không có dữ liệu...</p>
+{{else}}
 <div class="row">
 
-    {{#each this.posts}}
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
+  {{#each this.posts}}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
 
-            <img src="../../../public/imgs/newpapers/{{id}}/{{featured_image}}" alt="{{title}}" title="{{title}}"
-                style="width: 100%;" class="img-rounded">
-            <div class="caption">
-                <h3>{{title}}</h3>
-                <p>{{summary}}</p>
-                <p>
-                    <a href="/post/{{slug}}" class="btn btn-primary" role="button">
-                        <span class="glyphicon glyphicon-eye-open"></span>
-                        Xem</a>
+      <img src="../../../public/imgs/newpapers/{{id}}/{{featured_image}}" alt="{{title}}" title="{{title}}"
+        style="width: 100%;" class="img-rounded">
+      <div class="caption">
+        <h3>{{title}}</h3>
+        <p>{{summary}}</p>
+        <p>
+          <a href="/post/{{slug}}" class="btn btn-primary" role="button">
+            <span class="glyphicon glyphicon-eye-open"></span>
+            Xem</a>
 
-                </p>
-            </div>
+        </p>
+      </div>
 
-        </div>
     </div>
-    {{/each}}
+  </div>
+  {{/each}}
 
-    
+
 </div>
 <nav aria-label="Page navigation">
   <ul class="pagination">
@@ -43,7 +48,7 @@
     <li><a href="?page={{value}}">{{value}}</a></li>
     {{/if}}
     {{/each}}
-    
+
     <li {{#unless this.can_go_next}} class="disabled" {{/unless}}>
       <a href="?page={{this.next_value}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
@@ -51,3 +56,4 @@
     </li>
   </ul>
 </nav>
+{{/if}}

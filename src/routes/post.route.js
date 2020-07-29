@@ -17,27 +17,42 @@ router.get('/error', (req, res) => {
 router.get('/:slug', async (req, res) => {
   const slug = req.params.slug;
   const post = await postModel.loadBySlugWithCategoryAndSubCategoryName(slug);
-  
+
   if (!post) {
     res.redirect('/post/error');
   }
 
-    var blur = false;
-    var blurMsg = '';
-    if(post.type === 'PREMIUM') {
-        if(!req.user) {
-            blur = true;
-            blurMsg = 'Hãy trở thành độc giả để xem bài viết này';
-        } else {
-            const userSubscribe = await userSubscribeModel.loadByID(req.user.id);
-            if(userSubscribe && moment().isAfter(userSubscribe.expiry_time, 'second')) {
-                blur = true;
-                blurMsg = 'Hãy gia hạn tài khoản để xem bài viết này';
-            }
-        }
+  var blur = false;
+  var blurMsg = '';
+  if (post.type === 'PREMIUM') {
+    if (!req.user) {
+      blur = true;
+      blurMsg = 'Hãy trở thành độc giả để xem bài viết này';
+    } else {
+      const userSubscribe = await userSubscribeModel.loadByID(req.user.id);
+      if (
+        userSubscribe &&
+        moment().isAfter(userSubscribe.expiry_time, 'second')
+      ) {
+        blur = true;
+        blurMsg = 'Hãy gia hạn tài khoản để xem bài viết này';
+      }
     }
-    const [postTags, comments, numberOfCmt, relatedPosts, viewCountResult] = await Promise.all([postTagModel.loadByPostIDWithName(post.id), commentModel.loadNCommentsFromPost(post.id, 0, 3), commentModel.getNumberOfCommentFromPost(post.id), postModel.loadRelatedPost(post.id, post.sub_category_id), postModel.increaseView(post.id)]);
-    post.created_at = moment(post.created_at).format('LLL');
+  }
+  const [
+    postTags,
+    comments,
+    numberOfCmt,
+    relatedPosts,
+    viewCountResult,
+  ] = await Promise.all([
+    postTagModel.loadByPostIDWithName(post.id),
+    commentModel.loadNCommentsFromPost(post.id, 0, 3),
+    commentModel.getNumberOfCommentFromPost(post.id),
+    postModel.loadRelatedPost(post.id, post.sub_category_id),
+    postModel.increaseView(post.id),
+  ]);
+  post.created_at = moment(post.created_at).format('LLL');
 
   comments &&
     comments.forEach((comment) => {
@@ -52,9 +67,17 @@ router.get('/:slug', async (req, res) => {
     result.forEach((post) => {
       post.created_at = moment(post.created_at).format('LL');
     });
-    
-    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0, blur, blurMsg });
-})
+
+  res.render('post/details', {
+    post,
+    postTags,
+    comments,
+    related: result,
+    commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0,
+    blur,
+    blurMsg,
+  });
+});
 
 router.get('/:id/comments', async (req, res) => {
   let start = parseInt(req.query.start);
@@ -86,56 +109,98 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
 });
 
 router.get('/category/:slugCategory', async (req, res) => {
-    const page = +req.query.page || 1;
-    if(page < 0) page = 1;
-    const limit = 1;
-    const offset = (page - 1) * limit;
+  const page = +req.query.page || 1;
+  if (page < 0) page = 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
 
-    const slugCategory = req.params.slugCategory;
-    const rowsCg = await sub_categoryModel.findNameCgBySlug(slugCategory);
-    var listSubCg = await sub_categoryModel.allBySlugCategory(slugCategory);
-    const  nameCategory = rowsCg[0];
-    //var posts = await postModel.loadBySlugCategory(slugCategory);
-    var posts = await postModel.pageBySlugCategory(slugCategory,limit,offset);
+  const slugCategory = req.params.slugCategory;
+  const rowsCg = await sub_categoryModel.findNameCgBySlug(slugCategory);
+  var listSubCg = await sub_categoryModel.allBySlugCategory(slugCategory);
+  const nameCategory = rowsCg[0];
+  //var posts = await postModel.loadBySlugCategory(slugCategory);
+  var posts = await postModel.pageBySlugCategory(slugCategory, limit, offset);
 
-    const total = await postModel.countBySlugCategory(slugCategory);
-    const nPages = Math.ceil(total/limit);
-    
+  const total = await postModel.countBySlugCategory(slugCategory);
+  const nPages = Math.ceil(total / limit);
+
+  const page_items = [];
+  for (let i = 1; i <= nPages; i++) {
+    const item = {
+      value: i,
+      isActive: i === page,
+    };
+    page_items.push(item);
+  }
+
+  console.log(posts);
+
+  res.render('post/byCategory', {
+    nameCategory,
+    listSubCg,
+    posts,
+    empty: posts.length === 0,
+    page_items,
+    prev_value: page - 1,
+    next_value: page + 1,
+    can_go_prev: page > 1,
+    can_go_next: page < nPages,
+  });
+});
+
+router.get('/sub_category/:slugSubcategory', async (req, res) => {
+  const page = +req.query.page || 1;
+  if (page < 0) page = 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const slugSub_category = req.params.slugSubcategory;
+  const nameSlugCat = await sub_categoryModel.findSlugCatBySlugSub_Cat(
+    slugSub_category,
+  );
+
+  if (typeof nameSlugCat !== 'undefined') {
+    const rowsCg = await sub_categoryModel.findNameCgBySlug(nameSlugCat.slug);
+    var listSubCg = await sub_categoryModel.allBySlugCategory(nameSlugCat.slug);
+    const nameCategory = rowsCg[0];
+
+    var posts = await postModel.pageBySlugCategoryAndSlugSubcategory(
+      nameSlugCat.slug,
+      slugSub_category,
+      limit,
+      offset,
+    );
+
+    const total = await postModel.countBySlugCategorySlugSub_category(
+      nameSlugCat.slug,
+      slugSub_category,
+    );
+    const nPages = Math.ceil(total / limit);
+
     const page_items = [];
-    for(let i = 1; i<=nPages; i++){
+    for (let i = 1; i <= nPages; i++) {
       const item = {
         value: i,
-        isActive: i === page
-      }
+        isActive: i === page,
+      };
       page_items.push(item);
     }
+    //console.log(posts);
 
-    console.log(posts);
-
-    res.render('post/byCategory', { 
-      nameCategory, 
-      listSubCg, 
-      posts, 
+    res.render('post/byCategory', {
+      nameCategory,
+      listSubCg,
+      posts,
+      empty: posts.length === 0,
       page_items,
       prev_value: page - 1,
       next_value: page + 1,
       can_go_prev: page > 1,
       can_go_next: page < nPages,
-     });
-    
-  });
-
-  router.get('/sub_category/:slugSubcategory', async (req, res) => {
-    const slugSubcategory = req.params.slugSubcategory;
-    const rowsCg = await subCategoryModel.findNameCgBySlug(slugCategory);
-    var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
-    const  nameCategory = rowsCg[0];
-    var posts = await postModel.loadBySlugCategory(slugCategory);
-    console.log(posts);
-
-    res.render('post/byCategory', { nameCategory, listSubCg, posts });
-    
-  });
-
+    });
+  } else {
+    res.redirect('/post/error');
+  }
+});
 
 module.exports = router;
