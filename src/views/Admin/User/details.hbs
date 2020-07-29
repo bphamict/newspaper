@@ -28,7 +28,19 @@
         <label>Vai trò</label>
         <select class="form-control role-option" style="text-transform: uppercase;" name="role">
             {{#each roles}}
-                <option value={{this.id}} {{#ifEqual @root.user.role this.id}}selected{{/ifEqual}}>{{this.name}}</option>
+                <option value={{this.id}} {{#ifEqual @root.user.role this.id}}selected{{/ifEqual}}>
+                {{#ifEqual this.name 'writer'}}
+                PHÓNG VIÊN
+                {{else}}
+                {{#ifEqual this.name 'editor'}}
+                BIÊN TẬP VIÊN
+                {{else}}
+                {{#ifEqual this.name 'subscriber'}}
+                ĐỘC GIẢ
+                {{/ifEqual}}
+                {{/ifEqual}}
+                {{/ifEqual}}
+                </option>
             {{/each}}
         </select>
     </div>
