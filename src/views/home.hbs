@@ -6,29 +6,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
+    <style>
+        hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:lightgray;
+        height: 1px;
+        } 
+        .nav > li > a:hover{
+        background-color:transparent;
+        }
+        article {
+  float: left;
+  width: 70%;
+}
+
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+aside{
+    float:right;
+}
+
+.carousel {
+  width:790px;
+  height:360px;
+}
+
+.carousel-caption a{
+    font-size: 25px;
+    color: white;
+}
+
+.carousel-inner > .item > img {
+  width:790px;
+  height:360px;
+}
+
+pre{
+    background-color: white;
+    border-color: white;
+}
+{{!-- .secondNav{
+    padding-top: 52px;
+} --}}
+a {
+    text-decoration: none; 
+    color: grey; 
+}
+img{
+    width: 100px;
+    height: 100px;
+}
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-fixed-bottom {{!-- secondNav --}}">
+  <div>
+    <ul class="nav navbar-default navbar-nav">
+        {{#each this.categories}}
+        <li><a href="/byCat/{{id}}">{{name}}</a></li>
+        {{/each}}
+    </ul>
+  </div>
+</nav>
+    <section>
+        <article>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-
 <div class="carousel-inner" role="listbox">
     <div class="item active">
-        <img src="https://images.unsplash.com/photo-1506153456649-ed4ed08d1e0c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d631d4911c05368cf6699b828116473d&auto=format&fit=crop&w=800&q=60" alt="...">
+        <img href="/post/{{this.first.Slug}}" src="{{this.first.Image}}" alt="..."> 
         <div class="carousel-caption">
-            Seashore
+            <a href="/post/{{this.first.Slug}}">{{this.first.Title}}</a>
+            
         </div>
     </div>
+    {{#each this.post}}
     <div class="item">
-        <img src="https://images.unsplash.com/photo-1504416285472-eccf03dd31eb?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a121a890a07652296c0cff8d74f242ef&auto=format&fit=crop&w=800&q=60" alt="...">
+        <img href="/post/{{Slug}}" src="{{Image}}" alt="...">
         <div class="carousel-caption">
-            Chinese Restorant
+            <a href="/post/{{Slug}}">{{Title}}</a>
+            
         </div>
     </div>
-    <div class="item">
-        <img src="https://images.unsplash.com/photo-1506153456649-ed4ed08d1e0c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d631d4911c05368cf6699b828116473d&auto=format&fit=crop&w=800&q=60" alt="...">
-        <div class="carousel-caption">
-            Cars
-        </div>
-    </div>  
+    {{/each}}
+
 </div>
   <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -39,72 +106,60 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
-<hr>
+        </article>
+        <article>
 <div>
+    {{#each this.cats}}
+    <hr>
     <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
+        <li><a href="/byCat/{{id}}">{{catName}}</a></li>
+        {{#each subCatName}}
+        <li><a href="/byCat/{{../id}}">{{this}}</a></li>
+        {{/each}}
     </ol>
     <div class="row">
+        {{#each posts}}
         <div class="col-md-4">
-            <h4>Title</h4>
+            <h4><a href="/post/{{Slug}}">{{Title}}</a></h4>
             <div class="row">
                 <div class="col-md-5">
-                    <img src="https://" alt="...">
+                    <img href="/post/{{Slug}}" src="{{Image}}" alt="...">
                 </div>
-                <p class="col-md-7">Summary</p>
+                <p class="col-md-7">{{Summary}}</p>                     
             </div>
+            <p><small>{{Date}}</small></p>
         </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
+        {{/each}}
     </div>
+    {{/each}}
 </div>
-<hr>
-<div>
-    <ol class="breadcrumb">
-        <li><a href="#">Category</a></li>
-        <li><a href="#">Sub-cat1</a></li>
-        <li><a href="#">Sub-cat2</a></li>
-    </ol>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="row">
-                <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-            </div>
+        </article>
+         <div class="col-md-3" style="margin-top: -360px;">   
+                <ul class="nav nav-tabs">
+                <li role="presentation" class="active"><a>Newest</a></li>
+                </ul>
+                 <br>
+                 {{#each this.top10Newest}}
+                <a class="tab-content" href="/post/{{Slug}}">{{Title}}</a>
+                <p><small>{{Date}}</small></p>
+                <hr>
+                 {{/each}}
         </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
+        <div class="col-md-3">
+                <ul class="nav nav-tabs">
+                <li role="presentation" class="active"><a>Most view</a></li>
+                </ul>
+                 <br>
+                {{#each this.top10View}}
+                <a class="tab-content" href="/post/{{Slug}}">{{Title}}</a>
+                <p><small>{{Date}}</small></p>
+                <hr>
+                 {{/each}}
         </div>
-        <div class="col-md-4">
-            <h4>Title</h4>
-            <div class="col-md-5">
-                    <img src="https://" alt="...">
-                </div>
-                <p class="col-md-7">Summary</p>
-        </div>
-    </div>
-</div>
+        
+    </section>
+            <pre></pre>
+            <pre></pre>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

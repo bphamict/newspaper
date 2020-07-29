@@ -11,9 +11,7 @@ module.exports = (app) => {
   
   app.use('/public', express.static('public'));
 
-  app.get('/', (req, res) => {
-    res.render('home');
-  });
+  app.use('/', require('./src/routes/home.route'));
 
   // app.get('/a', (req, res) => {
   //   res.render('post/byCategory');
@@ -22,6 +20,14 @@ module.exports = (app) => {
   app.get('/about', (req, res) => {
     res.render('static/about');
   });
+
+  app.get('/detail', (req, res) => {
+    res.render('post/detail');
+  });
+
+  app.use('/byCat', require('./src/routes/category.route'));
+
+  app.use('/byTag', require('./src/routes/tag.route'));
 
   app.use('/auth', require('./src/routes/account.route'));
 
