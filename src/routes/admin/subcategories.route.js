@@ -13,9 +13,11 @@ router.get('/', isAdmin, async function (req, res) {
   const limit = config.pagination.limit;
   const offset = (page - 1) * limit;
 
-  const list = await subcategoriesModel.page(limit, offset);
+  const [list, total] = await Promise.all([
+    subcategoriesModel.page(limit, offset),
+    subcategoriesModel.count(),
+  ]);
 
-  const total = await subcategoriesModel.count();
   const nPages = Math.ceil(total / limit);
 
   const page_items = [];
@@ -67,21 +69,22 @@ router.post('/add', async function (req, res) {
   res.render('Admin/Subcategories/add');
 });
 
-router.get('/:slug/edit/:id', isAdmin, async function (req, res) {
-  const id = req.params.id;
-  const row = await subcategoriesModel.single(id);
-  const list = await categoriesModel.all();
-  const obj = row[0];
+router.get('/:slug/edit', isAdmin, async function (req, res) {
+  const slug = req.params.slug;
+
+  const [row, list] = await Promise.all([
+    subcategoriesModel.singleBySlug(slug),
+    categoriesModel.all(),
+  ]);
 
   if (row.length === 0) {
-    res.send('Invalid parameter.');
+    res.render('static/404', { layout: false });
+  } else {
+    res.render('Admin/Subcategories/edit', {
+      subcategory: row[0],
+      categories: list,
+    });
   }
-
-  //console.log(obj);
-  res.render('Admin/Subcategories/edit', {
-    subcategory: obj,
-    categories: list,
-  });
 });
 
 router.post('/update', async function (req, res) {
