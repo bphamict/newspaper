@@ -116,13 +116,14 @@ router.get('/category/:slugCategory', async (req, res) => {
   const offset = (page - 1) * limit;
 
   const slugCategory = req.params.slugCategory;
-  const rowsCg = await sub_categoryModel.findNameCgBySlug(slugCategory);
-  var listSubCg = await sub_categoryModel.allBySlugCategory(slugCategory);
-  const nameCategory = rowsCg[0];
-  //var posts = await postModel.loadBySlugCategory(slugCategory);
-  var posts = await postModel.pageBySlugCategory(slugCategory, limit, offset);
 
-  const total = await postModel.countBySlugCategory(slugCategory);
+  const [rowsCg, listSubCg, posts, total] = await Promise.all([
+    sub_categoryModel.findNameCgBySlug(slugCategory),
+    sub_categoryModel.allBySlugCategory(slugCategory),
+    postModel.pageBySlugCategory(slugCategory, limit, offset),
+    postModel.countBySlugCategory(slugCategory),
+  ]);
+
   const nPages = Math.ceil(total / limit);
 
   const page_items = [];
@@ -136,7 +137,7 @@ router.get('/category/:slugCategory', async (req, res) => {
 
   console.log(posts);
   res.render('post/byCategory', {
-    nameCategory,
+    nameCategory: rowsCg[0],
     listSubCg,
     posts,
     empty: posts.length === 0,
@@ -155,28 +156,28 @@ router.get('/sub_category/:slugSubcategory', async (req, res) => {
   const offset = (page - 1) * limit;
 
   const slugSub_category = req.params.slugSubcategory;
-  
-  const nameSubCategory = await sub_categoryModel.findNameSubCategoryBySlug(slugSub_category);
-  const nameSlugCat = await sub_categoryModel.findSlugCatBySlugSub_Cat(
-    slugSub_category,
-  );
+
+  const [nameSubCategory, nameSlugCat] = await Promise.all([
+    sub_categoryModel.findNameSubCategoryBySlug(slugSub_category),
+    sub_categoryModel.findSlugCatBySlugSub_Cat(slugSub_category),
+  ]);
 
   if (typeof nameSlugCat !== 'undefined') {
-    const rowsCg = await sub_categoryModel.findNameCgBySlug(nameSlugCat.slug);
-    var listSubCg = await sub_categoryModel.allBySlugCategory(nameSlugCat.slug);
-    const nameCategory = rowsCg[0];
+    const [rowsCg, listSubCg, posts, total] = await Promise.all([
+      sub_categoryModel.findNameCgBySlug(nameSlugCat.slug),
+      sub_categoryModel.allBySlugCategory(nameSlugCat.slug),
+      postModel.pageBySlugCategoryAndSlugSubcategory(
+        nameSlugCat.slug,
+        slugSub_category,
+        limit,
+        offset,
+      ),
+      postModel.countBySlugCategorySlugSub_category(
+        nameSlugCat.slug,
+        slugSub_category,
+      ),
+    ]);
 
-    var posts = await postModel.pageBySlugCategoryAndSlugSubcategory(
-      nameSlugCat.slug,
-      slugSub_category,
-      limit,
-      offset,
-    );
-
-    const total = await postModel.countBySlugCategorySlugSub_category(
-      nameSlugCat.slug,
-      slugSub_category,
-    );
     const nPages = Math.ceil(total / limit);
 
     const page_items = [];
@@ -189,7 +190,7 @@ router.get('/sub_category/:slugSubcategory', async (req, res) => {
     }
     //console.log(posts);
     res.render('post/byCategory', {
-      nameCategory,
+      nameCategory: rowsCg[0],
       nameSubCategory,
       listSubCg,
       posts,
