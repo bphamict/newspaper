@@ -155,6 +155,8 @@ router.get('/sub_category/:slugSubcategory', async (req, res) => {
   const offset = (page - 1) * limit;
 
   const slugSub_category = req.params.slugSubcategory;
+  
+  const nameSubCategory = await sub_categoryModel.findNameSubCategoryBySlug(slugSub_category);
   const nameSlugCat = await sub_categoryModel.findSlugCatBySlugSub_Cat(
     slugSub_category,
   );
@@ -186,9 +188,9 @@ router.get('/sub_category/:slugSubcategory', async (req, res) => {
       page_items.push(item);
     }
     //console.log(posts);
-
     res.render('post/byCategory', {
       nameCategory,
+      nameSubCategory,
       listSubCg,
       posts,
       empty: posts.length === 0,

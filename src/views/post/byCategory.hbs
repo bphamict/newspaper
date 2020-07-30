@@ -1,14 +1,16 @@
 {{#section 'title'}}
-Bài viết - {{this.nameCategory.name}}
+Bài viết - {{this.nameCategory.name}} - {{this.nameSubCategory.name}}
 {{/section}}
 
-<h3>{{this.nameCategory.name}}</h3>
+<a href="/post/category/{{this.nameCategory.name}}" style="color: black">
+    <h3>{{this.nameCategory.name}}</h3>
+</a>
 <ul class="nav nav-pills">
     {{#each this.listSubCg}}
-    <li><a href="/post/sub_category/{{slug}}">{{name}}</a></li>
+    <li><a href="/post/sub_category/{{slug}}" style="color: black;">{{name}}</a></li>
     {{/each}}
 </ul>
-
+<hr>
 
 {{#if this.empty}}
 <p class="well">Không có dữ liệu...</p>
@@ -21,8 +23,8 @@ Bài viết - {{this.nameCategory.name}}
             <img class="img-rounded card-img" src="/public/images/post/{{this.featured_image}}" alt="{{title}}"
                 title="{{title}}">
             <div class="card-body">
-                <div style="margin-top: -50px;">
-                    <a id="title" href="/post/{{slug}}">
+                <div>
+                    <a href="/post/{{slug}}">
                         <p class="card-title"> {{title}}</p>
                     </a>
                     <p class="card-summary">{{summary}}</p>
