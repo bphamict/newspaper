@@ -135,7 +135,6 @@ router.get('/category/:slugCategory', async (req, res) => {
   }
 
   console.log(posts);
-
   res.render('post/byCategory', {
     nameCategory,
     listSubCg,
