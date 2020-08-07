@@ -124,6 +124,7 @@ router.post('/update_status', isAdmin, async function (req, res) {
     const post = await postsModel.loadByPostIDWithCategoryAndSubCategoryName(id);
     req.body.id = id;
     req.body.status = req.body.status === 'ĐÃ XUẤT BẢN' ? 'PUBLISHED' : 'PENDING';
+    req.body.publish_time = moment().format('YYYY-MM-DD HH:mm:00');
 
     if(req.body.type === 'PREMIUM' && req.body.type !== post.type) {
         const postTags = await postTagModel.loadByPostIDWithName(id);

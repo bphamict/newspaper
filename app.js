@@ -7,7 +7,6 @@ const express = require('express');
 module.exports = (app) => {
   // must be preloaded before all requests
   app.use(require('./src/middlewares/preloader.middleware'));
-
   
   app.use('/public', express.static('public'));
 
@@ -21,13 +20,9 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.get('/detail', (req, res) => {
-    res.render('post/detail');
-  });
-
   app.use('/byCat', require('./src/routes/category.route'));
 
-  app.use('/byTag', require('./src/routes/tag.route'));
+  app.use('/tag', require('./src/routes/tag.route'));
 
   app.use('/auth', require('./src/routes/account.route'));
 

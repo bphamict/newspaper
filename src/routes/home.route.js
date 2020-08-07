@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const homeModel = require('../models/home.model');
+const moment = require('moment');
+moment.locale('vi');
 
 router.get('/', async function(req, res){
     const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat, categories] = await Promise.all([
@@ -10,6 +12,11 @@ router.get('/', async function(req, res){
         homeModel.postsOrderByCat(),
         homeModel.categories()
     ])
+    
+    for(let i = 0; i < 10; i++) {
+        top10View[i].publish_time = moment(top10View[i].publish_time).format('LLL');
+        top10Newest[i].publish_time = moment(top10Newest[i].publish_time).format('LLL');
+    }
 
     const first = postsForCarousel[0];
     const rest = [];
@@ -63,7 +70,7 @@ router.get('/', async function(req, res){
     for(let i = 0; i < cats.length; i++)
     {
         postsOrderByCat.forEach(element => {
-            if(element.CatId === cats[i].id)
+            if(element.category_id === cats[i].id)
             {
                 posts.push(element);
             }
@@ -71,8 +78,6 @@ router.get('/', async function(req, res){
         cats[i].posts = posts;
         posts = [];
     }
-
-    console.log(rest);
 
     res.render('home',{
         first: first,

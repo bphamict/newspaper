@@ -6,8 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{#if _sections.title}}{{{_sections.title}}} - {{app.name}}{{else}}{{app.name}}{{/if}}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.tiny.cloud/1/mqjp19j7s814osukaw32ul1epfsa6tq2gk4zy229fvog9vud/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/mqjp19j7s814osukaw32ul1epfsa6tq2gk4zy229fvog9vud/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
     {{{_sections.css}}}
+    <style>
+        .nav.categories>li.dropdown.open {
+            position: static;
+        }
+
+        .nav.categories>li.dropdown.open .dropdown-menu {
+            width: 100%;
+            text-align: center;
+            left: 0;
+            right: 0;
+        }
+
+        .dropdown-menu.full-category {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        li.dropdown.open>.dropdown-menu.full-category {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 
 <body>

@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   const [posts, total, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset), postModel.getNumberOfSearchPost(req.query.q, search_by), postTagModel.loadAllWithName()]);
 
   posts && posts.forEach((post) => {
-    post.publish_time = moment(post.publish_time).format('DD/MM/YYYY - HH:mm');
+    post.publish_time = moment(post.publish_time).format('LLL');
   })
   const numOfPage = Math.ceil(total / 10);
   if(page < 1 || page > numOfPage) {

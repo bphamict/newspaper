@@ -82,7 +82,7 @@ module.exports = {
         return db.updateView(TBL, { id: postID });
     },
     loadRelatedPost: async (postID, subCategoryID) => {
-        const rows = await db.load(`SELECT * FROM ${TBL} WHERE sub_category_id = ${subCategoryID} AND id != ${postID} AND isDeleted != 1 ORDER BY created_at DESC LIMIT 0, 10`);
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE sub_category_id = ${subCategoryID} AND id != ${postID} AND isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY created_at DESC LIMIT 0, 10`);
 
         if(rows.length === 0) {
             return null;
@@ -114,7 +114,7 @@ module.exports = {
             orderIfAuthenticated = "FIELD(type, 'PREMIUM', 'FREE'),"
         }
 
-        const rows = await db.load(`SELECT P.*, C.name as category_name, SC.name as sub_cagegory_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND P.isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} publish_time DESC LIMIT ${offset}, ${limit}`);
+        const rows = await db.load(`SELECT P.*, C.name as category_name, SC.name as sub_category_name FROM ${TBL} P JOIN CATEGORY C ON P.category_id = C.id JOIN SUB_CATEGORY SC ON P.sub_category_id = SC.id WHERE MATCH(${searchBy}) AGAINST ('"${searchStr}"' IN BOOLEAN MODE) AND P.isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} publish_time DESC LIMIT ${offset}, ${limit}`);
 
         if(rows.length === 0) {
             return null;

@@ -10,6 +10,9 @@ moment.locale('vi');
 
 router.get('/profile', isLoggedIn, async (req, res) => {
     const user = await userModel.loadUserDetails(req.user.id);
+    if(!user) {
+        return res.redirect('/');
+    }
     const now = moment().format('YYYY-MM-DD HH:mm:ss');
     const expired = moment(now).isAfter(user.expiry_time);
     user.expiry_value = user.expiry_time;

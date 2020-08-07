@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -11,20 +11,54 @@
             <a class="navbar-brand" href="/">Newspaper</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/about">About</a></li>
+            <ul class="nav navbar-nav categories">
+                {{#each (limit localsCatWithSubCat 5)}}
+                <li><a href="/byCat/{{this.category_slug}}">{{this.category_name}}</a></li>
+                {{/each}}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Tất cả</b> <span class="caret"></span></a>
+                    <ul class="dropdown-menu full-category flex-row row" role="menu">
+                        {{#each localsCatWithSubCat}}
+                        <div class="col-md-3" style="margin-bottom: 20px">
+                            <li style="padding: 5px; font-size: 20px"><b><a href="/byCat/{{this.category_slug}}">{{this.category_name}}</a></b></li>
+                            {{#each this.subCats}}
+                            <li style="padding: 4px;"><a href="#">{{this.sub_category_name}}</a></li>
+                            {{/each}}
+                        </div>
+                        {{/each}}
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {{!-- <li><a href="/about">About</a></li> --}}
                 {{#if isAuthenticated}}
-                <li><a style="padding-right: 0;">{{user.full_name}}</a></li>
-                <li><a href="/auth/logout">Logout</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false">{{user.full_name}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {{#ifEqual user.role 3}}
+                        <li><a href="/writer/post">Trang phóng viên viên</a></li>
+                        {{else}}
+                        {{#ifEqual user.role 2}}
+                        <li><a href="/editor/posts">Trang biên tập viên</a></li>
+                        {{else}}
+                        {{#ifEqual user.role 1}}
+                        <li><a href="/admin">Trang quản trị viên</a></li>
+                        {{/ifEqual}}
+                        {{/ifEqual}}
+                        {{/ifEqual}}
+                        <li><a href="/account/profile">Trang cá nhân</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/auth/logout">Đăng xuất</a></li>
+                    </ul>
+                </li>
                 {{else}}
-                <li><a href="/auth/login">Login</a></li>
-                <li><a href="/auth/register">Register</a></li>
+                <li><a href="/auth/login">Đăng nhập</a></li>
+                <li><a href="/auth/register">Tạo tài khoản</a></li>
                 {{/if}}
             </ul>
             <form class="navbar-form navbar-right" method="GET" action="/search">
-                <input type="text" class="form-control" placeholder="Search..." name="q">
+                <input type="text" class="form-control" placeholder="Tìm kiếm..." name="q">
             </form>
         </div>
     </div>

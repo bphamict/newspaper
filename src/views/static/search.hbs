@@ -20,34 +20,30 @@
                 </select>
             </span>
         </div>
-        <hr>
         {{#each this.posts}}
-        <a style="color: inherit;" href="/post/{{this.slug}}">
-            <div class="card">
-                <div style="display: flex;">
-                    <img class="card-img" src="/public/images/post/{{this.featured_image}}">
-                    <div class="card-body">
-                        <div>
-                            <p class="card-title">{{this.title}}</p>
-                            <p class="card-summary">{{this.summary}}</p>
-                        </div>
-                        <div>
-                            <span>{{this.category_name}} / {{this.sub_cagegory_name}}</span>
-                            <span style="float:right"><b>{{this.publish_time}}</b></span>
-                        </div>
+        <hr>
+        <article style="">
+            <h4><a href="/post/{{slug}}">{{title}}</a></h4>
+            <div style="display: flex; flex-direction: row">
+                <img class="img-responsive" src="/public/images/post/{{featured_image}}" style="height: 200px; width: 200px; object-fit:cover; cursor:pointer" onclick="window.location.assign('/post/{{slug}}')">
+                <div style="margin-left: 20px; display:flex; justify-content:space-between; flex-direction:column; flex:1">
+                    <p style="cursor: pointer;" onclick="window.location.assign('/post/{{slug}}')">{{summary}}</p>
+                    <div>
+                        <span>Chuyên mục: <a href="#">{{category_name}}</a> / <a href="#">{{sub_category_name}}</a></span>
+                        <span style="float:right"><small>{{publish_time}}</small></span>
                     </div>
                 </div>
-                <div style="margin-top: 10px;">
-                    <p>Tags:
+            </div>
+            <div style="margin-top: 10px;">
+                    <p>Nhãn:
                         {{#each @root.post_tags}}
                             {{#ifEqual this.post_id ../id}}
-                            <span style="background-color: gray; padding: 5px; color:white; border-radius: 4px">{{this.name}}</span>
+                            <a href="/tag/{{this.slug}}" style="background-color: gray; padding: 5px; color:white; border-radius: 4px">{{this.name}}</a>
                             {{/ifEqual}}
                         {{/each}}
                     </p>
                 </div>
-            </div>
-        </a>
+        </article>
         {{/each}}
 
         {{#ifNotEqual numOfPage 0}}
@@ -76,7 +72,7 @@
     </div>
 </div>
 
-{{#section 'title'}}Search keyword: {{q}}{{/section}}
+{{#section 'title'}}Tìm kiếm: {{q}}{{/section}}
 
 {{#section 'js'}}
 <script>

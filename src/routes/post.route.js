@@ -89,7 +89,6 @@ router.get('/byCategory/:slugCategory', async (req, res) => {
     var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
     const  nameCategory = rowsCg[0];
     var posts = await postModel.loadBySlugCategory(slugCategory);
-    console.log(posts);
 
     res.render('post/byCategory', { nameCategory, listSubCg, posts });
     
@@ -101,7 +100,6 @@ router.get('/byCategory/:slugCategory', async (req, res) => {
     var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
     const  nameCategory = rowsCg[0];
     var posts = await postModel.loadBySlugCategory(slugCategory);
-    console.log(posts);
 
     res.render('post/byCategory', { nameCategory, listSubCg, posts });
     

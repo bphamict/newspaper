@@ -85,6 +85,10 @@ app.engine(
           return options.fn(this);
         }
         return options.inverse(this);
+      },
+      limit: function (arr, limit) {
+        if (!Array.isArray(arr)) { return []; }
+        return arr.slice(0, limit);
       }
     },
   }),
