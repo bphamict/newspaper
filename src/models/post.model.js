@@ -149,4 +149,18 @@ module.exports = {
 
         return rows;
     },
+    pageBySlugCategory: (slug, limit, offset) => {
+        return db.load(`SELECT p.* FROM ${TBL} p join category c ON p.category_id = c.id WHERE c.slug = '${slug}' AND p.status = 'PUBLISHED' ORDER BY p.created_at DESC limit ${limit} offset ${offset}`);
+    },
+    pageBySlugCategoryAndSlugSubcategory: (slugC, slugSc, limit, offset) => {
+        return db.load(`SELECT p.* FROM ${TBL} p, category c, sub_category sc WHERE p.category_id = sc.category_id AND p.sub_category_id = sc.id AND sc.category_id = c.id AND c.slug = '${slugC}' AND sc.slug = '${slugSc}' AND p.status = 'PUBLISHED' ORDER BY p.created_at DESC limit ${limit} offset ${offset} `);
+    },
+    countBySlugCategory: async (slug) => {
+        const row = await db.load(`SELECT count(*) as total FROM ${TBL} p join category c ON p.category_id = c.id WHERE c.slug = '${slug}' `);
+        return row[0].total;
+    },
+    countBySlugCategorySlugSub_category: async (slugC, slugSc) => {
+        const row = await db.load(`SELECT count(*) as total FROM ${TBL} p, category c, sub_category sc WHERE p.category_id = sc.category_id AND p.sub_category_id = sc.id AND sc.category_id = c.id AND c.slug = '${slugC}' AND sc.slug = '${slugSc}' AND p.status = 'PUBLISHED'`);
+        return row[0].total;
+    },
 }

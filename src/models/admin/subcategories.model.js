@@ -12,6 +12,9 @@ module.exports = {
     single: function(id){
         return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id WHERE s.id = ${id}`);
     },
+    singleBySlug: function(slug){
+        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id WHERE s.slug = '${slug}'`);
+    },
     update: function(entity){
         const condition = {
             id: entity.id
@@ -34,5 +37,12 @@ module.exports = {
         }
 
         return rows;
+    },
+    page: function(limit, offset){
+        return db.load(`SELECT s.id, s.name, s.category_id, c.name as category_name, s.slug, s.isDeleted  FROM category  c JOIN ${TABLE_NAME} s on c.id=s.category_id limit ${limit} offset ${offset}`);
+    },
+    count: async () => {
+        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME}`);
+        return row[0].total;
     },
 };

@@ -1,11 +1,14 @@
 const router = require('express').Router();
 const postModel = require('../models/post.model');
+const sub_categoryModel = require('../models/sub-category.model');
 const postTagModel = require('../models/post-tag.model');
 const commentModel = require('../models/comment.model');
 const userSubscribeModel = require('../models/user-subscribe.model');
+const config = require('../configs/default');
 const moment = require('moment');
 const { shuffle } = require('../utils/array-utils');
 const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
+const { query } = require('express-validator');
 moment.locale('vi');
 
 router.get('/error', (req, res) => {
@@ -51,7 +54,7 @@ router.get('/:slug', async (req, res) => {
       post.created_at = moment(post.created_at).format('LL');
     });
     
-    res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0, blur, blurMsg });
+  res.render('post/details', { post, postTags, comments, related: result, commentsLength: numberOfCmt ? numberOfCmt.NumberOfComment : 0, blur, blurMsg });
 })
 
 router.get('/:id/comments', async (req, res) => {
@@ -83,27 +86,101 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
   res.send(comment);
 });
 
-router.get('/byCategory/:slugCategory', async (req, res) => {
-    const slugCategory = req.params.slugCategory;
-    const rowsCg = await subCategoryModel.findNameCgBySlug(slugCategory);
-    var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
-    const  nameCategory = rowsCg[0];
-    var posts = await postModel.loadBySlugCategory(slugCategory);
+router.get('/category/:slugCategory', async (req, res) => {
+  const page = +req.query.page || 1;
+  if (page < 0) page = 1;
+  const limit = config.pagination.limit;
+  const offset = (page - 1) * limit;
 
-    res.render('post/byCategory', { nameCategory, listSubCg, posts });
-    
+  const slugCategory = req.params.slugCategory;
+
+  const [rowsCg, listSubCg, posts, total] = await Promise.all([
+    sub_categoryModel.findNameCgBySlug(slugCategory),
+    sub_categoryModel.allBySlugCategory(slugCategory),
+    postModel.pageBySlugCategory(slugCategory, limit, offset),
+    postModel.countBySlugCategory(slugCategory),
+  ]);
+
+  const nPages = Math.ceil(total / limit);
+
+  const page_items = [];
+  for (let i = 1; i <= nPages; i++) {
+    const item = {
+      value: i,
+      isActive: i === page,
+    };
+    page_items.push(item);
+  }
+
+  console.log(posts);
+  res.render('post/byCategory', {
+    nameCategory: rowsCg[0],
+    listSubCg,
+    posts,
+    empty: posts.length === 0,
+    page_items,
+    prev_value: page - 1,
+    next_value: page + 1,
+    can_go_prev: page > 1,
+    can_go_next: page < nPages,
   });
+});
 
-  router.get('/bySubcategory/:slugSubcategory', async (req, res) => {
-    const slugSubcategory = req.params.slugSubcategory;
-    const rowsCg = await subCategoryModel.findNameCgBySlug(slugCategory);
-    var listSubCg = await subCategoryModel.allBySlugCategory(slugCategory);
-    const  nameCategory = rowsCg[0];
-    var posts = await postModel.loadBySlugCategory(slugCategory);
+router.get('/sub_category/:slugSubcategory', async (req, res) => {
+  const page = +req.query.page || 1;
+  if (page < 0) page = 1;
+  const limit = config.pagination.limit;
+  const offset = (page - 1) * limit;
 
-    res.render('post/byCategory', { nameCategory, listSubCg, posts });
-    
-  });
+  const slugSub_category = req.params.slugSubcategory;
 
+  const [nameSubCategory, nameSlugCat] = await Promise.all([
+    sub_categoryModel.findNameSubCategoryBySlug(slugSub_category),
+    sub_categoryModel.findSlugCatBySlugSub_Cat(slugSub_category),
+  ]);
+
+  if (typeof nameSlugCat !== 'undefined') {
+    const [rowsCg, listSubCg, posts, total] = await Promise.all([
+      sub_categoryModel.findNameCgBySlug(nameSlugCat.slug),
+      sub_categoryModel.allBySlugCategory(nameSlugCat.slug),
+      postModel.pageBySlugCategoryAndSlugSubcategory(
+        nameSlugCat.slug,
+        slugSub_category,
+        limit,
+        offset,
+      ),
+      postModel.countBySlugCategorySlugSub_category(
+        nameSlugCat.slug,
+        slugSub_category,
+      ),
+    ]);
+
+    const nPages = Math.ceil(total / limit);
+
+    const page_items = [];
+    for (let i = 1; i <= nPages; i++) {
+      const item = {
+        value: i,
+        isActive: i === page,
+      };
+      page_items.push(item);
+    }
+    //console.log(posts);
+    res.render('post/byCategory', {
+      nameCategory: rowsCg[0],
+      nameSubCategory,
+      listSubCg,
+      posts,
+      empty: posts.length === 0,
+      page_items,
+      prev_value: page - 1,
+      next_value: page + 1,
+      can_go_prev: page > 1,
+      can_go_next: page < nPages,
+    });
+  } else {
+    res.redirect('/post/error');
+  }
+});
 
 module.exports = router;

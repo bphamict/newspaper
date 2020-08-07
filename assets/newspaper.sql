@@ -30,8 +30,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `category` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `slug` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `user_id` int(11)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
