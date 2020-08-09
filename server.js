@@ -89,6 +89,9 @@ app.engine(
       limit: function (arr, limit) {
         if (!Array.isArray(arr)) { return []; }
         return arr.slice(0, limit);
+      },
+      add: function(value1, value2, options) {
+        return parseInt(value1) + parseInt(value2);
       }
     },
   }),

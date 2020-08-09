@@ -2,26 +2,26 @@ const router = require('express').Router();
 const configs = require('../configs/default');
 const postTagModel = require('../models/post-tag.model');
 const postModel = require('../models/post.model');
-const categoryModel = require('../models/category.model');
+const subCategoryModel = require('../models/sub-category.model');
 
 router.get('/:slug', async function(req, res){
     let page = +req.query.page || -1;
     const slug = req.params.slug || '';
-    const category = await categoryModel.loadBySlug(slug);
+    const subCategory = await subCategoryModel.findBySlug(slug);
 
-    if(!category) {
+    if(!subCategory) {
         return res.render('post/error');
     }
 
     const limit = configs.pagination.limit;
-    const total = await postModel.countBySlugCategory(slug);
+    const total = await postModel.countBySlugSubCategory(slug);
     const numOfPage = Math.ceil(total / limit);
     if(page < 1 || page > numOfPage) {
         page = 1;
     }
 
     const offset = (page - 1) * limit;
-    const [ posts, post_tags ]= await Promise.all([postModel.pageBySlugCategory(slug, limit, offset, req.isAuthenticated()), postTagModel.loadAllWithName()]);
+    const [ posts, post_tags ]= await Promise.all([postModel.pageBySlugSubCategory(slug, limit, offset, req.isAuthenticated()), postTagModel.loadAllWithName()]);
 
     const pageItems = [];
     if(numOfPage > 5) {
@@ -71,7 +71,7 @@ router.get('/:slug', async function(req, res){
     }
 
     res.render('post/byCat',{
-        pageName: category.name,
+        pageName: subCategory.name,
         posts,
         post_tags,
         pageItems,

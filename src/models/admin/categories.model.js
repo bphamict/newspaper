@@ -4,19 +4,31 @@ const TABLE_NAME = 'category';
 
 module.exports = {
     all: function(){
-        return db.load(`SELECT * FROM ${TABLE_NAME}`);
+        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE isDeleted != 1`);
     },
     add: function(entity){
         return db.create(TABLE_NAME, entity);
     },
     single: function(id){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE id = ${id} `);
+        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE id = ${id} AND isDeleted != 1`);
     },
-    singleByName: function(name){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE name = '${name}' `);
+    singleByName: async function(name){
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE name = '${name}' AND isDeleted != 1`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
     },
-    singleBySlug: function(slug){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE slug = '${slug}' `);
+    singleBySlug: async function(slug){
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE slug = '${slug}' AND isDeleted != 1`);
+        
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
     },
     update: function(entity){
         const condition = {
@@ -69,7 +81,7 @@ module.exports = {
         return rows[0];
     },
     loadVacantCategories: async (userID = -1) => {
-        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE user_id IS NULL OR user_id = ${userID}`);
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE (user_id IS NULL OR user_id = ${userID}) AND isDeleted != 1`);
 
         if(rows.length === 0) {
             return null;
@@ -92,11 +104,31 @@ module.exports = {
 
         return rows[0];
     },
-    page: function(limit, offset){
-        return db.load(`SELECT * FROM ${TABLE_NAME} limit ${limit} offset ${offset}`);
+    page: async function(limit, offset){
+        const rows = await db.load(`SELECT C.*, U.full_name, U.email FROM ${TABLE_NAME} C LEFT JOIN user U ON C.user_id = U.id WHERE C.isDeleted = 0 limit ${limit} offset ${offset}`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
     },
     count: async () => {
-        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME}`);
+        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME} WHERE isDeleted != 1`);
+
+        if(row.length === 0) {
+            return 0;
+        }
+
         return row[0].total;
     },
+    checkIfAvailableAndNotTheSameAsID: async (slug, categoryID) => {
+        const rows = await db.load(`SELECT * FROM ${TABLE_NAME} WHERE slug = '${slug}' AND id != ${categoryID} AND isDeleted != 1`);
+        
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+    }
 };

@@ -1,99 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./style.css">
-    <style>
-        hr {
-        border: 0;
-        clear:both;
-        display:block;
-        width: 96%;               
-        background-color:lightgray;
-        height: 1px;
-        } 
-        .disabled {
-    pointer-events: none;
-        }
-        a {
-    text-decoration: none; 
-    color: grey; 
-}
-img{
-    width: 100px;
-    height: 100px;
-}
-pre{
-    background-color: white;
-    border-color: white;
-}
-    </style>
-</head>
-
-<body>
-    <div style="margin-top: -40px;">
-        <ul class="breadcrumb">
-            <li><a href="#">{{this.catName}}</a></li>
-            {{#each this.subCats}}
-            <li><a href="/byCat/{{category_id}}">{{name}}</a></li>
+<h1>{{this.pageName}}</h1>
+{{#each this.posts}}
+<hr>
+<article style="">
+    <h4><a href="/post/{{slug}}">{{title}}</a></h4>
+    <div style="display: flex; flex-direction: row">
+        <img class="img-responsive" src="/public/images/post/{{featured_image}}"
+            style="height: 200px; width: 200px; object-fit:cover; cursor:pointer"
+            onclick="window.location.assign('/post/{{slug}}')">
+        <div style="margin-left: 20px; display:flex; justify-content:space-between; flex-direction:column; flex:1">
+            <p style="cursor: pointer;" onclick="window.location.assign('/post/{{slug}}')">{{summary}}</p>
+            <div>
+                <span>Chuyên mục: <a href="/category/{{category_slug}}">{{category_name}}</a> / <a href="/subCategory/{{sub_category_slug}}">{{sub_category_name}}</a></span>
+                <span style="float:right"><small>{{publish_time}}</small></span>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <span>Nhãn:
+            {{#each @root.post_tags}}
+            {{#ifEqual this.post_id ../id}}
+            <a href="/tag/{{this.slug}}"
+                style="background-color: gray; padding: 5px; color:white; border-radius: 4px">{{this.name}}</a>
+            {{/ifEqual}}
             {{/each}}
-        </ul>
-        {{#each this.cat}}
-        <hr>
-        <article>
-            <h4><a href="/post/{{slug}}">{{title}}</a></h4>
-            <div class="col-md-2">
-                    <img href="/post/{{slug}}" src="{{featured_image}}" alt="...">
-                </div>
-                <div class="col-md-10" style="margin-left: -60px;">
-                    <p >{{summary}}</p>
-                    <p><small>{{updated_at}}</small></p>
-                </div>
-                
-                
-        </article>
-        {{/each}}
-        <pre></pre>
-        <pre></pre>
-        <pre></pre>
-        <pre></pre>
-        <pre></pre>
-        <nav class="text-center" aria-label="...">
-    <ul class="pagination">
-        <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
-            <a class="page-link" href="?page={{prev_value}}" aria-label="Previous">
+        </span>
+        {{#ifEqual type 'PREMIUM'}}
+        <span style="float: right;">
+            <span style="padding: 5px 20px; background-color:red; border-radius: 4px; color: white">PREMIUM</span>
+        </span>
+        {{/ifEqual}}
+    </div>
+</article>
+{{/each}}
+{{#ifNotEqual numOfPage 0}}
+<nav aria-label="Page navigation">
+    <ul class="pagination" style="display: flex;justify-content: center;margin-top: 30px;">
+        <li class="prev-page {{#unless this.canGoPrev}}disabled{{/unless}}" {{#if this.canGoPrev}}onclick="goPrev()"
+            style="cursor: pointer;" {{/if}}>
+            <span>
                 <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        {{#each this.page_items}}
-        {{#if isActive}}
-        <li class="page-item active" aria-current="page">
-            <span class="page-link">
-                {{value}}
-                <span class="sr-only">(current)</span>
             </span>
         </li>
-        {{else}}
-        <li class="page-item">
-            <a class="page-link" href="?page={{value}}">{{value}}</a>
-        </li>
-        {{/if}}
+        {{#each this.pageItems}}
+        <li class="page-item {{#if this.isActive}}active{{/if}}"
+            style="{{#if this.isActive}}pointer-events: none;{{/if}} cursor: pointer;">
+            <span>{{this.value}}</span></li>
         {{/each}}
-        <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
-            <a class="page-link" href="?page={{next_value}}" aria-label="Next">
+        <li class="next-page {{#unless this.canGoNext}}disabled{{/unless}}" {{#if this.canGoNext}}onclick="goNext()"
+            style="cursor: pointer;" {{/if}}>
+            <span>
                 <span aria-hidden="true">&raquo;</span>
-            </a>
+            </span>
         </li>
     </ul>
 </nav>
-       
-    </div>
+{{/ifNotEqual}}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</body>
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        $('.page-item').on('click', function () {
+            window.location.assign(`?page=${$(this).text().trim()}`);
+        })
+    })
 
-</html>
+    function goPrev() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`?page=${activePage.value - 1}`); 
+    }
+
+    function goNext() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`?page=${activePage.value + 1}`);
+    }
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    hr {
+        border: 0;
+        clear: both;
+        display: block;
+        background-color: lightgray;
+        height: 1px;
+    }
+
+    .disabled {
+        pointer-events: none;
+    }
+
+    a {
+        text-decoration: none;
+        color: blue;
+    }
+
+    img {
+        width: 100px;
+        height: 100px;
+    }
+
+    p {
+        margin: 0px;
+    }
+
+    pre {
+        background-color: white;
+        border-color: white;
+    }
+</style>
+{{/section}}
+
+{{#section 'title'}}Danh mục: {{this.pageName}}{{/section}}

@@ -42,13 +42,13 @@ module.exports = {
         return rows[0];
     },
     page: function(limit, offset){
-        return db.load(`SELECT * FROM ${TABLE_NAME} ORDER BY created_at DESC limit ${limit} offset ${offset}`);
+        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE isDeleted != 1 ORDER BY created_at DESC limit ${limit} offset ${offset}`);
     },
     pageByTitle: function(title, limit, offset){
-        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE title like '%${title}%' ORDER BY created_at DESC limit ${limit} offset ${offset}`);
+        return db.load(`SELECT * FROM ${TABLE_NAME} WHERE isDeleted != 1 AND title like '%${title}%' ORDER BY created_at DESC limit ${limit} offset ${offset}`);
     },
     count: async () => {
-        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME}`);
+        const row = await db.load(`SELECT count(*) as total FROM ${TABLE_NAME} WHERE isDeleted != 1`);
         return row[0].total;
     },
     deleteByPostID: async(postID) => {
@@ -68,6 +68,33 @@ module.exports = {
         
         if(rows.length === 0) {
             return null;
+        }
+
+        return rows[0].total;
+    },
+    countPostByCategoryID: async (categoryID) => {
+        const rows = await db.load(`SELECT COUNT(*) AS total FROM ${TABLE_NAME} WHERE isDeleted != 1 AND category_id = ${categoryID}`);
+
+        if(rows.length === 0) {
+            return 0;
+        }
+
+        return rows[0].total;
+    },
+    countPostBySubCategoryID: async (subCategoryID) => {
+        const rows = await db.load(`SELECT COUNT(*) AS total FROM ${TABLE_NAME} WHERE isDeleted != 1 AND sub_category_id = ${subCategoryID}`);
+
+        if(rows.length === 0) {
+            return 0;
+        }
+
+        return rows[0].total;
+    },
+    countPostByTagID: async (tagID) => {
+        const rows = await db.load(`SELECT COUNT(*) AS total FROM ${TABLE_NAME} p JOIN post_tag pt ON p.id = pt.post_id WHERE p.isDeleted != 1 AND pt.tag_id = ${tagID}`);
+
+        if(rows.length === 0) {
+            return 0;
         }
 
         return rows[0].total;

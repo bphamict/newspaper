@@ -23,12 +23,14 @@ module.exports = {
 
     catWithSubs: async function(){
         const rows = await db.load(`
-            SELECT c.id as Id, c.name as catName, sub_category.name as subCatName
+            SELECT c.id as Id, c.name as catName, c.slug as catSlug, sub_category.name as subCatName, sub_category.slug as subCatSlug
             FROM (SELECT c.*
-                  FROM category c LEFT JOIN post p ON c.id = p.category_id
+                  FROM category c LEFT JOIN (SELECT * FROM post WHERE isDeleted != 1 AND (status = 'PUBLISHED' OR (status = 'APPROVED' AND publish_time <= NOW()))) p ON c.id = p.category_id
+                  WHERE c.isDeleted != 1
                   GROUP BY c.id
                   ORDER BY sum(p.view_count) DESC, c.id ASC
-                  LIMIT 10) c join sub_category on c.id = sub_category.category_id
+                  LIMIT 10) c left join sub_category on c.id = sub_category.category_id
+            WHERE c.isDeleted != 1
         `);
 
         if(rows.length === 0) {
@@ -38,7 +40,7 @@ module.exports = {
     },
     
     top10Newest: async function(){
-        const rows = await db.load(`SELECT p.*, c.name AS category_name, sc.name AS sub_category_name FROM post p JOIN category c ON p.category_id = c.id JOIN sub_category sc ON p.sub_category_id = sc.id WHERE sc.isDeleted != 1 AND c.isDeleted != 1 AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY p.publish_time DESC LIMIT 10`);
+        const rows = await db.load(`SELECT p.*, c.name AS category_name, c.slug AS category_slug, sc.name AS sub_category_name, sc.slug AS sub_category_slug FROM post p JOIN category c ON p.category_id = c.id JOIN sub_category sc ON p.sub_category_id = sc.id WHERE sc.isDeleted != 1 AND c.isDeleted != 1 AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY p.publish_time DESC LIMIT 10`);
 
         if(rows.length === 0) {
             return null;
@@ -48,7 +50,7 @@ module.exports = {
     },
 
     top10View: async function(){
-        const rows = await db.load(`SELECT p.*, c.name AS category_name, sc.name AS sub_category_name FROM post p JOIN category c ON p.category_id = c.id JOIN sub_category sc ON p.sub_category_id = sc.id WHERE sc.isDeleted != 1 AND c.isDeleted != 1 AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY p.view_count DESC LIMIT 10`);
+        const rows = await db.load(`SELECT p.*, c.name AS category_name, c.slug AS category_slug, sc.name AS sub_category_name, sc.slug AS sub_category_slug FROM post p JOIN category c ON p.category_id = c.id JOIN sub_category sc ON p.sub_category_id = sc.id WHERE sc.isDeleted != 1 AND c.isDeleted != 1 AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY p.view_count DESC LIMIT 10`);
 
         if(rows.length === 0) {
             return null;
@@ -67,7 +69,7 @@ module.exports = {
         // post.updated_at as Date,
         // (row_number() over (PARTITION BY post.category_id ORDER BY post.category_id DESC)) AS CatRank FROM post`);
         const rows = await db.load(`
-            select p.*, sc.name as sub_category_name
+            select p.*, sc.name as sub_category_name, sc.slug as sub_category_slug
             from sub_category sc JOIN post p ON sc.id = p.sub_category_id
             where p.id = (select p2.id
                           from post p2
@@ -82,8 +84,4 @@ module.exports = {
 
         return rows;
     },
-
-    categories:function(){
-        return db.load(`SELECT * FROM category`);
-    }
 };

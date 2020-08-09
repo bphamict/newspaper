@@ -3,11 +3,11 @@ const TBL = 'tag'
 
 module.exports = {
     all:function(){
-        return db.load(`SELECT * FROM tag`);
+        return db.load(`SELECT * FROM tag WHERE isDeleted != 1`);
     },
 
     allByTag:function(tagId){
-        return db.load(`SELECT * FROM tag join post_tag on tag.id = post_tag.tag_id join post on post_tag.post_id = post.id WHERE tag.id = '${tagId}'`)
+        return db.load(`SELECT * FROM tag join post_tag on tag.id = post_tag.tag_id join post on post_tag.post_id = post.id WHERE tag.id = '${tagId}' AND isDeleted != 1`)
     },
 
     pageByTag: async function(tagId, limit, offset, isAuthenticated = false){

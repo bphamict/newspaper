@@ -7,7 +7,6 @@ const postTagModel = require('../../models/post-tag.model');
 const subCategoryModel = require('../../models/sub-category.model');
 const tagsModel = require('../../models/admin/tags.model');
 const router = express.Router();
-const config = require('../../configs/default');
 const isAdmin = require('../../middlewares/isAdmin.middleware');
 const moment = require('moment');
 const storage = multer.diskStorage(config.multerImagePost);

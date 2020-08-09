@@ -1,46 +1,121 @@
  {{#section 'title'}}Chỉnh sửa - Tags - Trang Admin{{/section}}
 <ol class="breadcrumb">
-        <li><a href="/admin">Trang chủ</a></li>
-        <li><a href="/admin/tags">Tag</a></li>
-        <li class="active">Chỉnh sửa</li>
+    <li><a href="/admin/tags">Nhãn</a></li>
+    <li class="active">Chỉnh sửa</li>
 </ol>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Chỉnh sửa tag</h3>
+    <div class="panel-heading" style="display:flex; flex:1; justify-content:space-between; align-items:center">
+        <span class="panel-title">Chỉnh sửa nhãn</span>
+        <a class="btn btn-danger del-btn">
+            Xóa <span class="glyphicon glyphicon-trash"></span>
+        </a>
     </div>
     <div class="panel-body">
-        <form method="POST">
-            <div class="form-group">
-                <label for="txtCategoryName">ID</label>
-                <input type="text" class="form-control" id="txtID" name="id" readonly value={{this.tag.id}}>
-                
-            </div>
+        <form method="POST" action="/admin/tags/update" id="frmEdit">
+            <input name="id" value='{{this.tag.id}}' style="display: none;">
             <div class="form-group">
                 <label for="txtCategoryName">Tên nhãn</label>
                 <input type="text" class="form-control" id="txtName" name="name" autofocus value='{{this.tag.name}}'>
-                
-            </div>
-            <div class="form-group">
-                <label for="txtCategoryName">Trạng thái</label>
-                <input type="text" class="form-control" id="txtIsExist" name="isDeleted" value={{this.tag.isDeleted}}>
-                
+                <p style="color:red" id="validateName"></p>
             </div>
             <a href="/admin/tags" class="btn btn-success" role="button">
                 <span class="glyphicon glyphicon-backward"></span>
             </a>
-            <button type="submit" class="btn btn-primary" formaction="/admin/tags/update">
+            <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-ok-circle"></span> Cập nhật
             </button>
-            {{#if this.tag.isDeleted}}
-            <button type="submit" class="btn btn-danger" disabled formaction="/admin/tags/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
-            </button>
-            {{else}}
-            <button type="submit" class="btn btn-danger" formaction="/admin/tags/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
-            </button>
-            {{/if}}
         </form>
     </div>
 </div>
+<div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" style="">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa nhãn này?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-btn" class="btn btn-primary" style="margin-top: 1rem;">Xóa</button>
+                <button id="cancel-btn" class="btn btn-primary" style="margin-top: 1rem;">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        const tag = {{{ json this.tag }}}
+
+        async function validate() {
+            let hasError = false;
+            $('#validateName').html("");
+            const text = $('#txtName').val();
+
+            if (!text) {
+                $('#validateName').html("Tên nhãn không được bỏ trống!!!");
+                hasError = true;
+            } else {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/admin/tags/isAvailable`,
+                    data: {
+                        name: text,
+                        isEdit: true,
+                        id: tag.id,
+                    },
+                    success: function (data) {
+                        if (!data.isAvailable) {
+                            $('#validateName').html('Danh mục đã tồn tại!!!');
+                            hasError = true;
+                        }
+                    },
+                    error: function (error) {
+                        if (error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+
+            if(!hasError) {
+                $('#frmEdit').off('submit').submit();
+            } else {
+                return false;
+            }
+        }
+
+        $('#frmEdit').on('submit', (e) => {
+            e.preventDefault();
+            validate();
+        })
+
+        $('.del-btn').on('click', function () {
+            $('.modal').show();
+        })
+
+        $('#cancel-btn').on('click', function () {
+            $('.modal').hide();
+        })
+
+        $('#confirm-btn').on('click', async function () {
+            await $.ajax({
+                type: 'POST',
+                url: `/admin/tags/delete?tag_id=${tag.id}`,
+                data: {},
+                success: function (data) {
+                    if (data.success) {
+                        window.location.replace('/admin/tags');
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+            $('.modal').hide();
+        })
+    })
+</script>
+{{/section}}

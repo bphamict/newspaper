@@ -1,108 +1,143 @@
- {{#section 'title'}}Chỉnh sửa - Danh mục con - Trang Admin{{/section}}
+{{#section 'title'}}Chỉnh sửa - Danh mục con - Trang Admin{{/section}}
 <ol class="breadcrumb">
-    <li><a href="/admin">Trang chủ</a></li>
     <li><a href="/admin/subcategories">Danh mục con</a></li>
     <li class="active">Chỉnh sửa</li>
 </ol>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Chỉnh sửa danh mục con</h3>
+    <div class="panel-heading" style="display:flex; flex:1; justify-content:space-between; align-items:center">
+        <span class="panel-title">Chỉnh sửa chuyên mục con</span>
+        <a class="btn btn-danger del-btn">
+            Xóa <span class="glyphicon glyphicon-trash"></span>
+        </a>
     </div>
     <div class="panel-body">
-        <form method="POST" action="" id="frmAdd">
-            <div class="form-group">
-                <label for="txtSubcategoryID">ID</label>
-                <input type="text" class="form-control" id="txtID" name="id" readonly value={{this.subcategory.id}}>
-                
-            </div>
+        <form method="POST" action="/admin/subcategories/update" id="frmEdit">
+            <input name="id" value='{{this.subcategory.id}}' style="display: none;">
             <div class="form-group">
                 <label for="txtSubcategoryName">Tên danh mục con</label>
-                <input type="text" class="form-control" id="txtName" name="name" autofocus value='{{this.subcategory.name}}'>
+                <input type="text" class="form-control" id="txtName" name="name" autofocus
+                    value='{{this.subcategory.name}}'>
                 <p style="color:red" id="validateName"></p>
             </div>
             <div class="form-group">
                 <label for="txtCategoryName">Chọn danh mục chính</label>
-                <div class="row">
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" id="txtNameCtg" name="nameCtg" value='{{this.subcategory.category_name}}' readonly>
+                <div class="row" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col-sm-9" style="padding-left:0px; padding-right: 0px">
+                        <select class="form-control" name="category_id" id="txtNameCtg">
+                            {{#each this.categories}}
+                            <option value="{{this.id}}"
+                                {{#ifEqual this.id @root.subcategory.category_id}}selected{{/ifEqual}}>{{this.name}}
+                            </option>
+                            {{/each}}
+                        </select>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" style="width: 100%;" type="button"
-                                data-toggle="dropdown">Danh mục chính
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                {{#each this.categories}}
-                                <li>
-                                    <a class="dropdown-item" type="button">{{name}}</a>
-                                </li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <a href="/admin/categories/add" class="btn btn-success btn-sm" role="button"
-                            style="width: 100%;">
-                            <span class="glyphicon glyphicon-plus-sign"></span> Thêm
+                    <div class="col-sm-3" style="padding-right:0px; text-align:right">
+                        <a href="/admin/categories/add" class="btn btn-success">
+                            Thêm chuyên mục mới <span class="glyphicon glyphicon-plus-sign"></span>
                         </a>
                     </div>
                 </div>
-
-            </div>
-            <div class="form-group">
-                <label for="txtCategoryName">Status</label>
-                <input type="text" class="form-control" id="txtIsExist" name="isDeleted" value={{this.subcategory.isDeleted}}>
-
             </div>
             <a href="/admin/subcategories" class="btn btn-success" role="button">
                 <span class="glyphicon glyphicon-backward"></span>
             </a>
-            <button type="submit" class="btn btn-primary" id="btn" formaction="/admin/subcategories/update">
-                <span class="glyphicon glyphicon-ok-circle"></span> Cập nhật
+            <button type="submit" class="btn btn-primary">
+                Cập nhật 
+                <span class="glyphicon glyphicon-ok-circle"></span>
             </button>
-            {{#if this.subcategory.isDeleted}}
-            <button type="submit" class="btn btn-danger" disabled formaction="/admin/subcategories/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
-            </button>
-            {{else}}
-            <button type="submit" class="btn btn-danger" formaction="/admin/subcategories/delete">
-                <span class="glyphicon glyphicon-remove-circle"></span> Xoá
-            </button>
-            {{/if}}
-
         </form>
     </div>
 </div>
+<div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" style="">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa chuyên mục này?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-btn" class="btn btn-primary" style="margin-top: 1rem;">Xóa</button>
+                <button id="cancel-btn" class="btn btn-primary" style="margin-top: 1rem;">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{#section 'js'}}
 <script>
-    var elements = document.getElementsByClassName('dropdown-item');
+    $(document).ready(function () {
+        const subcategory = {{{ json this.subcategory }}}
 
-    Array.from(elements).forEach((element) => {
-        element.addEventListener('click', (event) => {
-            document.getElementById('txtNameCtg').value = `${event.target.innerText}`;
-        });
-    });
+        async function validate() {
+            let hasError = false;
+            $('#validateName').html("");
+            const text = $('#txtName').val();
 
+            if (!text) {
+                $('#validateName').html("Tên danh mục không được bỏ trống!!!");
+                hasError = true;
+            } else {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/admin/subcategories/isAvailable`,
+                    data: {
+                        name: text,
+                        isEdit: true,
+                        id: subcategory.id,
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (!data.isAvailable) {
+                            $('#validateName').html('Danh mục đã tồn tại!!!');
+                            hasError = true;
+                        }
+                    },
+                    error: function (error) {
+                        if (error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
 
-    function required(input) {
-        if (input.value.length == 0) {
-            return false;
+            if(!hasError) {
+                $('#frmEdit').off('submit').submit();
+            } else {
+                return false;
+            }
         }
-        return true;
-    }
 
-    var form = document.getElementById("frmAdd");
+        $('#frmEdit').on('submit', (e) => {
+            e.preventDefault();
+            validate();
+        })
 
-    form.addEventListener("submit", function () {
-        var txtName = document.getElementById("txtName");
-        if (!required(txtName)) {
-            event.preventDefault();
-            document.getElementById("validateName").innerHTML = "Tên danh mục không được bỏ trống!!!";
-            txtName.focus();
-        }
+        $('.del-btn').on('click', function () {
+            $('.modal').show();
+        })
 
-    }, true);
+        $('#cancel-btn').on('click', function () {
+            $('.modal').hide();
+        })
+
+        $('#confirm-btn').on('click', async function () {
+            await $.ajax({
+                type: 'POST',
+                url: `/admin/subcategories/delete?sub_category_id=${subcategory.id}`,
+                data: {},
+                success: function (data) {
+                    if (data.success) {
+                        window.location.replace('/admin/subcategories');
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+            $('.modal').hide();
+        })
+    })
 </script>
 {{/section}}

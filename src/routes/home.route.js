@@ -1,16 +1,18 @@
 const router = require('express').Router();
 const homeModel = require('../models/home.model');
 const moment = require('moment');
+const { catWithSubs } = require('../models/home.model');
 moment.locale('vi');
 
 router.get('/', async function(req, res){
-    const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat, categories] = await Promise.all([
+
+    //Top 10 category??
+    const [postsForCarousel, catsWithSubs, top10Newest, top10View, postsOrderByCat] = await Promise.all([
         homeModel.top3ViewLastWeek(),
         homeModel.catWithSubs(),
         homeModel.top10Newest(),
         homeModel.top10View(),
         homeModel.postsOrderByCat(),
-        homeModel.categories()
     ])
     
     for(let i = 0; i < 10; i++) {
@@ -32,7 +34,8 @@ router.get('/', async function(req, res){
     });
 
     name = catsWithSubs[0].catName;
-    ID = catsWithSubs[0].Id; 
+    ID = catsWithSubs[0].Id;
+    slug = catsWithSubs[0].catSlug;
     subs = [];
     cats = [];
     posts = [];
@@ -40,27 +43,30 @@ router.get('/', async function(req, res){
     catsWithSubs.forEach(element => {
         if(element.catName === name)
         {
-            subs.push(element.subCatName);   
+            subs.push({ subCatValue: element.subCatName, subCatSlug: element.subCatSlug});   
         }
         else
         {
             cats.push({
                 id: ID,
                 catName: name,
+                catSlug: slug,
                 subCatName: subs,
                 posts
             })
 
             name = element.catName;
             ID = element.Id;
+            slug = element.catSlug;
             subs = [];
-            subs.push(element.subCatName);
+            subs.push({ subCatValue: element.subCatName, subCatSlug: element.subCatSlug });
         }
         
     })
     cats.push({
         id: ID,
         catName: name,
+        catSlug: slug,
         subCatName: subs,
         posts
     })
@@ -85,7 +91,6 @@ router.get('/', async function(req, res){
         cats: cats,
         top10Newest,  
         top10View,
-        categories,
     });
 })
 

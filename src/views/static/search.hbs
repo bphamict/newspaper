@@ -29,19 +29,24 @@
                 <div style="margin-left: 20px; display:flex; justify-content:space-between; flex-direction:column; flex:1">
                     <p style="cursor: pointer;" onclick="window.location.assign('/post/{{slug}}')">{{summary}}</p>
                     <div>
-                        <span>Chuyên mục: <a href="#">{{category_name}}</a> / <a href="#">{{sub_category_name}}</a></span>
+                        <span>Chuyên mục: <a href="/category/{{category_slug}}">{{category_name}}</a> / <a href="/subCategory/{{sub_category_slug}}">{{sub_category_name}}</a></span>
                         <span style="float:right"><small>{{publish_time}}</small></span>
                     </div>
                 </div>
             </div>
             <div style="margin-top: 10px;">
-                    <p>Nhãn:
+                    <span>Nhãn:
                         {{#each @root.post_tags}}
                             {{#ifEqual this.post_id ../id}}
                             <a href="/tag/{{this.slug}}" style="background-color: gray; padding: 5px; color:white; border-radius: 4px">{{this.name}}</a>
                             {{/ifEqual}}
                         {{/each}}
-                    </p>
+                    </span>
+                    {{#ifEqual type 'PREMIUM'}}
+                    <span style="float: right;">
+                        <span style="padding: 5px 20px; background-color:red; border-radius: 4px; color: white">PREMIUM</span>
+                    </span>
+                    {{/ifEqual}}
                 </div>
         </article>
         {{/each}}

@@ -1,5 +1,4 @@
 <ol class="breadcrumb">
-    <li><a href="/admin">Trang Admin</a></li>
     <li><a href="/admin/users">Danh sách người dùng</a></li>
     <li class="active">Thêm người dùng</li>
 </ol>
@@ -54,6 +53,8 @@
 <script>
     $(document).ready(function() {
         moment.locale('vi');
+
+        $('.category-option').prop('selectedIndex', -1);
 
         async function validate() {
             $('.full-name-error').html('');

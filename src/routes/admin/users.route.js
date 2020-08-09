@@ -82,7 +82,8 @@ router.get('/', isAdmin, async (req, res) => {
         canGoPrev: page > 1,
         canGoNext: page < numOfPage,
         pageItems,
-        numOfPage
+        numOfPage,
+        offset: (page - 1) * 10 + 1,
     });
 });
 
@@ -102,6 +103,7 @@ router.get('/:id/details', isAdmin, async (req, res) => {
 })
 
 router.post('/:id/details', isAdmin, async (req, res) => {
+    //Cho phep xoa category quan ly
     req.body.role = +req.body.role;
     const userID = +req.params.id;
     const role_id = req.body.role;
@@ -116,6 +118,7 @@ router.post('/:id/details', isAdmin, async (req, res) => {
     } else {
         await userSubscribeModel.delete(userID);
         if(req.body.category) {
+            await categoryModel.deleteUser({ userID });
             await categoryModel.update({ id: req.body.category, user_id: userID});
         }
     }
@@ -134,7 +137,7 @@ router.post('/:id/details', isAdmin, async (req, res) => {
 router.post('/:id/delete', isAdmin, async (req, res) => {
     var userID = +req.params.id;
     var success = false;
-    const result = await userModel.deleteUser(userID);
+    const [ result, result2 ] = await Promise.all([userModel.deleteUser(userID), categoryModel.deleteUser({ userID })]);
     if(result.affectedRows === 1) {
         success = true;
     }
@@ -169,7 +172,7 @@ router.get('/add', isAdmin, async (req, res) => {
 })
 
 router.post('/add', isAdmin, async (req, res) => {
-    const categoryID = +req.body.category;
+    const categoryID = +req.body.category || -1;
     req.body = _.pick(req.body, ['full_name', 'email', 'dob', 'password', 'role']);
     req.body = _.assign(req.body, {
         username: v4(),
@@ -182,7 +185,9 @@ router.post('/add', isAdmin, async (req, res) => {
     if(req.body.role === 4) {
         await userSubscribeModel.add({ user_id: user.id, expiry_time: moment(user.created_at).add(10080, 'm').format('YYYY-MM-DD HH:mm:ss') });
     } else if(req.body.role === 2) {
-        await categoryModel.update({ id: categoryID, user_id: result.insertId });
+        if(categoryID !== -1) {
+            await categoryModel.update({ id: categoryID, user_id: result.insertId });
+        }
     }
     res.redirect('/admin/users');
 })

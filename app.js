@@ -20,7 +20,9 @@ module.exports = (app) => {
     res.render('static/about');
   });
 
-  app.use('/byCat', require('./src/routes/category.route'));
+  app.use('/category', require('./src/routes/category.route'));
+
+  app.use('/subCategory', require('./src/routes/sub_category.route'));
 
   app.use('/tag', require('./src/routes/tag.route'));
 

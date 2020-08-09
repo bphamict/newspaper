@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   var page = +req.query.page || 1;
   const offset = (page - 1) * 10;
 
-  const [posts, total, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset), postModel.getNumberOfSearchPost(req.query.q, search_by), postTagModel.loadAllWithName()]);
+  const [posts, total, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset, req.isAuthenticated()), postModel.getNumberOfSearchPost(req.query.q, search_by), postTagModel.loadAllWithName()]);
 
   posts && posts.forEach((post) => {
     post.publish_time = moment(post.publish_time).format('LLL');

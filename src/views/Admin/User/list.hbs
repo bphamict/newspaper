@@ -1,7 +1,11 @@
-<ol class="breadcrumb">
-    <li><a href="/admin">Trang Admin</a></li>
-    <li class="active">Danh sách người dùng</li>
-</ol>
+<ul class="nav nav-pills nav-justified" style="margin-bottom: 20px;">
+    <li><a href="/admin/categories">Danh mục chính</a></li>
+    <li><a href="/admin/subcategories">Danh mục con</a></li>
+    <li><a href="/admin/tags">Nhãn</a></li>
+    <li><a href="/admin/posts">Bài viết</a></li>
+    <li class="active"><a href="/admin/users">Người dùng</a></li>
+</ul>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
@@ -30,7 +34,7 @@
                     <tbody>
                         {{#each this.userList}}
                         <tr>
-                            <td style="vertical-align: middle;">{{this.id}}</td>
+                            <td style="vertical-align: middle;">{{add @root.offset @index}}</td>
                             <td style="vertical-align: middle;">{{this.full_name}}</td>
                             <td style="vertical-align: middle;">{{this.email}}</td>
                             <td style="vertical-align: middle; text-align: center; text-transform:uppercase"><span
@@ -86,7 +90,7 @@
                     </li>
                 </ul>
             </nav>
-            {{/ifNotEqual}}
+        {{/ifNotEqual}}
     </div>
 </div>
 <div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel"

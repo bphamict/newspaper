@@ -1,33 +1,12 @@
  {{#section 'title'}}Trang chủ - Trang Admin{{/section}}
 
 
-<ul class="nav nav-pills">
-    <li class="active"><a href="/admin">Trang chủ</a></li>
-    <li>
-        <a role="button" class=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">Quản lý danh mục
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a href="/admin/categories">Danh mục chính</a></li>
-            <li><a href="/admin/subcategories">Danh mục con</a></li>
-
-        </ul>
-    </li>
+<ul class="nav nav-tabs nav-justified">
+    <li><a href="/admin/categories">Danh mục chính</a></li>
+    <li><a href="/admin/subcategories">Danh mục con</a></li>
     <li><a href="/admin/tags">Quản lý nhãn</a></li>
     <li><a href="/admin/posts">Quản lý bài viết</a></li>
-    <li>
-        <a role="button" class=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">Quản lý người dùng
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a href="/admin/users">Tất cả</a></li>
-            <li><a href="/admin/users/editor">Biên tập viên</a></li>
-            <li><a href="/admin/users/writer">Phóng viên</a></li>
-            <li><a href="/admin/users/subcriber">Độc giả</a></li>
-        </ul>
-    </li>
+    <li><a href="/admin/users">Quản lý người dùng</a></li>
 </ul>
 
 
