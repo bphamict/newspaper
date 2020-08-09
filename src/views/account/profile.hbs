@@ -73,7 +73,6 @@
                 $('.full-name-error').html('<small class="text-danger">Họ tên không hợp lệ</small>');
                 hasError = true;
             }
-            console.log('haserror1', hasError)
 
             const email = $('#inputEmail').val();
             if(!email) {
@@ -102,7 +101,6 @@
                     }
                 })
             }
-            console.log('haserror2', hasError)
 
             const dob = $('#inputDOB').val();
             if(!dob) {
@@ -112,7 +110,6 @@
                 $('.dob-error').html('<small class="text-danger">Ngày không hợp lệ</small>');
                 hasError = true;
             }
-            console.log('haserror3', hasError)
 
             if(user.role === 3) {
                 const pseudonym = $('#inputPseudonym').val();
@@ -140,10 +137,8 @@
                     })
                 }
             }
-            console.log('haserror4', hasError)
 
             if(!hasError) {
-                console.log('aaa');
                 $('#user-form').off('submit').submit();
             } else {
                 return false;

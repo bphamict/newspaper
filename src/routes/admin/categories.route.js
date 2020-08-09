@@ -140,7 +140,6 @@ router.post('/isAvailable', async (req, res) => {
   });
 
   const category = isEdit ? await categoriesModel.checkIfAvailableAndNotTheSameAsID(name, id) : await categoriesModel.singleBySlug(name);
-  console.log(category);
 
   res.send({ isAvailable: !category });
 });

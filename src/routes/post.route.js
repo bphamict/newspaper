@@ -112,7 +112,6 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
 //     page_items.push(item);
 //   }
 
-//   console.log(posts);
 //   res.render('post/byCategory', {
 //     nameCategory: rowsCg[0],
 //     listSubCg,
@@ -165,7 +164,6 @@ router.post('/:id/comments', isAuthenticated, async (req, res) => {
 //       };
 //       page_items.push(item);
 //     }
-//     //console.log(posts);
 //     res.render('post/byCategory', {
 //       nameCategory: rowsCg[0],
 //       nameSubCategory,

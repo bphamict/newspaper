@@ -86,7 +86,6 @@
                         id: subcategory.id,
                     },
                     success: function (data) {
-                        console.log(data);
                         if (!data.isAvailable) {
                             $('#validateName').html('Danh mục đã tồn tại!!!');
                             hasError = true;

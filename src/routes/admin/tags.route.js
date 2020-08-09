@@ -141,7 +141,6 @@ router.post('/isAvailable', async (req, res) => {
   });
 
   const tag = isEdit ? await tagsModel.checkIfAvailableAndNotTheSameAsID(name, id) : await tagsModel.singleBySlug(name);
-  console.log(tag);
 
   res.send({ isAvailable: !tag });
 })
