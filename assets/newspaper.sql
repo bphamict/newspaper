@@ -74,11 +74,11 @@ CREATE TABLE `post` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `slug` varchar(100) NOT NULL,
   `editor_note` text,
-  `publish_time`: datetime,
+  `publish_time` datetime,
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
   FULLTEXT(title),
   FULLTEXT(summary),
-  FULLTEXT(content_text),
+  FULLTEXT(content_text)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
