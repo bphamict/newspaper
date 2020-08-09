@@ -32,7 +32,7 @@ module.exports = {
         return rows[0];
     },
     findBySlug: async (slug) => {
-        const rows = await db.load(`SELECT * FROM ${TBL} WHERE id = '${slug}' AND isDeleted = 0`);
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE slug = '${slug}' AND isDeleted = 0`);
 
         if(rows.length === 0) {
             return null;
