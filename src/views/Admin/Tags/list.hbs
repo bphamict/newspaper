@@ -1,0 +1,100 @@
+{{#section 'title'}}Tag - Trang Admin{{/section}}
+<ul class="nav nav-pills nav-justified" style="margin-bottom: 20px;">
+    <li><a href="/admin/categories">Danh mục chính</a></li>
+    <li><a href="/admin/subcategories">Danh mục con</a></li>
+    <li class="active"><a href="/admin/tags">Nhãn</a></li>
+    <li><a href="/admin/posts">Bài viết</a></li>
+    <li><a href="/admin/users">Người dùng</a></li>
+</ul>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-9">
+                {{!-- <h3 class="panel-title"><strong>List tags</strong></h3> --}}
+            </div>
+            <div class="col-sm-2">
+                <a class="btn btn-success" role="button" href="/admin/tags/add">Thêm
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-body">
+        {{#if this.empty}}
+        <p class="well">Không có dữ liệu...</p>
+        {{else}}
+        <div class="panel panel-default">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col">Tên nhãn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.tags}}
+                    <tr>
+                        <td class="text-center" style="vertical-align: middle;">{{add @root.offset @index}}</td>
+                        <td style="vertical-align: middle;">{{name}}</td>
+                        <td class="text-right">
+                            <a class="btn btn-primary" role="button" href="/admin/tags/{{slug}}/edit">Chỉnh sửa
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+
+                </tbody>
+            </table>
+        </div>
+        {{#ifNotEqual numOfPage 0}}
+            <nav aria-label="Page navigation">
+                <ul class="pagination" style="display: flex;justify-content: center;margin-top: 30px;">
+                    <li class="prev-page {{#unless this.canGoPrev}}disabled{{/unless}}"
+                        {{#if this.canGoPrev}}onclick="goPrev()" style="cursor: pointer;" {{/if}}>
+                        <span>
+                            <span aria-hidden="true">&laquo;</span>
+                        </span>
+                    </li>
+                    {{#each this.pageItems}}
+                    <li class="page-item {{#if this.isActive}}active{{/if}}"
+                        style="{{#if this.isActive}}pointer-events: none;{{/if}} cursor: pointer;">
+                        <span>{{this.value}}</span></li>
+                    {{/each}}
+                    <li class="next-page {{#unless this.canGoNext}}disabled{{/unless}}"
+                        {{#if this.canGoNext}}onclick="goNext()" style="cursor: pointer;" {{/if}}>
+                        <span>
+                            <span aria-hidden="true">&raquo;</span>
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+        {{/ifNotEqual}}
+        {{/if}}
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function() {
+        $('.page-item').on('click', function () {
+            window.location.assign(`?page=${$(this).text().trim()}`);
+        })
+    })
+
+    function goPrev() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`?page=${activePage.value - 1}`); 
+    }
+
+    function goNext() {
+        const pageItems = {{{ json pageItems }}};
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`?page=${activePage.value + 1}`);
+    }
+</script>
+{{/section}}

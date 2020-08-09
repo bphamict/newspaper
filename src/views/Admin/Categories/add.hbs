@@ -1,0 +1,74 @@
+{{#section 'title'}}Thêm - Danh mục chính - Trang Admin{{/section}}
+<ol class="breadcrumb">
+    <li><a href="/admin/categories">Danh mục chính</a></li>
+    <li class="active">Thêm</li>
+</ol>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Thêm danh mục</h3>
+    </div>
+    <div class="panel-body">
+        <form method="POST" action="" id="frmAdd">
+            <div class="form-group">
+                <label for="txtCategoryName">Tên danh mục</label>
+                <input type="text" class="form-control" id="txtName" name="name" autofocus>
+                <p style="color:red" id="validateName"></p>
+            </div>
+            <a href="/admin/categories" class="btn btn-success" role="button">
+                <span class="glyphicon glyphicon-backward"></span>
+            </a>
+            <button type="submit" class="btn btn-primary" id="btn">
+                <span class="glyphicon glyphicon-ok-circle"></span> Lưu
+            </button>
+
+        </form>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        async function validate() {
+            let hasError = false;
+            $('#validateName').html("");
+            const text = $('#txtName').val();
+
+            if (!text) {
+                $('#validateName').html("Tên danh mục không được bỏ trống!!!");
+                hasError = true;
+            } else {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/admin/categories/isAvailable`,
+                    data: {
+                        name: text,
+                    },
+                    success: function (data) {
+                        if (!data.isAvailable) {
+                            $('#validateName').html('Danh mục đã tồn tại!!!');
+                            hasError = true;
+                        }
+                    },
+                    error: function (error) {
+                        if (error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+
+            if(!hasError) {
+                $('#frmAdd').off('submit').submit();
+            } else {
+                return false;
+            }
+        }
+
+        $('#frmAdd').on('submit', (e) => {
+            e.preventDefault();
+            validate();
+        })
+    })
+</script>
+{{/section}}

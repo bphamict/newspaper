@@ -31,8 +31,17 @@ module.exports = {
 
         return rows[0];
     },
-    loadByParentCategory: async (parentName) => {
-        const rows = await db.load(`SELECT SUB_CAT.* FROM ${TBL} SUB_CAT JOIN ${CAT_TBL} CAT ON SUB_CAT.category_id = CAT.id WHERE CAT.name = '${parentName}' AND SUB_CAT.isDeleted = 0`);
+    findBySlug: async (slug) => {
+        const rows = await db.load(`SELECT * FROM ${TBL} WHERE slug = '${slug}' AND isDeleted = 0`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
+    },
+    loadByParentCategory: async (parentID) => {
+        const rows = await db.load(`SELECT SUB_CAT.* FROM ${TBL} SUB_CAT JOIN ${CAT_TBL} CAT ON SUB_CAT.category_id = CAT.id WHERE CAT.id = '${parentID}' AND SUB_CAT.isDeleted = 0`);
 
         if(rows.length === 0) {
             return null;
@@ -42,5 +51,35 @@ module.exports = {
     },
     add: (subCatObj) => {
         return db.create(TBL, subCatObj);
-    }
+    },
+    findByPostID: async (postID) => {
+        const rows = await db.load(`SELECT SC.* FROM ${TBL} SC JOIN POST P ON SC.id = P.sub_category_id WHERE P.id = ${postID} AND SC.isDeleted = 0`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows[0];
+    },
+    allBySlugCategory: (slug) => {
+        return db.load(`SELECT c.id AS idCtg, sc.* FROM ${TBL} sc JOIN category c on sc.category_id = c.id WHERE c.slug ='${slug}' AND sc.isDeleted != 1`);
+    },
+    
+    findNameCgBySlug: async (slug) => {
+        const rows = await db.load(`SELECT * FROM ${CAT_TBL} WHERE slug ='${slug}' AND isDeleted != 1`);
+
+        if(rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+    },
+    findSlugCatBySlugSub_Cat: async (slug) => {
+        const row = await db.load(`SELECT c.slug FROM ${TBL} sc JOIN ${CAT_TBL} c on sc.category_id=c.id WHERE sc.slug = '${slug}' AND sc.isDeleted != 1`);
+        return row[0];
+    },
+    findNameSubCategoryBySlug: async (slug) => {
+        const row = await db.load(`SELECT name FROM ${TBL} WHERE slug ='${slug}' AND isDeleted != 1`);
+        return row[0];
+    },
 }

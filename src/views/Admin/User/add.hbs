@@ -1,0 +1,156 @@
+<ol class="breadcrumb">
+    <li><a href="/admin/users">Danh sách người dùng</a></li>
+    <li class="active">Thêm người dùng</li>
+</ol>
+<form style="width: 30%; margin:auto; margin-bottom: 30px" method="POST" id="user-form">
+    <div class="form-group">
+        <label for="inputFullName">Họ tên</label>
+        <input type="text" class="form-control" id="inputFullName" name="full_name">
+        <div class="full-name-error"></div>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail">Email</label>
+        <input type="email" class="form-control" id="inputEmail" name="email">
+        <div class="email-error"></div>
+    </div>
+    <div class="form-group">
+        <label for="inputDOB">Ngày sinh</label>
+        <input type="date" class="form-control" id="inputDOB" name="dob">
+        <div class="dob-error"></div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Mật khẩu</label>
+        <input type="password" class="form-control" id="inputPassword" name="password">
+        <div class="password-error"></div>
+    </div>
+    <div class="form-group">
+        <label for="inputConfirmPassword">Nhập lại mật khẩu</label>
+        <input type="password" class="form-control" id="inputConfirmPassword">
+        <div class="confirm-password-error"></div>
+    </div>
+    <div class="form-group">
+        <label>Vai trò</label>
+        <select class="form-control role-option" style="text-transform: uppercase;" name="role">
+            {{#each this.roles}}
+                <option value={{this.id}} {{#ifEqual @root.user.role this.id}}selected{{/ifEqual}}>{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group editor-category-group">
+        <label>Danh mục quản lý</label>
+        <select class="form-control category-option" name="category">
+            {{#each this.vacantCategories}}
+                <option value={{this.id}} {{#ifEqual this.user_id @root.user.id}}class="selected-category" selected{{/ifEqual}}>{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div style="text-align:center; margin-top: 40px">
+        <button role="button" class="btn btn-primary check-btn">Lưu</button>
+    </div>
+</form>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function() {
+        moment.locale('vi');
+
+        $('.category-option').prop('selectedIndex', -1);
+
+        async function validate() {
+            $('.full-name-error').html('');
+            $('.email-error').html('');
+            $('.dob-error').html('');
+            $('.password-error').html('');
+            $('.confirm-password-error').html('');
+            var hasError = false;
+
+            const fullName = $('#inputFullName').val();
+            if(!fullName) {
+                $('.full-name-error').html('<small class="text-danger">Họ tên không được để trống</small>');
+                hasError = true;
+            } else if(fullName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').match(/[^A-Za-z ]/g)) {
+                $('.full-name-error').html('<small class="text-danger">Họ tên không hợp lệ</small>');
+                hasError = true;
+            }
+
+            const email = $('#inputEmail').val();
+            if(!email) {
+                $('.email-error').html('<small class="text-danger">Email không được để trống</small>')
+                hasError = true;
+            } else {
+                await $.ajax({
+                    type: 'POST',
+                    url: `/admin/users/isEmail`,
+                    data: {
+                        email,
+                    },
+                    success: function(data) {
+                        if(data.msg !== 'Là email') {
+                            $('.email-error').html(`<small class="text-danger">${data.msg}</small>`);
+                            hasError = true;
+                        }
+                    },
+                    error: function(error) {
+                        if(error) {
+                            console.log(error);
+                        }
+                    }
+                })
+            }
+
+            const dob = $('#inputDOB').val();
+            if(!dob) {
+                $('.dob-error').html('<small class="text-danger">Ngày sinh không được để trống</small>');
+                hasError = true;
+            } else if(moment().isSameOrBefore(dob, 'day')) {
+                $('.dob-error').html('<small class="text-danger">Ngày không hợp lệ</small>');
+                hasError = true;
+            }
+
+            const password = $('#inputPassword').val();
+            if(!password) {
+                $('.password-error').html('<small class="text-danger">Password không được để trống</small>');
+                hasError = true;
+            } else if(password.length < 8 || !password.match(/\d/g)) {
+                $('.password-error').html('<small class="text-danger">Password phải dài hơn 8 kí tự và có chứa ít nhất 1 chữ số</small>');
+                hasError = true;
+            }
+
+            const confirmPassword = $('#inputConfirmPassword').val();
+            if(!confirmPassword) {
+                $('.confirm-password-error').html('<small class="text-danger">Mật khẩu không được để trống</small>');
+                hasError = true;
+            } else if(password !== confirmPassword) {
+                $('.confirm-password-error').html('<small class="text-danger">2 mật khẩu phải giống nhau</small>');
+                hasError = true;
+            }
+
+            if(!hasError) {
+                $('#user-form').off('submit').submit();
+            } else {
+                return false;
+            }
+        }
+
+        $('#user-form').on('submit', (e) => {
+            e.preventDefault();
+            validate();
+        })
+
+        $('.role-option').on('change', function() {
+            const role_id = +$(this).val();
+            if(role_id === 2) {
+                $('.editor-category-group').show();
+            } else {
+                $('.editor-category-group').hide();
+            }
+        })
+    })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/vi.min.js"></script>
+{{/section}}
+
+{{#section 'title'}}
+Thêm người dùng - Trang Admin
+{{/section}}

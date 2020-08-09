@@ -1,0 +1,87 @@
+{{#if this.isManaging}}
+<div>
+    <h2 class="title">Danh sách bài viết</h2>
+</div>
+<p style="font-size: 2rem;">Danh mục đang quản lí: <b>{{this.categoryName}}</b></p>
+{{#unless this.posts}}
+<p style="text-align: center; font-size: 2rem; font-weight: bold">Không có bài viết nào</p>
+{{/unless}}
+<div>
+    {{#each this.posts}}
+    <a class="card" href='/editor/post/{{this.id}}'>
+        <img class="card-img" src="/public/images/post/{{this.featured_image}}">
+        <div class="card-body">
+            <div>
+                <p class="card-title">{{this.title}}</p>
+                <p class="card-summary">{{this.summary}}</p>
+            </div>
+        </div>
+    </a>
+    {{/each}}
+</div>
+{{else}}
+<div style="display: flex; flex-direction:column; align-items:center;">
+    <h2 style="margin-bottom: 20px;">Hiện tại bạn chưa quản lý danh mục nào</h2>
+    <a class="btn btn-primary" href="/">Về trang chủ</a>
+</div>
+{{/if}}
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function() {
+    })
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    .title {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        padding: 10px;
+        display: flex;
+        margin-bottom: 10px;
+        border: 0.5px solid black;
+        background-color: #f5f5f5;
+        color:inherit;
+        cursor: pointer;
+    }
+
+    .card-img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+        line-height: 1.2em;
+        max-height: 2.4em;
+        overflow: hidden;
+    }
+
+    .card-summary {
+        font-size: 1.5rem;
+        line-height: 1.2em;
+        height: 3.6em;
+        overflow: hidden;
+    }
+</style>
+{{/section}}
+
+{{#section 'title'}}
+Danh sách bài viết
+{{/section}}

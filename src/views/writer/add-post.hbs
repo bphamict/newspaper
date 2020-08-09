@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="input-category">Chuyên mục</label>
+        <label for="input-category">Danh mục</label>
         <select class="form-control" name="sub_category_id">
             {{#each this.subCategories}}
             <option value="{{this.id}}">{{this.name}}</option>
@@ -54,6 +54,7 @@
     <div class="form-group">
         <label for="input-content">Nội dung bài viết</label>
         <input type="text" class="form-control" id="input-content" name="content">
+        <input type="text" id="content-text-input" name="content_text" style="display: none;">
     </div>
     <button type="submit" class="btn btn-primary">Lưu bài</button>
 </form>
@@ -92,9 +93,14 @@
             plugins: 'paste image link autolink lists table media',
             menubar: false,
             height: 450,
+            image_caption: true,
+            image_class_list: [
+                { title: 'img-responsive', value: 'img-responsive' }
+            ],
             toolbar: [
                 'undo redo | formatselect bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright | forecolor backcolor | table link image media',
             ],
+            entity_encoding : "raw",
             images_upload_handler: function (blobInfo, success, failure) {
                 var xhr, formData;
 
@@ -165,13 +171,14 @@
 
         function saveTags() {
             $('.modal').css('display', 'none');
-            let tagString = '';
+            let tagArray = [];
             $('.radio-check').each(function (i) {
                 if ($(this).is(':checked')) {
-                    tagString += $(this).val() + ' | ';
+                    tagArray.push($(this).val());
                 }
             })
-            $('#input-tag').val(tagString)
+            let tagString = tagArray.join(' | ');
+            $('#input-tag').val(tagString);
         }
 
         $('.close').on('click', saveTags)
@@ -184,12 +191,18 @@
             }
         });
 
-        $('#form-add-post').on('submit', function (e) {
+        function validate() {
             if (!$('#input-image').val() || !$('#input-title').val() || !$('#input-summary').val() || !$('#input-tag').val() || !$('#input-content').val()) {
                 alert('Phải điền vào mọi trường')
-                return false;
+                return;
             }
-            return true;
+            $('#form-add-post').off('submit').submit();
+        }
+
+        $('#form-add-post').submit(function (e) {
+            $('#content-text-input').val(tinymce.activeEditor.getContent({ format: 'text' }).trim());
+            e.preventDefault();
+            validate();
         })
     })
 </script>
@@ -231,4 +244,8 @@
         padding-bottom: 1.5rem
     }
 </style>
+{{/section}}
+
+{{#section 'title'}}
+Thêm bài viết
 {{/section}}

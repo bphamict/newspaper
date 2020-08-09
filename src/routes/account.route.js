@@ -11,6 +11,8 @@ const UserVerify = require('../models/user-verify.model');
 const { authentication } = require('../configs/default');
 const { MESSAGES } = require('../configs/messages');
 const { sendEmail } = require('../utils/send-email');
+const moment = require('moment');
+const userSubscribeModel = require('../models/user-subscribe.model');
 
 router.get('/login', (req, res) => {
   if (req.query.origin) {
@@ -98,6 +100,7 @@ router.post(
       await User.create(req.body);
 
       user = await User.findByEmail(req.body.email);
+      await userSubscribeModel.add({ user_id: user.id, expiry_time: moment(user.created_at).add(10080, 'm').format('YYYY-MM-DD HH:mm:ss') });
       const code = cryptoRandomString(authentication.randomString);
       await UserVerify.create({
         user_id: user.id,

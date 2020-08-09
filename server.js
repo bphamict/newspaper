@@ -64,6 +64,34 @@ app.engine(
           return options.fn(this);
         }
         return options.inverse(this);
+      },
+      json: function (content) {
+        return JSON.stringify(content);
+      },
+      ifNotEqual: function(v1, v2, options) {
+        if(v1 !== v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      ifLarger: function(v1, v2, options) {
+        if(v1 > v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      ifTagNotInPostTag: function (item, list, options) {
+        if(!list.find(element => element.id === item.id)) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      },
+      limit: function (arr, limit) {
+        if (!Array.isArray(arr)) { return []; }
+        return arr.slice(0, limit);
+      },
+      add: function(value1, value2, options) {
+        return parseInt(value1) + parseInt(value2);
       }
     },
   }),

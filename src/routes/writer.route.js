@@ -4,12 +4,14 @@ const config = require('../configs/default');
 const storage = multer.diskStorage(config.multerImagePost);
 const upload = multer({storage:storage});
 const subCategoryModel = require('../models/sub-category.model');
-const tagsModel = require('../models/tag.model');
+const tagsModel = require('../models/admin/tags.model');
 const postModel = require('../models/post.model');
-const tagModel = require('../models/tag.model');
 const postTagModel = require('../models/post-tag.model');
 const fs = require('fs');
 const isWriter = require('../middlewares/isWriter.middleware');
+const slugify = require('slugify');
+const moment = require('moment');
+moment.locale('vi');
 
 router.get('/post/add', isWriter, async (req, res) => {
     try {
@@ -30,12 +32,13 @@ router.post('/post/add', isWriter, upload.single('featured_image'), async (req, 
         req.body.type = 'FREE';
         req.body.author = req.user.id;
         req.body.featured_image = req.file.filename;
+        req.body.slug = slugify(req.body.title.toLowerCase().replace(/[*+~.()'"!=:@|^&${}[\]`;/?,\\<>%]/g, ''), { locale: 'vi' });
         const result = await postModel.add(req.body);
         const postID = result.insertId;
 
         tags = tags.split(' | ');
         tags.forEach(async tagName => {
-            let tag = await tagModel.findByName(tagName);
+            let tag = await tagsModel.findByName(tagName);
             if(tag) {
                 await postTagModel.add({
                     post_id: parseInt(postID),
@@ -54,15 +57,32 @@ router.post('/image', isWriter, upload.single('file'), (req, res) => {
     res.json({ location: `/public/images/post/${req.file.filename}` });
 })
 
-router.get('/post/list', isWriter, async (req, res) => {
+router.get('/post', isWriter, async (req, res) => {
     const posts = await postModel.loadByUserID(req.user.id);
-    res.render('writer/list-post', { posts });
+    var numberOfPost = 0;
+    if(posts) {
+        numberOfPost = posts.length;
+        posts.forEach(post => {
+            if(post.publish_time) {
+                if(post.status === 'APPROVED' && moment().isSameOrAfter(post.publish_time)) {
+                    post.isPublished = true;
+                } else {
+                    post.isPublished = false;
+                }
+                post.publish_time = moment(post.publish_time).format('LLL');
+            }
+        })
+    }
+    res.render('writer/list-post', { posts, numberOfPost });
 })
 
 router.get('/post/edit', isWriter, async (req, res) => {
     let postID = +req.query.id || 1;
     postID = parseInt(postID);
     const [post, subCategories, tags, post_tags] = await Promise.all([postModel.loadByPostID(postID), subCategoryModel.loadAll(), tagsModel.loadAll(), postTagModel.loadByPostID(postID)]);
+    if(!post || (post.status !== 'DECLINE' && post.status !== 'PENDING')) {
+        return res.redirect('/writer/post/list');
+    }
     res.render('writer/edit-post', { post, subCategories, tags, post_tags })
 })
 
@@ -85,13 +105,16 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
     req.body.sub_category_id = parseInt(req.body.sub_category_id);
     const sub_category = await subCategoryModel.findByID(req.body.sub_category_id);
     req.body.category_id = sub_category.category_id;
+    req.body.status = 'PENDING';
+    req.body.editor_note = null;
+    req.body.publish_time = null;
     let tags = req.body.tag;
     delete req.body.tag;
 
     await Promise.all([postModel.update(req.body), postTagModel.deleteByPostID(postID)])
     tags = tags.split(' | ');
     tags.forEach(async tagName => {
-        let tag = await tagModel.findByName(tagName);
+        let tag = await tagsModel.findByName(tagName);
         if(tag) {
             await postTagModel.add({
                 post_id: parseInt(postID),

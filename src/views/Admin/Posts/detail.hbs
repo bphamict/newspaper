@@ -1,0 +1,135 @@
+{{#section 'title'}}Chi tiết bài viết - Trang Admin{{/section}}
+<ol class="breadcrumb">
+    <li><a href="/admin/posts">Danh sách bài viết</a></li>
+    <li class="active">Chi tiết</a></li>
+</ol>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="/admin/posts" class="btn btn-success" role="button">
+            <span class="glyphicon glyphicon-backward"></span>
+        </a>
+        <a class="btn btn-primary" style="float: right;" href="/admin/posts/edit?id={{this.post.id}}">
+            <span class="glyphicon glyphicon-pencil"></span> Chỉnh sửa
+        </a>
+        <a class="btn btn-danger del-btn" style="float: right; margin-right: 5px">
+            <span class="glyphicon glyphicon-trash"></span> Xóa
+        </a>
+    </div>
+    <div class="panel-body">
+        <h1 style="margin-bottom: 20px;">{{this.post.title}}</h1>
+        <div class="row">
+            <div class="col-lg-6">
+                <img id="myImg" src="/public/images/post/{{this.post.featured_image}}" class="img-responsive" style="height: 300px;" alt="Image">
+            </div>
+            <div class="col-lg-6">
+                <p><b>ID:</b> {{this.post.id}}</p>
+                <p><span class="glyphicon glyphicon-book"></span><b> Danh mục:</b> {{this.post.category_name}}</p>
+                <p><span class="glyphicon glyphicon-book"></span><b> Danh mục con:</b> {{this.post.sub_category_name}}</p>
+                <p>
+                    <span style="margin-right: 20px;"><span class="glyphicon glyphicon-tag"></span><b> Loại:</b> {{this.post.type}}</span>
+                    <span class="glyphicon glyphicon-tag"></span><b> Trạng thái:</b>
+                    {{#ifEqual this.post.isPublished true}}
+                    <span class="text-success">ĐÃ XUẤT BẢN</span>
+                    {{else}}
+                    {{#ifEqual this.post.status 'PENDING'}}
+                    <span>CHƯA ĐƯỢC DUYỆT</span>
+                    {{else}}
+                    {{#ifEqual this.post.status 'APPROVED'}}
+                    <span class="text-primary">ĐÃ ĐƯỢC DUYỆT</span>
+                    {{else}}
+                    {{#ifEqual this.post.status 'DENIED'}}
+                    <span class="text-danger">BỊ TỪ CHỐI</span>
+                    {{else}}
+                    <span class="text-success">ĐÃ XUẤT BẢN</span> 
+                    {{/ifEqual}}
+                    {{/ifEqual}}
+                    {{/ifEqual}}
+                    {{/ifEqual}}
+                </p>
+                <p><span class="glyphicon glyphicon-eye-open"></span> <b> Lượt xem:</b> {{this.post.view_count}}</p>
+                <p style=""><span class="glyphicon glyphicon-tag"></span><b> Nhãn:</b>
+                    {{#each this.postTags}}
+                    <span style="background-color: gray; padding: 5px; color:white">{{this.name}}</span>
+                    {{/each}}
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tóm tắt</h3>
+            </div>
+            <div class="panel-body">
+                {{this.post.summary}}
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Nội dung</h3>
+            </div>
+            <div class="panel-body">
+                {{{this.post.content}}}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="myModal" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel"
+    style="">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa user này?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-btn" class="btn btn-primary" style="margin-top: 1rem;">Xóa</button>
+                <button id="cancel-btn" class="btn btn-primary" style="margin-top: 1rem;">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function() {
+        const post = {{{ json post }}};
+
+        $('.del-btn').on('click', function() {
+            $('.modal').show();
+        })
+
+        $('#cancel-btn').on('click', function() {
+            $('.modal').hide();
+        })
+
+        $('#confirm-btn').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: `/admin/posts/delete?id=${post.id}`,
+                data: {},
+                success: function(data) {
+                    if(data.success) {
+                        window.location.replace('/admin/posts');
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+            $('.modal').hide();
+        })
+    })
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<style>
+    #myImg {
+        border-radius: 5px;
+        transition: 0.3s;
+        object-fit: cover;
+    }
+</style>
+
+{{/section}}

@@ -1,3 +1,4 @@
+const appRoot = require('app-root-path');
 module.exports = {
   app: {
     name: 'Newspaper',
@@ -10,9 +11,11 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'newspaper',
     connectionLimit: 50,
+    dateStrings: true,
+    charset: 'utf8mb4'
   },
   pagination: {
-    limit: 6,
+    limit: 5,
   },
   authentication: {
     saltRounds: 10,
@@ -28,11 +31,21 @@ module.exports = {
   },
   multerImagePost: {
     destination: function (req, file, cb) {
-      cb(null, 'public/images/post/content');
+      cb(null, 'public/images/post');
     },
     filename: function (req, file, cb) {
       const extension = file.mimetype.split('/')[1];
       cb(null, file.fieldname + '-' + Date.now() + '.' + extension);
     }
+  },
+  toPdfOption: {
+    format: 'A4',
+    border: {
+      "top": "1in",            // default is 0, units: mm, cm, in, px
+      "right": "0.5in",
+      "bottom": "1in",
+      "left": "0.5in"
+    },
+    base: `file:///${appRoot.path}/public/images/`,
   }
 };

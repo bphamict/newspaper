@@ -1,0 +1,37 @@
+{{#section 'title'}}Cập nhật trạng thái - Trang Admin{{/section}}
+<ol class="breadcrumb">
+    <li><a href="/admin/posts">Danh sách bài viết</a></li>
+    <li class="active">Trạng thái</li>
+</ol>
+<form style="width: 30%; margin:auto;" method="POST" id="status-form">
+    <div class="form-group">
+        <label>Loại bài viết</label>
+        <select class="form-control role-option" style="text-transform: uppercase;" name="type">
+            <option value='FREE' {{#ifEqual this.post.type 'FREE'}}selected{{/ifEqual}}>FREE</option>
+            <option value='PREMIUM' {{#ifEqual this.post.type 'PREMIUM'}}selected{{/ifEqual}}>PREMIUM</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Trạng thái bài viết</label>
+        <div class="input-group">
+            <input class="form-control post-status" name="status" value="CHƯA ĐƯỢC DUYỆT" readonly></input>
+            <span class="input-group-btn">
+                <button class="btn btn-default publish-btn" type="button">Xuất bản</button>
+            </span>
+        </div>
+    </div>
+    <div style="text-align:center; margin-top: 40px">
+        <button role="button" class="btn btn-primary check-btn">Lưu</button>
+    </div>
+</form>
+
+{{#section 'js'}}
+<script>
+    $(document).ready(function () {
+        $('.publish-btn').on('click', function () {
+            $('.post-status').val('ĐÃ XUẤT BẢN');
+            $(this).attr('disabled', true);
+        })
+    })
+</script>
+{{/section}}

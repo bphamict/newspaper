@@ -1,4 +1,4 @@
-const { v4 } = require('uuid');
+ const { v4 } = require('uuid');
 const _ = require('lodash');
 const db = require('../utils/db');
 
@@ -79,4 +79,91 @@ module.exports = {
     const condition = { id };
     return db.delete(USER_TABLE_NAME, condition);
   },
+  loadAll: async (userID) => {
+    const rows = await db.load(`SELECT * FROM ${USER_TABLE_NAME} WHERE id != ${userID}`);
+
+    if(rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows);
+  },
+  loadAllWithRoleName: async (userID) => {
+    const rows = await db.load(`SELECT U.*, R.name AS role_name FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id WHERE U.id != ${userID} AND U.blocked = '0' ORDER BY U.id ASC`);
+
+    if(rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows);
+  },
+  loadUserDetails: async (userID) => {
+    const rows = await db.load(
+      `SELECT U.*, R.name AS role_name, US.expiry_time FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id LEFT JOIN USER_SUBCRIBE US ON U.id = US.user_id WHERE U.id = ${userID} AND U.blocked = '0'`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return sanitizeEntity(rows[0]);
+  },
+  deleteUser: (userID) => {
+    return db.update(USER_TABLE_NAME, { blocked: '1' }, { id: userID });
+  },
+  findByPseudonym: async (pseudonym) => {
+    const rows = await db.load(
+      `select * from ${USER_TABLE_NAME} where writer_pseudonym = '${pseudonym}'`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0];
+  },
+  checkIfPseudonymExist: async (pseudonym, userID) => {
+    const rows = await db.load(
+      `select * from ${USER_TABLE_NAME} where writer_pseudonym = '${pseudonym}' and id != ${userID}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0];
+  },
+  loadByID: async (userID) => {
+    const rows = await db.load(
+      `select * from ${USER_TABLE_NAME} where id = ${userID}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0];
+  },
+  getTotal: async (userID) => {
+    const rows = await db.load(
+      `select count(*) as total from ${USER_TABLE_NAME} where id != ${userID} and blocked != 1`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0].total;
+  },
+  loadWithRoleName: async (userID, offset, limit) => {
+    const rows = await db.load(
+      `select U.*, R.name AS role_name FROM ${USER_TABLE_NAME} U JOIN ROLE R ON U.role = R.id WHERE U.id != ${userID} AND U.blocked = '0' ORDER BY U.id ASC LIMIT ${offset}, ${limit}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows;
+  }
 };
