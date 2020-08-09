@@ -35,7 +35,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Chuyên mục</label>
+                    <label>Danh mục</label>
                     <select class="form-control select-category" name="sub_category_id">
                         {{#each this.subCategories}}
                         <option value="{{this.id}}" {{#ifEqual this.id @root.post.sub_category_id}}selected{{/ifEqual}}>
