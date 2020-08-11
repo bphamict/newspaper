@@ -1,60 +1,74 @@
 const db = require('../utils/db');
-const TBL = 'tag'
+const TBL = 'TAG';
 
 module.exports = {
-    all:function(){
-        return db.load(`SELECT * FROM tag WHERE isDeleted != 1`);
-    },
+  all: function () {
+    return db.load(`SELECT * FROM TAG WHERE isDeleted != 1`);
+  },
 
-    allByTag:function(tagId){
-        return db.load(`SELECT * FROM tag join post_tag on tag.id = post_tag.tag_id join post on post_tag.post_id = post.id WHERE tag.id = '${tagId}' AND isDeleted != 1`)
-    },
+  allByTag: function (tagId) {
+    return db.load(`
+        SELECT *
+        FROM TAG join POST_TAG on TAG.id = POST_TAG.tag_id join POST on POST_TAG.post_id = POST.id
+        WHERE TAG.id = '${tagId}' AND isDeleted != 1`);
+  },
 
-    pageByTag: async function(tagId, limit, offset, isAuthenticated = false){
-        var orderIfAuthenticated = '';
-        if(isAuthenticated) {
-            orderIfAuthenticated = "FIELD(type, 'PREMIUM', 'FREE'),"
-        }
-        const rows = await db.load(`SELECT p.*, C.name AS category_name, SC.name AS sub_category_name FROM post p JOIN category c ON p.category_id = c.id JOIN sub_category sc ON p.sub_category_id = sc.id JOIN post_tag pt ON p.id = pt.post_id JOIN tag t on pt.tag_id = t.id WHERE pt.tag_id = '${tagId}' AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} p.publish_time DESC LIMIT ${limit} OFFSET ${offset}`);
+  pageByTag: async function (tagId, limit, offset, isAuthenticated = false) {
+    var orderIfAuthenticated = '';
+    if (isAuthenticated) {
+      orderIfAuthenticated = "FIELD(type, 'PREMIUM', 'FREE'),";
+    }
+    const rows = await db.load(`
+      SELECT p.*, c.name AS category_name, sc.name AS sub_category_name, c.slug AS category_slug, sc.slug AS sub_category_slug
+      FROM POST p JOIN CATEGORY c ON p.category_id = c.id JOIN SUB_CATEGORY sc ON p.sub_category_id = sc.id JOIN POST_TAG pt ON p.id = pt.post_id JOIN TAG t on pt.tag_id = t.id
+      WHERE pt.tag_id = '${tagId}' AND p.isDeleted != 1 AND (p.status = 'PUBLISHED' OR (p.status = 'APPROVED' AND p.publish_time <= NOW())) ORDER BY ${orderIfAuthenticated} p.publish_time DESC LIMIT ${limit} OFFSET ${offset}`);
 
-        if(rows.length === 0) {
-            return null;
-        }
+    if (rows.length === 0) {
+      return null;
+    }
 
-        return rows;
-    },
+    return rows;
+  },
 
-    countByTag:function(tagId){
-        return db.load(`SELECT COUNT(*) as total FROM post JOIN post_tag on post.id = post_tag.post_id WHERE post_tag.tag_id = '${tagId}' AND post.isDeleted != 1 AND (post.status = 'PUBLISHED' OR (post.status = 'APPROVED' AND post.publish_time <= NOW()))`);
-    },
+  countByTag: function (tagId) {
+    return db.load(`
+      SELECT COUNT(*) as total
+      FROM POST JOIN POST_TAG on POST.id = POST_TAG.post_id
+      WHERE POST_TAG.tag_id = '${tagId}' AND POST.isDeleted != 1 AND (POST.status = 'PUBLISHED' OR (POST.status = 'APPROVED' AND POST.publish_time <= NOW()))`);
+  },
 
-    loagByTagID: async function(tagID) {
-        const rows = await db.load(`SELECT * FROM ${TBL} WHERE isDeleted != 1 AND id = '${tagID}'`);
+  loagByTagID: async function (tagID) {
+    const rows = await db.load(`
+      SELECT * FROM ${TBL} WHERE isDeleted != 1 AND id = '${tagID}'`);
 
-        if(rows.length === 0) {
-            return null;
-        }
+    if (rows.length === 0) {
+      return null;
+    }
 
-        return rows[0];
-    },
+    return rows[0];
+  },
 
-    loadBySlug: async function(slug) {
-        const rows = await db.load(`SELECT * FROM ${TBL} WHERE slug = '${slug}' AND isDeleted != 1`);
+  loadBySlug: async function (slug) {
+    const rows = await db.load(`
+      SELECT * FROM ${TBL} WHERE slug = '${slug}' AND isDeleted != 1`);
 
-        if(rows.length === 0) {
-            return null;
-        }
+    if (rows.length === 0) {
+      return null;
+    }
 
-        return rows[0];
-    },
+    return rows[0];
+  },
 
-    countBySlug: async function(slug) {
-        const rows = await db.load(`SELECT COUNT(*) as total FROM post JOIN post_tag on post.id = post_tag.post_id JOIN tag on post_tag.tag_id = tag.id WHERE tag.slug = '${slug}' AND post.isDeleted != 1 AND (post.status = 'PUBLISHED' OR (post.status = 'APPROVED' AND post.publish_time <= NOW()))`);
-        
-        if(rows.length === 0) {
-            return null;
-        }
+  countBySlug: async function (slug) {
+    const rows = await db.load(`
+      SELECT COUNT(*) as total
+      FROM POST JOIN POST_TAG on POST.id = POST_TAG.post_id JOIN TAG on POST_TAG.tag_id = TAG.id
+      WHERE TAG.slug = '${slug}' AND POST.isDeleted != 1 AND (POST.status = 'PUBLISHED' OR (POST.status = 'APPROVED' AND POST.publish_time <= NOW()))`);
 
-        return rows[0].total;
-    },
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0].total;
+  },
 };

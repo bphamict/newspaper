@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const homeModel = require('../models/home.model');
 const moment = require('moment');
-const { catWithSubs } = require('../models/home.model');
 moment.locale('vi');
 
 router.get('/', async function(req, res){
@@ -78,6 +77,7 @@ router.get('/', async function(req, res){
         postsOrderByCat.forEach(element => {
             if(element.category_id === cats[i].id)
             {
+                element.publish_time = moment(element.publish_time).format('LLL');
                 posts.push(element);
             }
         })

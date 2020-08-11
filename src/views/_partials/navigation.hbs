@@ -12,17 +12,25 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav categories">
-                {{#each (limit localsCatWithSubCat 3)}}
+                {{#each (limit localsCatWithSubCat 6)}}
                 <li><a href="/category/{{this.category_slug}}">{{this.category_name}}</a></li>
                 {{/each}}
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Tất cả</b> <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <b>Tất cả</b>
+                        <span class="caret"></span>
+                    </a>
                     <ul class="dropdown-menu full-category flex-row row" role="menu">
                         {{#each localsCatWithSubCat}}
-                        <div class="col-md-3" style="margin-bottom: 20px">
-                            <li style="padding: 5px; font-size: 20px"><b><a href="/category/{{this.category_slug}}">{{this.category_name}}</a></b></li>
+                        <div class="col-md-3" style="padding-left: 100px;">
+                            <li style="padding: 10px 0 0; font-size: 20px;font-weight: bold;">
+                                <a style="color: #404040;"
+                                    href="/category/{{this.category_slug}}">{{this.category_name}}</a>
+                            </li>
                             {{#each this.subCats}}
-                            <li style="padding: 4px;"><a href="/subCategory/{{this.sub_category_slug}}">{{this.sub_category_name}}</a></li>
+                            <li style="padding: 4px 0;">
+                                <a href="/sub-category/{{this.sub_category_slug}}">{{this.sub_category_name}}</a>
+                            </li>
                             {{/each}}
                         </div>
                         {{/each}}
@@ -34,7 +42,8 @@
                 {{#if isAuthenticated}}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                        aria-expanded="false">{{user.full_name}} <span class="caret"></span></a>
+                        aria-expanded="false">{{user.full_name}} <span class="caret"></span>
+                    </a>
                     <ul class="dropdown-menu">
                         {{#ifEqual user.role 3}}
                         <li><a href="/writer/post">Trang phóng viên viên</a></li>
@@ -54,7 +63,7 @@
                 </li>
                 {{else}}
                 <li><a href="/auth/login">Đăng nhập</a></li>
-                <li><a href="/auth/register">Tạo tài khoản</a></li>
+                <li><a href="/auth/register">Đăng ký</a></li>
                 {{/if}}
             </ul>
             <form class="navbar-form navbar-right" method="GET" action="/search">
@@ -63,3 +72,40 @@
         </div>
     </div>
 </nav>
+
+<style>
+    .navbar-nav>li>.dropdown-menu {
+        border: none;
+    }
+
+    .nav.categories>li.dropdown.open {
+        position: static;
+    }
+
+    .nav.categories>li.dropdown.open .dropdown-menu {
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
+
+    .dropdown-menu.full-category {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    li.dropdown.open>.dropdown-menu.full-category {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .outer-container {
+        margin-top: 70px;
+        margin-bottom: 70px;
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 805px) {
+        .outer-container {
+            margin-top: 120px
+        }
+    }
+</style>

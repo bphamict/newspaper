@@ -1,5 +1,5 @@
 /**
- * define all routes at here
+ * define all routes here
  */
 
 const express = require('express');
@@ -7,14 +7,10 @@ const express = require('express');
 module.exports = (app) => {
   // must be preloaded before all requests
   app.use(require('./src/middlewares/preloader.middleware'));
-  
+
   app.use('/public', express.static('public'));
 
   app.use('/', require('./src/routes/home.route'));
-
-  // app.get('/a', (req, res) => {
-  //   res.render('post/byCategory');
-  // });
 
   app.get('/about', (req, res) => {
     res.render('static/about');
@@ -22,7 +18,7 @@ module.exports = (app) => {
 
   app.use('/category', require('./src/routes/category.route'));
 
-  app.use('/subCategory', require('./src/routes/sub_category.route'));
+  app.use('/sub-category', require('./src/routes/sub_category.route'));
 
   app.use('/tag', require('./src/routes/tag.route'));
 

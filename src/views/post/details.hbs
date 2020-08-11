@@ -1,8 +1,8 @@
 <div {{#if this.blur}}style="filter:blur(10px); pointer-events: none"{{/if}}>
     <ol class="breadcrumb">
         <li><a href="/category/{{this.post.category_slug}}">{{this.post.category_name}}</a></li>
-        <li><a href="/subCategory/{{this.post.sub_category_slug}}">{{this.post.sub_category_name}}</a></li>
-        <span class="post-date">{{this.post.created_at}}</span>
+        <li><a href="/sub-category/{{this.post.sub_category_slug}}">{{this.post.sub_category_name}}</a></li>
+        <span class="active post-date">{{this.post.created_at}}</span>
     </ol>
     <h1>{{this.post.title}}</h1>
     <hr>

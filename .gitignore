@@ -31,4 +31,5 @@ lerna-debug.log*
 
 .env
 /sessions
+/public
 package-lock.json

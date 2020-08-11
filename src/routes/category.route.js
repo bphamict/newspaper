@@ -71,7 +71,7 @@ router.get('/:slug', async function(req, res){
     }
 
     res.render('post/byCat',{
-        pageName: category.name,
+        pageName: category[0].name,
         posts,
         post_tags,
         pageItems,

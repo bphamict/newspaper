@@ -204,7 +204,7 @@ router.post('/add', isAdmin, upload.single('featured_image'), async (req, res) =
     const sub_category = await subCategoryModel.findByID(req.body.sub_category_id);
     req.body.category_id = sub_category.category_id;
     req.body.type = 'FREE';
-    req.body.author = 2;
+    req.body.author = req.user.id;
     req.body.featured_image = req.file.filename;
     req.body.slug = slugify(req.body.title.toLowerCase().replace(/[*+~.()'"!=:@|^&${}[\]`;/?,\\<>%]/g, ''), { locale: 'vi' });
     const result = await postModel.add(req.body);

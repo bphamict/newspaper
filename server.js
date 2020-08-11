@@ -4,7 +4,6 @@
 
 require('dotenv').config();
 require('express-async-errors');
-const hbs_sections = require('express-handlebars-sections');
 const express = require('express');
 const path = require('path');
 let app = express();
@@ -41,7 +40,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const exphbs = require('express-handlebars');
-const express_handlebars_sections = require('express-handlebars-sections');
+const hbs_sections = require('express-handlebars-sections');
 app.set('views', 'src/views');
 app.set('view engine', 'hbs');
 app.engine(
@@ -53,14 +52,14 @@ app.engine(
     extname: '.hbs',
     helpers: {
       section: hbs_sections(),
-      ifEqual: function(v1, v2, options) {
-        if(v1 === v2) {
+      ifEqual: function (v1, v2, options) {
+        if (v1 === v2) {
           return options.fn(this);
         }
         return options.inverse(this);
       },
-      ifInListObject: function(item, list, options) {
-        if(list.find(element => element.tag_id === item)) {
+      ifInListObject: function (item, list, options) {
+        if (list.find((element) => element.tag_id === item)) {
           return options.fn(this);
         }
         return options.inverse(this);
@@ -68,31 +67,33 @@ app.engine(
       json: function (content) {
         return JSON.stringify(content);
       },
-      ifNotEqual: function(v1, v2, options) {
-        if(v1 !== v2) {
+      ifNotEqual: function (v1, v2, options) {
+        if (v1 !== v2) {
           return options.fn(this);
         }
         return options.inverse(this);
       },
-      ifLarger: function(v1, v2, options) {
-        if(v1 > v2) {
+      ifLarger: function (v1, v2, options) {
+        if (v1 > v2) {
           return options.fn(this);
         }
         return options.inverse(this);
       },
       ifTagNotInPostTag: function (item, list, options) {
-        if(!list.find(element => element.id === item.id)) {
+        if (!list.find((element) => element.id === item.id)) {
           return options.fn(this);
         }
         return options.inverse(this);
       },
       limit: function (arr, limit) {
-        if (!Array.isArray(arr)) { return []; }
+        if (!Array.isArray(arr)) {
+          return [];
+        }
         return arr.slice(0, limit);
       },
-      add: function(value1, value2, options) {
+      add: function (value1, value2, options) {
         return parseInt(value1) + parseInt(value2);
-      }
+      },
     },
   }),
 );

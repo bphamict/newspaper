@@ -12,7 +12,7 @@ module.exports = function (req, res, next, role) {
     return res.redirect(`/auth/login?origin=${req.originalUrl}`);
   }
 
-  if (req.user.role == role) {
+  if (req.user.role <= role) {
     return next();
   }
 

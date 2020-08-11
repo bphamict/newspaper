@@ -2,15 +2,16 @@
     <div class="col-md-9">
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner" role="listbox">
-                <div class="item active">
-                    <img href="/post/{{this.first.Slug}}" src="/public/images/post/{{this.first.Image}}" alt="...">
+                <div class="item active" title="{{this.first.Title}}">
+                    <img href="/post/{{this.first.Slug}}" src="/public/images/post/{{this.first.Image}}"
+                        alt="{{this.first.Title}}">
                     <div class="carousel-caption">
                         <a href="/post/{{this.first.Slug}}">{{this.first.Title}}</a>
                     </div>
                 </div>
                 {{#each this.post}}
                 <div class="item">
-                    <img href="/post/{{Slug}}" src="/public/images/post/{{Image}}" alt="...">
+                    <img href="/post/{{Slug}}" src="/public/images/post/{{Image}}" alt="{{Title}}">
                     <div class="carousel-caption">
                         <a href="/post/{{Slug}}">{{Title}}</a>
                     </div>
@@ -35,7 +36,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="/category/{{catSlug}}" style="font-size: 2rem;"><b>{{catName}}</b></a></li>
                         {{#each subCatName}}
-                        <li><a href="/subCategory/{{subCatSlug}}">{{subCatValue}}</a></li>
+                        <li><a href="/sub-category/{{subCatSlug}}">{{subCatValue}}</a></li>
                         {{/each}}
                     </ul>
                 </div>
@@ -50,11 +51,13 @@
                                 src="/public/images/post/{{this.featured_image}}"
                                 onclick="window.location.assign('/post/{{this.slug}}')">
                         </div>
-                        <p class="col-md-9 post-summary" style="cursor: pointer;" onclick="window.location.assign('/post/{{slug}}')">{{this.summary}}</p>
+                        <p class="col-md-9 post-summary" style="cursor: pointer;"
+                            onclick="window.location.assign('/post/{{slug}}')">{{this.summary}}</p>
                     </div>
                     <div>
-                        <span><a class="top-category" href="/subCategory/{{this.sub_category_slug}}">{{this.sub_category_name}}</a></span>
-                        <span style="float: right;"><small>{{this.publish_time}}</small></span>
+                        <span><a class="top-category"
+                                href="/sub-category/{{this.sub_category_slug}}">{{this.sub_category_name}}</a></span>
+                        <span style="float: right;"><small><i>{{this.publish_time}}</i></small></span>
                     </div>
                 </div>
                 {{/each}}
@@ -72,15 +75,16 @@
             {{#each this.top10Newest}}
             <div class="top-post-item">
                 <p>
-                    <a class="top-category" href="/category/{{this.category_slug}}">{{this.category_name}}</a> / 
-                    <a class="top-category" href="/subCategory/{{this.sub_category_slug}}">{{this.sub_category_name}}</a>
+                    <a class="top-category" href="/category/{{this.category_slug}}">{{this.category_name}}</a> /
+                    <a class="top-category"
+                        href="/sub-category/{{this.sub_category_slug}}">{{this.sub_category_name}}</a>
                 </p>
                 <div style="flex-direction: row; display:flex;">
                     <img class="top-image" src="/public/images/post/{{this.featured_image}}"
                         onclick="window.location.assign('/post/{{this.slug}}')">
                     <div class="top-content-container">
                         <a class="top-title" href="/post/{{this.slug}}">{{this.title}}</a>
-                        <p style="margin: 0px;"><small>{{this.publish_time}}</small></p>
+                        <p style="margin: 0px;"><small><i>{{this.publish_time}}</i></small></p>
                     </div>
                 </div>
             </div>
@@ -90,15 +94,16 @@
             {{#each this.top10View}}
             <div class="top-post-item">
                 <p>
-                    <a class="top-category" href="/category/{{this.category_slug}}">{{this.category_name}}</a> / 
-                    <a class="top-category" href="/subCategory/{{this.sub_category_slug}}">{{this.sub_category_name}}</a>
+                    <a class="top-category" href="/category/{{this.category_slug}}">{{this.category_name}}</a> /
+                    <a class="top-category"
+                        href="/sub-category/{{this.sub_category_slug}}">{{this.sub_category_name}}</a>
                 </p>
                 <div style="flex-direction: row; display:flex;">
                     <img class="top-image" src="/public/images/post/{{this.featured_image}}"
                         onclick="window.location.assign('/post/{{this.slug}}')">
                     <div class="top-content-container">
                         <a class="top-title" href="/post/{{this.slug}}">{{this.title}}</a>
-                        <p style="margin: 0px;"><small>{{this.publish_time}}</small></p>
+                        <p style="margin: 0px;"><small><i>{{this.publish_time}}</i></small></p>
                     </div>
                 </div>
             </div>
@@ -130,6 +135,10 @@
 
 {{#section 'css'}}
 <style>
+    .carousel-caption a {
+        text-decoration: none;
+    }
+
     hr {
         border: 0;
         clear: both;
@@ -162,6 +171,7 @@
     .carousel-inner>.item>img {
         width: 100%;
         height: 360px;
+        object-fit: cover;
     }
 
     pre {
@@ -203,9 +213,10 @@
     }
 
     .top-category {
-        padding: 5px;
+        padding: 2px 4px;
         background-color: grey;
         color: white;
+        font-size:12px;
     }
 
     .top-category:hover {
@@ -222,7 +233,7 @@
     }
 
     .top-title {
-        font-size: 1.5rem;
+        font-size: 14px;
         line-height: 2rem;
         height: 6rem;
         overflow: hidden;

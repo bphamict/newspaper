@@ -23,22 +23,28 @@ module.exports = async function (req, res, next) {
     });
   }
 
-  const [categories, subCategories] = await Promise.all([categoryModel.all(), subCategoryModel.loadAll()]);
+  const [categories, subCategories] = await Promise.all([
+    categoryModel.all(),
+    subCategoryModel.loadAll(),
+  ]);
   const localsCatWithSubCat = [];
 
-  categories.forEach((category, index) => {
+  categories.forEach((category) => {
     const subCats = [];
-    subCategories.forEach(subCat => {
-      if(subCat.category_id === category.id) {
-        subCats.push({ sub_category_name: subCat.name, sub_category_slug: subCat.slug });
+    subCategories.forEach((subCat) => {
+      if (subCat.category_id === category.id) {
+        subCats.push({
+          sub_category_name: subCat.name,
+          sub_category_slug: subCat.slug,
+        });
       }
     });
 
     localsCatWithSubCat.push({
       category_name: category.name,
       category_slug: category.slug,
-      subCats
-    })
+      subCats,
+    });
   });
 
   res.locals.localsCatWithSubCat = localsCatWithSubCat;
