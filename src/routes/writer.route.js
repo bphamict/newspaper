@@ -53,7 +53,7 @@ router.post('/post/add', isWriter, upload.single('featured_image'), async (req, 
     }
 })
 
-router.post('/image', isWriter, upload.single('file'), (req, res) => {
+router.post('/image', upload.single('file'), (req, res) => {
     res.json({ location: `/public/images/post/${req.file.filename}` });
 })
 
