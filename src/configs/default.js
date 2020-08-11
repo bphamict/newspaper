@@ -15,7 +15,7 @@ module.exports = {
     charset: 'utf8mb4'
   },
   pagination: {
-    limit: 5,
+    limit: 6,
   },
   authentication: {
     saltRounds: 10,
