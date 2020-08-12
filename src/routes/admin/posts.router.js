@@ -1,5 +1,4 @@
 const express = require('express');
-const db = require('../../utils/db');
 const multer  = require('multer');
 const config = require('../../configs/default');
 const postsModel = require('../../models/admin/posts.model');
