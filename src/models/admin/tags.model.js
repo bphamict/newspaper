@@ -1,6 +1,6 @@
 const db = require('../../utils/db');
 
-const TABLE_NAME = 'tag';
+const TABLE_NAME = 'TAG';
 
 module.exports = {
     all: function(){

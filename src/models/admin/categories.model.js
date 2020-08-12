@@ -1,6 +1,6 @@
 const db = require('../../utils/db');
 
-const TABLE_NAME = 'category';
+const TABLE_NAME = 'CATEGORY';
 
 module.exports = {
     all: function(){
@@ -105,7 +105,7 @@ module.exports = {
         return rows[0];
     },
     page: async function(limit, offset){
-        const rows = await db.load(`SELECT C.*, U.full_name, U.email FROM ${TABLE_NAME} C LEFT JOIN user U ON C.user_id = U.id WHERE C.isDeleted = 0 limit ${limit} offset ${offset}`);
+        const rows = await db.load(`SELECT C.*, U.full_name, U.email FROM ${TABLE_NAME} C LEFT JOIN USER U ON C.user_id = U.id WHERE C.isDeleted = 0 limit ${limit} offset ${offset}`);
 
         if(rows.length === 0) {
             return null;

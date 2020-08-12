@@ -590,7 +590,8 @@ INSERT INTO `USER` (`id`, `blocked`, `confirmed`, `full_name`, `username`, `emai
 (1, 0, 1, 'lam quoc hong', '6d218e86-054a-42c6-bd49-ffc03a2eb6c1', 'lamquochong@gmail.com', '$2a$10$vpoeHMxI6xCYz/I/CUq67OuexHsHPbM5MNW3ovNFB2dSO9OR5v4ky', '2020-07-06', 'local', NULL, 1, '2020-07-26 00:53:23', '2020-07-27 15:49:46', 0, NULL),
 (2, 0, 1, 'Lam editor', '8a6bd5ad-1f89-411d-8ced-1e6b8fcbb916', 'quoclamhong1312@gmail.com', '$2a$10$/VJxb2Hg.NVq1WwJ.9HCPO/OFo0IYvy5sDGiNKnjqJKqE0hcfxtEm', '2020-08-05', 'local', NULL, 2, '2020-08-10 17:56:49', '2020-08-10 17:56:49', 0, NULL),
 (3, 0, 1, 'Lam writer', '05484d89-4124-494e-9526-63f746355e04', 'lamhongwriter@gmail.com', '$2a$10$9vOTWuNzKQruNEJQlHVoYuryoN9ec.Y3nhz6EG0JT.z5IesH9IEn6', '2020-07-26', 'local', NULL, 3, '2020-08-10 17:57:32', '2020-08-10 17:57:32', 0, NULL),
-(4, 0, 1, 'Lam subscriber', 'da8e9568-00cf-40e7-8169-02aae2324efe', 'lamsubscriber@gmail.com', '$2a$10$hFoEK.M8/g30rcmcm4uIAeRQ4TQznTJtjyyYosjSyhEfDlxSpQahK', '2020-07-30', 'local', NULL, 4, '2020-08-10 17:58:10', '2020-08-10 17:58:10', 0, NULL);
+(4, 0, 1, 'Lam subscriber', 'da8e9568-00cf-40e7-8169-02aae2324efe', 'lamsubscriber@gmail.com', '$2a$10$hFoEK.M8/g30rcmcm4uIAeRQ4TQznTJtjyyYosjSyhEfDlxSpQahK', '2020-07-30', 'local', NULL, 4, '2020-08-10 17:58:10', '2020-08-10 17:58:10', 0, NULL),
+(5, 0, 1, 'Bao Pham', '1d7a39a1-36bf-4b31-8924-ad267dc26e74', 'bphamvr@gmail.com', '$2a$10$MT.hDN7jLP87OHEhPFAIs.xBiSI4zBk59AMynR7P4rp2uoItH3i2S', '0001-01-01', 'local', NULL, 4, '2020-08-11 12:58:21', '2020-08-11 13:03:05', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -740,7 +741,7 @@ ALTER TABLE `TAG`
 -- AUTO_INCREMENT for table `USER`
 --
 ALTER TABLE `USER`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

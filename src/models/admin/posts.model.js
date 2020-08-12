@@ -1,6 +1,6 @@
 const db = require('../../utils/db');
 
-const TABLE_NAME = 'post';
+const TABLE_NAME = 'POST';
 
 module.exports = {
     all: function(id){

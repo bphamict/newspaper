@@ -2,7 +2,7 @@
 <hr>
 <div class="row">
     {{#each this.posts}}
-    <article class="col-md-6" style="margin:14px 0">
+    <article class="col-md-6">
         {{#ifEqual type 'PREMIUM'}}
         <div class="premium-post">PREMIUM</div>
         <div class="blur">
@@ -89,6 +89,14 @@
 
     .col-md-6 {
         position: relative;
+        margin:14px 0;
+        height: 140px;
+    }
+
+    @media screen and (max-width: 550px) {
+        .col-md-6 {
+            height: 100% !important;
+        }
     }
 
     .premium-post {

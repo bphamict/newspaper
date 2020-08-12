@@ -46,7 +46,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         {{#ifEqual user.role 3}}
-                        <li><a href="/writer/post">Trang phóng viên viên</a></li>
+                        <li><a href="/writer/post">Trang phóng viên</a></li>
                         {{else}}
                         {{#ifEqual user.role 2}}
                         <li><a href="/editor/posts">Trang biên tập viên</a></li>
@@ -57,7 +57,6 @@
                         {{/ifEqual}}
                         {{/ifEqual}}
                         <li><a href="/account/profile">Trang cá nhân</a></li>
-                        <li role="separator" class="divider"></li>
                         <li><a href="/auth/logout">Đăng xuất</a></li>
                     </ul>
                 </li>
