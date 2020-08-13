@@ -179,6 +179,7 @@ router.post('/add', isAdmin, async (req, res) => {
         password: bcrypt.hashSync(req.body.password, authentication.saltRounds),
         confirmed: true,
         role: +req.body.role,
+        writer_pseudonym: +req.body.role === 3 ? req.body.full_name : null,
     });
     const result = await userModel.create(req.body);
     const user = await userModel.findById(result.insertId);
