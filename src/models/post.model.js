@@ -254,3 +254,35 @@ module.exports = {
     return row[0].total;
   },
 };
+
+/**
+ * @name: Publish a post
+ * @description: Change status of post from approved to published
+ * @param: id - id of post
+ */
+const publishPost = async (id) => {
+  return db.update(TBL, { status: 'PUBLISHED' }, { id });
+};
+
+/**
+ * @name: Find and publish posts
+ * @description: Find and publish all posts which have publish_time < now and status is 'APPROVED'
+ */
+const findAndPublishPost = async () => {
+  const ids = await db.load(`
+    SELECT id
+    FROM ${TBL}
+    WHERE publish_time <= NOW() AND status = 'APPROVED'`);
+
+  if (ids.length === 0) {
+    return;
+  }
+
+  let promises = [];
+  ids.forEach((value) => {
+    promises.push(publishPost(value.id));
+  });
+
+  return await Promise.all(promises);
+};
+module.exports.findAndPublishPost = findAndPublishPost;
