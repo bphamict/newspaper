@@ -17,14 +17,15 @@ const { convertToPDF } = require('../../utils/toPdf');
 moment.locale('vi');
 
 router.get('/', isAdmin, async function (req, res) {
-    var page = +req.query.page || 1;
-    const offset = (page - 1) * 9;
-    const [list, total] = await Promise.all([postsModel.allNewToOld(9, offset), postsModel.getTotal()]);
-
+    var page = +req.query.page || -1;
+    const total = await postsModel.getTotal();
     const numOfPage = Math.ceil(total / 10);
     if(page < 1 || page > numOfPage) {
         page = 1;
     }
+
+    const offset = (page - 1) * 9;
+    const list = await postsModel.allNewToOld(9, offset);
 
     const pageItems = [];
     if(numOfPage > 5) {
