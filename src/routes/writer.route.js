@@ -80,8 +80,8 @@ router.get('/post/edit', isWriter, async (req, res) => {
     let postID = +req.query.id || 1;
     postID = parseInt(postID);
     const [post, subCategories, tags, post_tags] = await Promise.all([postModel.loadByPostID(postID), subCategoryModel.loadAll(), tagsModel.loadAll(), postTagModel.loadByPostID(postID)]);
-    if(!post || (post.status !== 'DECLINE' && post.status !== 'PENDING')) {
-        return res.redirect('/writer/post/list');
+    if(!post || (post.status !== 'DECLINE' && post.status !== 'PENDING') || post.author !== req.user.id) {
+        return res.redirect('/writer/post');
     }
     res.render('writer/edit-post', { post, subCategories, tags, post_tags })
 })
@@ -123,7 +123,7 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
         }
     });
 
-    res.redirect('/writer/post/list');
+    res.redirect('/writer/post');
 })
 
 module.exports = router;
