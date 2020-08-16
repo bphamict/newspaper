@@ -8,17 +8,19 @@ moment.locale('vi');
 router.get('/', async (req, res) => {
   const search_by = req.query.search_by || 'summary';
   var page = +req.query.page || 1;
-  const offset = (page - 1) * 10;
-
-  const [posts, total, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset, req.isAuthenticated()), postModel.getNumberOfSearchPost(req.query.q, search_by), postTagModel.loadAllWithName()]);
-
-  posts && posts.forEach((post) => {
-    post.publish_time = moment(post.publish_time).format('LLL');
-  })
+  const total = await postModel.getNumberOfSearchPost(req.query.q, search_by);
   const numOfPage = Math.ceil(total / 10);
   if(page < 1 || page > numOfPage) {
     page = 1;
   }
+
+  const offset = (page - 1) * 10;
+  const [posts, post_tags] = await Promise.all([postModel.searchPosts(req.query.q, search_by, 10, offset, req.isAuthenticated()), postTagModel.loadAllWithName()]);
+
+  posts && posts.forEach((post) => {
+    post.publish_time = moment(post.publish_time).format('LLL');
+  })
+  
 
   const pageItems = [];
   if(numOfPage > 5) {

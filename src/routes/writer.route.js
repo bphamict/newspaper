@@ -59,14 +59,15 @@ router.post('/image', upload.single('file'), (req, res) => {
 
 router.get('/post', isWriter, async (req, res) => {
     var page = +req.query.page || -1;
-    var total = await postModel.countPostByWriterID(req.user.id);
+    const search_by_status = req.query.search_by_status || 'ALL';
+    var total = await postModel.countPostByWriterID(req.user.id, search_by_status);
     const numOfPage = Math.ceil(total / 10);
     if(page < 1 || page > numOfPage) {
         page = 1;
     }
 
     const offset = (page - 1) * 10;
-    const posts = await postModel.pageByWriterID(req.user.id, offset, 10);
+    const posts = await postModel.pageByWriterID(req.user.id, offset, 10, search_by_status);
 
     const pageItems = [];
     if(numOfPage > 5) {
@@ -137,7 +138,8 @@ router.get('/post', isWriter, async (req, res) => {
         next_value: page + 1,
         canGoPrev: page > 1,
         canGoNext: page < numOfPage,
-        numOfPage
+        numOfPage,
+        search_by_status
     });
 })
 

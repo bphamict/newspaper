@@ -100,7 +100,7 @@
         })
 
         $('.page-item').on('click', function () {
-            window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${$(this).text()}`);
+            window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${$(this).text().trim()}`);
         })
 
         $('#select-search-by').on('change', function () {
@@ -109,14 +109,14 @@
     })
     function goPrev() {
         const pageItems = {{{ json pageItems }}};
-    const activePage = pageItems.find(item => item.isActive === true);
-    window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value - 1}`); 
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value - 1}`); 
     }
 
     function goNext() {
         const pageItems = {{{ json pageItems }}};
-    const activePage = pageItems.find(item => item.isActive === true);
-    window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value + 1}`);
+        const activePage = pageItems.find(item => item.isActive === true);
+        window.location.assign(`/search?q=${encodeURI("{{q}}")}&search_by=${$('#select-search-by').val()}&page=${activePage.value + 1}`);
     }
 </script>
 {{/section}}

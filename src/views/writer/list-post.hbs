@@ -2,13 +2,23 @@
     <h2 style="text-align: center; margin-bottom: 2rem">Danh sách bài viết</h2>
 </div>
 <div>
-    <div style="margin-bottom: 20px; display: flex; justify-content:flex-end">
+    <div style="margin-bottom: 20px; display: flex; justify-content:space-between">
+        <div style="display: flex;">
+            <span style="align-self:center">Trạng thái:&nbsp;</span>
+            <select id="select-search-by">
+                <option value="ALL" {{#ifEqual this.search_by_status 'ALL'}}selected{{/ifEqual}}>Tất cả</option>
+                <option value="PUBLISHED" {{#ifEqual this.search_by_status 'PUBLISHED'}}selected{{/ifEqual}}>Đã xuất bản</option>
+                <option value="APPROVED" {{#ifEqual this.search_by_status 'APPROVED'}}selected{{/ifEqual}}>Đã được duyệt</option>
+                <option value="PENDING" {{#ifEqual this.search_by_status 'PENDING'}}selected{{/ifEqual}}>Chưa được duyệt</option>
+                <option value="DENIED" {{#ifEqual this.search_by_status 'DENIED'}}selected{{/ifEqual}}>Bị từ chối</option>
+            </select>
+        </div>
         <a class="btn btn-success" role="button" href="/writer/post/add">Thêm bài viết
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </a>
     </div>
     {{#ifEqual numberOfPost 0}}
-    <p style="text-align: center; font-weight:bold">Bạn chưa có bài viết nào</p>
+    <p style="text-align: center; font-weight:bold">Không có bài viết nào</p>
     {{/ifEqual}}
     {{#each posts}}
     <div class="card">
@@ -113,20 +123,24 @@
         })
 
         $('.page-item').on('click', function () {
-            window.location.assign(`?page=${$(this).text().trim()}`);
+            window.location.assign(`?search_by_status=${$('#select-search-by').val()}&page=${$(this).text().trim()}`);
+        })
+
+        $('#select-search-by').on('change', function () {
+            window.location.assign(`?search_by_status=${$(this).val()}`);
         })
     })
 
     function goPrev() {
         const pageItems = {{{ json pageItems }}};
         const activePage = pageItems.find(item => item.isActive === true);
-        window.location.assign(`?page=${activePage.value - 1}`); 
+        window.location.assign(`?search_by_status=${$('#select-search-by').val()}&page=${activePage.value - 1}`); 
     }
 
     function goNext() {
         const pageItems = {{{ json pageItems }}};
         const activePage = pageItems.find(item => item.isActive === true);
-        window.location.assign(`?page=${activePage.value + 1}`);
+        window.location.assign(`?search_by_status=${$('#select-search-by').val()}&page=${activePage.value + 1}`);
     }
 </script>
 {{/section}}

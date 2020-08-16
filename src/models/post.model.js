@@ -253,9 +253,13 @@ module.exports = {
 
     return row[0].total;
   },
-  pageByWriterID: async (userID, offset, limit) => {
+  pageByWriterID: async (userID, offset, limit, status = '') => {
+    let statusCondition = '';
+    if(status && status !== 'ALL') {
+      statusCondition = `AND status = '${status}'`;
+    }
     const rows = await db.load(
-      `SELECT * FROM ${TBL} WHERE author = ${userID} AND isDeleted != 1 ORDER BY id DESC limit ${offset}, ${limit}`,
+      `SELECT * FROM ${TBL} WHERE author = ${userID} ${statusCondition} AND isDeleted != 1 ORDER BY id DESC limit ${offset}, ${limit}`,
     );
 
     if (rows.length === 0) {
@@ -264,9 +268,13 @@ module.exports = {
 
     return rows;
   },
-  countPostByWriterID: async (userID) => {
+  countPostByWriterID: async (userID, status = '') => {
+    let statusCondition = '';
+    if(status && status !== 'ALL') {
+      statusCondition = `AND status = '${status}'`;
+    }
     const rows = await db.load(
-      `SELECT COUNT(*) as total FROM ${TBL} WHERE author = ${userID} AND isDeleted != 1`,
+      `SELECT COUNT(*) as total FROM ${TBL} WHERE author = ${userID} ${statusCondition} AND isDeleted != 1`,
     );
 
     if (rows.length === 0) {
