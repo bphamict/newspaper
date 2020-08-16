@@ -11,8 +11,7 @@
                 <span class="input-group-addon" id="full_name">
                     <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                 </span>
-                <input type="text" class="form-control" placeholder="Tên" aria-describedby="full_name"
-                    name="full_name">
+                <input type="text" class="form-control" placeholder="Tên" aria-describedby="full_name" name="full_name">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="email">
@@ -40,6 +39,7 @@
                 <input type="password" class="form-control" placeholder="Xác nhận mật khẩu" aria-describedby="password"
                     name='confirm-password'>
             </div>
+            <input type="hidden" name="recaptcha">
             <button id="submit" class="btn btn-info btn-block">Đăng ký</button>
         </div>
     </div>
@@ -60,7 +60,18 @@
 {{/section}}
 
 {{#section 'js'}}
+<script src="https://www.google.com/recaptcha/api.js?render=6LfwAb8ZAAAAAICWM1tUqlkzkmzWFAmlABrt0Gv9"></script>
 <script>
+    grecaptcha.ready(function () {
+        grecaptcha
+            .execute('6LfwAb8ZAAAAAICWM1tUqlkzkmzWFAmlABrt0Gv9', {
+                action: 'submit',
+            })
+            .then(function (token) {
+                console.log(token);
+                $("[name='recaptcha']").val(token);
+            });
+    });
     $('#submit').click(function (e) {
         const password = $("[name='password']").val();
         const confirm = $("[name='confirm-password']").val();

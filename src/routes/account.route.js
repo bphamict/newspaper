@@ -13,6 +13,7 @@ const { MESSAGES } = require('../configs/messages');
 const { sendEmail } = require('../utils/send-email');
 const moment = require('moment');
 const userSubscribeModel = require('../models/user-subscribe.model');
+const verifyRecaptcha = require('../utils/verify-recaptcha.helper');
 
 router.get('/login', (req, res) => {
   if (req.query.origin) {
@@ -87,6 +88,16 @@ router.post(
         error: errors.array()[0].msg,
       });
     }
+
+    try {
+      await verifyRecaptcha(req.body.recaptcha, req.ip);
+    } catch (err) {
+      // debug(err);
+      return res.render('account/register', {
+        error: 'Captcha không đúng.',
+      });
+    }
+
     try {
       user = await User.findByEmail(req.body.email);
       if (user) {

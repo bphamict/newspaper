@@ -124,7 +124,17 @@ app.use(passport.session());
 // require all routes
 app = require('./app')(app);
 
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+};
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✔️ server running on PORT: ${PORT}`));
+https
+  .createServer(options, app)
+  .listen(PORT, () => console.log(`✔️ server running on PORT: ${PORT}`));
+// app.listen(PORT, () => console.log(`✔️ server running on PORT: ${PORT}`));
 
 require('./src/utils/auto-update-post-status');
