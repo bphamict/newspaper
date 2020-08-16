@@ -1,8 +1,8 @@
 <form style="max-width: 300px;margin: auto;" method="POST" action="/auth/local">
     <div class="panel panel-default">
         <div class="panel-body">
-            <h3>Login</h3>
-            <a href="/auth/register" class="btn btn-default" style="float: right;">Register</a>
+            <h3>Đăng nhập</h3>
+            <a href="/auth/register" class="btn btn-default" style="float: right;">Đăng ký</a>
             <a href="/auth/facebook" class="btn btn-primary btn-block">Facebook</a>
             <a href="/auth/google" class="btn btn-danger btn-block">Google</a>
             <hr>
@@ -22,18 +22,18 @@
                 <span class="input-group-addon" id="password">
                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                 </span>
-                <input type="password" class="form-control" placeholder="Password" aria-describedby="password"
+                <input type="password" class="form-control" placeholder="Mật khẩu" aria-describedby="password"
                     name="password">
             </div>
-            <button type="submit" class="btn btn-info">Login</button>
+            <button type="submit" class="btn btn-info">Đăng nhập</button>
             <a href="/auth/forgot-password" style="float: right;margin-top: 5px;">
-                Forgot password?
+                Quên mật khẩu?
             </a>
         </div>
     </div>
 </form>
 
-{{#section 'title'}}Login{{/section}}
+{{#section 'title'}}Đăng nhập{{/section}}
 
 {{#section 'css'}}
 <style>

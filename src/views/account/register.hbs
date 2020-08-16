@@ -1,7 +1,7 @@
 <form id="form" style="max-width: 300px;margin: auto;" method="POST" action="/auth/register">
     <div class="panel panel-default">
         <div class="panel-body">
-            <h3>Register</h3>
+            <h3>Đăng ký</h3>
             <hr>
             {{#if error}}
             <small>{{error}}</small>
@@ -11,7 +11,7 @@
                 <span class="input-group-addon" id="full_name">
                     <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                 </span>
-                <input type="text" class="form-control" placeholder="Full name" aria-describedby="full_name"
+                <input type="text" class="form-control" placeholder="Tên" aria-describedby="full_name"
                     name="full_name">
             </div>
             <div class="input-group">
@@ -30,22 +30,22 @@
                 <span class="input-group-addon" id="password">
                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                 </span>
-                <input type="password" class="form-control" placeholder="Password" aria-describedby="password"
+                <input type="password" class="form-control" placeholder="Mật khẩu" aria-describedby="password"
                     name="password">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="password">
                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                 </span>
-                <input type="password" class="form-control" placeholder="Confirm password" aria-describedby="password"
+                <input type="password" class="form-control" placeholder="Xác nhận mật khẩu" aria-describedby="password"
                     name='confirm-password'>
             </div>
-            <button id="submit" class="btn btn-info btn-block">Register</button>
+            <button id="submit" class="btn btn-info btn-block">Đăng ký</button>
         </div>
     </div>
 </form>
 
-{{#section 'title'}}Register{{/section}}
+{{#section 'title'}}Đăng ký{{/section}}
 
 {{#section 'css'}}
 <style>
