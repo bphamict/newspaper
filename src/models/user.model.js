@@ -1,6 +1,7 @@
  const { v4 } = require('uuid');
 const _ = require('lodash');
 const db = require('../utils/db');
+const userSubscribeModel = require('../models/user-subscribe.model');
 
 const USER_TABLE_NAME = 'USER';
 
@@ -61,6 +62,12 @@ module.exports = {
       rows = await db.load(
         `select * from ${USER_TABLE_NAME} where social_id = ${entity.social_id}`,
       );
+      await userSubscribeModel.add({
+        user_id: rows[0].id,
+        expiry_time: moment(rows[0].created_at)
+          .add(10080, 'm')
+          .format('YYYY-MM-DD HH:mm:ss'),
+      });
     }
 
     return sanitizeEntity(rows[0]);
