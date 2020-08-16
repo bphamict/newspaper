@@ -1,19 +1,19 @@
 module.exports = {
   MESSAGES: {
-    ACCOUNT_IS_NOT_FOUND: 'Account is not found.',
-    ACCOUNT_HAS_BEEN_BLOCKED: 'Account has been blocked.',
-    ACCOUNT_WAS_NOT_CONFIRMED: 'Account was not confirmed.',
+    ACCOUNT_IS_NOT_FOUND: 'Tài khoản không tồn tại.',
+    ACCOUNT_HAS_BEEN_BLOCKED: 'Tài khoản đã bị khóa.',
+    ACCOUNT_WAS_NOT_CONFIRMED: 'Tài khoản chưa được xác nhận.',
     ACCOUNT_HAS_BEEN_CONFIRMED:
-      'Account has been confirmed. You can login now.',
-    INCORRECT_PASSWORD: 'Incorrect password.',
-    EMAIL_ALREADY_TAKEN: 'That email is already taken.',
-    CHECK_EMAIL_TO_CONFIRM_ACCOUNT: 'Check your email to confirm account.',
+      'Tài khoản đã được xác nhận.',
+    INCORRECT_PASSWORD: 'Sai mật khẩu.',
+    EMAIL_ALREADY_HAS_TAKEN: 'Email đã được sử  dụng.',
+    CHECK_EMAIL_TO_CONFIRM_ACCOUNT: 'Kiểm tra email của bạn để xác nhận tài khoản.',
     CHECK_EMAIL_TO_RESET_PASSWORD:
-      'Email has been sent, check your email to reset password.',
+      'Email đã được gửi, kiểm tra email để thay đổi mật khẩu.',
     PASSWORD_HAS_BEEN_RESET:
-      'Password has been reset. You can try to login again.',
-    CODE_IS_INVALID: 'Code is invalid.',
-    YOU_MUST_LOGIN_TO_READ_THIS_PAGE: 'You must login to read this page.',
-    YOU_HAS_BEEN_AUTHENTICATED: 'You has been authenticated.',
+      'Mật khẩu đã được đặt lại thành công.',
+    CODE_IS_INVALID: 'Mã không hợp lệ.',
+    YOU_MUST_LOGIN_TO_READ_THIS_PAGE: 'Bạn phải đăng nhập để xem trang này.',
+    YOU_HAS_BEEN_AUTHENTICATED: 'Bạn đã được xác thực.',
   },
 };
