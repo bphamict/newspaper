@@ -253,4 +253,80 @@ module.exports = {
 
     return row[0].total;
   },
+  pageByWriterID: async (userID, offset, limit) => {
+    const rows = await db.load(
+      `SELECT * FROM ${TBL} WHERE author = ${userID} AND isDeleted != 1 ORDER BY id DESC limit ${offset}, ${limit}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows;
+  },
+  countPostByWriterID: async (userID) => {
+    const rows = await db.load(
+      `SELECT COUNT(*) as total FROM ${TBL} WHERE author = ${userID} AND isDeleted != 1`,
+    );
+
+    if (rows.length === 0) {
+      return 0;
+    }
+
+    return rows[0].total;
+  },
+  pageByEditorCategoryID: async (categoryID, offset, limit) => {
+    const rows = await db.load(
+      `SELECT * FROM ${TBL} WHERE status = 'PENDING' AND category_id = ${categoryID} AND isDeleted != 1 ORDER BY id DESC limit ${offset}, ${limit}`,
+    );
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows;
+  },
+  countPendingPostsByCategoryID: async (categoryID) => {
+    const rows = await db.load(
+      `SELECT COUNT(*) as total FROM ${TBL} WHERE status = 'PENDING' AND category_id = ${categoryID} AND isDeleted != 1`,
+    );
+
+    if (rows.length === 0) {
+      return 0;
+    }
+
+    return rows[0].total;
+  }
 };
+
+/**
+ * @name: Publish a post
+ * @description: Change status of post from approved to published
+ * @param: id - id of post
+ */
+const publishPost = async (id) => {
+  return db.update(TBL, { status: 'PUBLISHED' }, { id });
+};
+
+/**
+ * @name: Find and publish posts
+ * @description: Find and publish all posts which have publish_time < now and status is 'APPROVED'
+ */
+const findAndPublishPost = async () => {
+  const ids = await db.load(`
+    SELECT id
+    FROM ${TBL}
+    WHERE publish_time <= NOW() AND status = 'APPROVED'`);
+
+  if (ids.length === 0) {
+    return;
+  }
+
+  let promises = [];
+  ids.forEach((value) => {
+    promises.push(publishPost(value.id));
+  });
+
+  return await Promise.all(promises);
+};
+module.exports.findAndPublishPost = findAndPublishPost;

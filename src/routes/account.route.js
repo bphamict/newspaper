@@ -59,25 +59,25 @@ router.post(
   [
     check('full_name')
       .notEmpty()
-      .withMessage('Full name must not be empty.')
+      .withMessage('Tên không được để trống.')
       .trim()
       .matches(/^[A-Za-z ]*$/i)
-      .withMessage('Full name must only contain A-Z, a-z and spaces.'),
+      .withMessage('Tên chỉ được chứa A-Z, a-z và khoảng cách.'),
     check('email')
       .notEmpty()
-      .withMessage('Email must not be empty.')
+      .withMessage('Email không được để trống.')
       .trim()
       .isEmail()
       .normalizeEmail()
-      .withMessage('Email is invalid.'),
+      .withMessage('Email không hợp lệ.'),
     check('password')
       .notEmpty()
-      .withMessage('Password must not be empty.')
+      .withMessage('Mật khẩu không được để trống.')
       .trim()
       .isLength({ min: 8 })
-      .withMessage('Password must be at least 8 chars long.')
+      .withMessage('Mật khẩu phải có ít nhất 8 kí tự.')
       .matches(/\d/)
-      .withMessage('Password must contain at least a number.'),
+      .withMessage('Mật khẩu phải chứa ít nhất 1 chữ số.'),
   ],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -90,7 +90,7 @@ router.post(
     try {
       user = await User.findByEmail(req.body.email);
       if (user) {
-        throw MESSAGES.EMAIL_ALREADY_TAKEN;
+        throw MESSAGES.EMAIL_ALREADY_HAS_TAKEN;
       }
       req.body = _.pick(req.body, ['full_name', 'email', 'dob', 'password']);
       req.body = _.assign(req.body, {
@@ -100,7 +100,12 @@ router.post(
       await User.create(req.body);
 
       user = await User.findByEmail(req.body.email);
-      await userSubscribeModel.add({ user_id: user.id, expiry_time: moment(user.created_at).add(10080, 'm').format('YYYY-MM-DD HH:mm:ss') });
+      await userSubscribeModel.add({
+        user_id: user.id,
+        expiry_time: moment(user.created_at)
+          .add(10080, 'm')
+          .format('YYYY-MM-DD HH:mm:ss'),
+      });
       const code = cryptoRandomString(authentication.randomString);
       await UserVerify.create({
         user_id: user.id,
@@ -132,7 +137,7 @@ router.post(
 
 router.get(
   '/confirm-account',
-  [query('code').notEmpty().withMessage('Code must not be empty.').trim()],
+  [query('code').notEmpty().withMessage('Mã không hợp lệ.').trim()],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -178,11 +183,11 @@ router.post(
   [
     check('email')
       .notEmpty()
-      .withMessage('Email must not be empty.')
+      .withMessage('Email không được để trống.')
       .trim()
       .isEmail()
       .normalizeEmail()
-      .withMessage('Email is invalid.'),
+      .withMessage('Email không hợp lệ.'),
   ],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -228,15 +233,15 @@ router.get('/reset-password', (req, res) => {
 router.post(
   '/reset-password',
   [
-    check('code').notEmpty().withMessage('Code must not be empty.').trim(),
+    check('code').notEmpty().withMessage('Mã không hợp lệ.').trim(),
     check('password')
       .notEmpty()
-      .withMessage('Password must not be empty.')
+      .withMessage('Mật khẩu không được để trống.')
       .trim()
       .isLength({ min: 8 })
-      .withMessage('Password must be at least 8 chars long.')
+      .withMessage('Mật khẩu phải có ít nhất 8 kí tự.')
       .matches(/\d/)
-      .withMessage('Password must contain at least a number.'),
+      .withMessage('Mật khẩu phải chưa ít nhất 1 chữ số.'),
   ],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions

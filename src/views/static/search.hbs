@@ -23,10 +23,6 @@
         <div class="row">
             {{#each this.posts}}
             <article class="col-md-6">
-                {{#ifEqual type 'PREMIUM'}}
-                <div class="premium-post">PREMIUM</div>
-                <div class="blur">
-                    {{/ifEqual}}
                     <div style="media">
                         <div class="media-left">
                             <a href="/post/{{slug}}"><img class="media-object"
@@ -34,7 +30,12 @@
                                     src="/public/images/post/{{featured_image}}"></a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading"><a href="/post/{{slug}}">{{title}}</a></h4>
+                            <h4 class="media-heading">
+                                {{#ifEqual type 'PREMIUM'}}
+                                    <span class="premium-post">PREMIUM</span>
+                                {{/ifEqual}}
+                                <a href="/post/{{slug}}">{{title}}</a>
+                            </h4>
                             <p>{{summary}}</p>
                             <div><b>Danh mục:</b> <a href="/category/{{category_slug}}">{{category_name}}</a> -
                                 <a href="/sub-category/{{sub_category_slug}}">{{sub_category_name}}</a>
@@ -50,9 +51,6 @@
                             <span style="float:right"><small><i>{{publish_time}}</i></small></span>
                         </div>
                     </div>
-                    {{#ifEqual type 'PREMIUM'}}
-                </div>
-                {{/ifEqual}}
             </article>
             {{/each}}
         </div>
@@ -125,10 +123,6 @@
 
 {{#section 'css'}}
 <style>
-    .blur {
-        filter: blur(2px);
-    }
-
     .col-md-6 {
         position: relative;
         margin:14px 0;
@@ -142,16 +136,10 @@
     }
 
     .premium-post {
-        padding: 5px 0;
-        text-align: center;
-        vertical-align: middle;
+        font-size: 10px;
+        padding: 3px 5px;
         background: #d9534f;
         color: #fff;
-        position: absolute;
-        width: 100px;
-        top: calc(50% - 16px);
-        left: calc(50% - 50px);
-        z-index: 999;
         border-radius: 4px;
     }
 

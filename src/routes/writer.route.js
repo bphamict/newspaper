@@ -58,7 +58,63 @@ router.post('/image', upload.single('file'), (req, res) => {
 })
 
 router.get('/post', isWriter, async (req, res) => {
-    const posts = await postModel.loadByUserID(req.user.id);
+    var page = +req.query.page || -1;
+    var total = await postModel.countPostByWriterID(req.user.id);
+    const numOfPage = Math.ceil(total / 10);
+    if(page < 1 || page > numOfPage) {
+        page = 1;
+    }
+
+    const offset = (page - 1) * 10;
+    const posts = await postModel.pageByWriterID(req.user.id, offset, 10);
+
+    const pageItems = [];
+    if(numOfPage > 5) {
+        const isNearEnd = page + 2 > numOfPage;
+        if(!isNearEnd) {
+            for(let i = page - 2; i <= page; i++) {
+                if(i > 0) {
+                    pageItems.push({
+                        value: i,
+                        isActive: i === page
+                    })
+                }
+            }
+
+            const numberOfPage = pageItems.length;
+
+            for(let i = page + 1; i <= page + (5 - numberOfPage); i++) {
+                pageItems.push({
+                    value: i,
+                    isActive: false,
+                })
+            }
+        } else {
+            for(let i = page; i <= numOfPage; i++) {
+                pageItems.push({
+                    value: i,
+                    isActive: i === page,
+                })
+            }
+
+            const numberOfPage = pageItems.length;
+
+            for(let i = page - 1; i >=  page - (5 - numberOfPage); i--) {
+                pageItems.unshift({
+                    value: i,
+                    isActive: false,
+                })
+            }
+        }
+    } else {
+        for(let i = 1; i <= numOfPage; i++) {
+            pageItems.push({
+                value: i,
+                isActive: i === page,
+            })
+        }
+    }
+    
     var numberOfPost = 0;
     if(posts) {
         numberOfPost = posts.length;
@@ -73,15 +129,24 @@ router.get('/post', isWriter, async (req, res) => {
             }
         })
     }
-    res.render('writer/list-post', { posts, numberOfPost });
+    res.render('writer/list-post', { 
+        posts, 
+        numberOfPost, 
+        pageItems,
+        prev_value: page - 1,
+        next_value: page + 1,
+        canGoPrev: page > 1,
+        canGoNext: page < numOfPage,
+        numOfPage
+    });
 })
 
 router.get('/post/edit', isWriter, async (req, res) => {
     let postID = +req.query.id || 1;
     postID = parseInt(postID);
     const [post, subCategories, tags, post_tags] = await Promise.all([postModel.loadByPostID(postID), subCategoryModel.loadAll(), tagsModel.loadAll(), postTagModel.loadByPostID(postID)]);
-    if(!post || (post.status !== 'DECLINE' && post.status !== 'PENDING')) {
-        return res.redirect('/writer/post/list');
+    if(!post || (post.status !== 'DENIED' && post.status !== 'PENDING') || post.author !== req.user.id) {
+        return res.redirect('/writer/post');
     }
     res.render('writer/edit-post', { post, subCategories, tags, post_tags })
 })
@@ -123,7 +188,7 @@ router.post('/post/edit', isWriter, upload.single('featured_image'), async (req,
         }
     });
 
-    res.redirect('/writer/post/list');
+    res.redirect('/writer/post');
 })
 
 module.exports = router;

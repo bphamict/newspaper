@@ -18,13 +18,14 @@ router.get('/error', isAdmin, (req, res) => {
 
 router.get('/', isAdmin, async (req, res) => {
     var page = +req.query.page || 1;
-    const offset = (page - 1) * 10;
-    var [userList, total] = await Promise.all([userModel.loadWithRoleName(req.user.id, offset, 10), userModel.getTotal(req.user.id)]);
-
+    var total = await userModel.getTotal(req.user.id);
     const numOfPage = Math.ceil(total / 10);
     if(page < 1 || page > numOfPage) {
         page = 1;
     }
+
+    const offset = (page - 1) * 10;
+    var userList = await userModel.loadWithRoleName(req.user.id, offset, 10);
 
     const pageItems = [];
     if(numOfPage > 5) {
@@ -179,6 +180,7 @@ router.post('/add', isAdmin, async (req, res) => {
         password: bcrypt.hashSync(req.body.password, authentication.saltRounds),
         confirmed: true,
         role: +req.body.role,
+        writer_pseudonym: +req.body.role === 3 ? req.body.full_name : null,
     });
     const result = await userModel.create(req.body);
     const user = await userModel.findById(result.insertId);
